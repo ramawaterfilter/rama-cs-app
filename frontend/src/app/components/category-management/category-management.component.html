@@ -1,0 +1,121 @@
+<div>
+  <div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div>
+      <div class="breadcrumb"><span>Admin</span> / Categories</div>
+      <h2>Category Management</h2>
+      <p>Manage query categories, subcategories, and child categories (3-level hierarchy).</p>
+    </div>
+    <button class="btn btn-primary" (click)="openNew()">+ Add Category</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h3>All Categories</h3></div>
+    <div class="card-body">
+      <ng-container *ngFor="let top of topLevel">
+        <!-- Level 1 -->
+        <div class="tree-node" style="background:var(--primary-light); border-radius:var(--radius-md); margin-bottom:0.5rem;">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span style="font-size:1rem;">📁</span>
+            <strong>{{ top.name }}</strong>
+            <span class="badge badge-primary" style="margin-left:0.5rem;">{{ top.type || 'category' }}</span>
+          </div>
+          <div style="display:flex; gap:0.4rem;">
+            <button class="btn btn-icon btn-sm" (click)="openEdit(top)">✏️</button>
+            <button class="btn btn-icon btn-sm" style="color:var(--danger);" (click)="delete(top.id)">🗑️</button>
+          </div>
+        </div>
+
+        <!-- Level 2 -->
+        <div class="tree-children" *ngIf="getChildren(top.id).length">
+          <ng-container *ngFor="let sub of getChildren(top.id)">
+            <div class="tree-node" style="margin-bottom:0.35rem;">
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <span>📂</span>
+                <span>{{ sub.name }}</span>
+                <span class="badge badge-info" style="margin-left:0.5rem;">{{ sub.type || 'subcategory' }}</span>
+              </div>
+              <div style="display:flex; gap:0.4rem;">
+                <button class="btn btn-icon btn-sm" (click)="openEdit(sub)">✏️</button>
+                <button class="btn btn-icon btn-sm" style="color:var(--danger);" (click)="delete(sub.id)">🗑️</button>
+              </div>
+            </div>
+
+            <!-- Level 3 -->
+            <div class="tree-children" *ngIf="getGrandChildren(sub.id).length">
+              <div class="tree-node" *ngFor="let child of getGrandChildren(sub.id)" style="margin-bottom:0.35rem;">
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <span>📄</span>
+                  <span style="color:var(--text-muted);">{{ child.name }}</span>
+                  <span class="badge badge-secondary" style="margin-left:0.5rem;">{{ child.type || 'child' }}</span>
+                </div>
+                <div style="display:flex; gap:0.4rem;">
+                  <button class="btn btn-icon btn-sm" (click)="openEdit(child)">✏️</button>
+                  <button class="btn btn-icon btn-sm" style="color:var(--danger);" (click)="delete(child.id)">🗑️</button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="separator"></div>
+      </ng-container>
+
+      <div class="empty-state" *ngIf="topLevel.length === 0">
+        <div class="empty-icon">🗂️</div>
+        <p>No categories yet. Start by adding one!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editMode ? '✏️ Edit Category' : '+ New Category' }}</h3>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success" *ngIf="saveMsg && !saveMsg.includes('Error')">{{ saveMsg }}</div>
+        <div class="alert alert-danger" *ngIf="saveMsg && saveMsg.includes('Error')">{{ saveMsg }}</div>
+
+        <div class="form-group">
+          <label class="form-label">Category Name</label>
+          <input type="text" class="form-control" [(ngModel)]="form.name" placeholder="e.g. Water Purifiers">
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-control" [(ngModel)]="form.type">
+              <option value="category">Category (Level 1)</option>
+              <option value="subcategory">Subcategory (Level 2)</option>
+              <option value="child">Child Category (Level 3)</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label class="form-label">Parent Categories (Optional - Multi-select)</label>
+            <div class="chip-input-container" style="border: 1px solid var(--border-color); padding: 0.5rem; border-radius: var(--radius-md); display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; background: var(--bg-white); position: relative;">
+              <span class="chip" *ngFor="let pId of form.parent_ids" style="background: var(--primary-light); color: var(--primary); padding: 0.3rem 0.6rem; border-radius: 15px; display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; font-weight: 500;">
+                {{ getCategoryName(pId) }}
+                <span style="cursor: pointer; opacity: 0.7;" (click)="removeParent(pId)">✕</span>
+              </span>
+              <input type="text" style="border: none; outline: none; flex: 1; min-width: 150px; background: transparent; padding: 0; font-size: 0.9rem;" placeholder="Search & Add Parent..." [(ngModel)]="categorySearch" (focus)="showCatDropdown = true" (blur)="hideDropdown()">
+              
+              <!-- Searchable Dropdown List -->
+              <div *ngIf="showCatDropdown && availableParents().length > 0" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-md); max-height: 200px; overflow-y: auto; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: 0.25rem;">
+                <div *ngFor="let c of availableParents()" style="padding: 0.5rem 1rem; cursor: pointer; border-bottom: 1px solid var(--border-color); transition: background 0.2s;" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='transparent'" (mousedown)="addParentById(c.id)">
+                  {{ c.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name">
+          {{ saving ? 'Saving...' : '💾 Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,91 @@
+<div class="auth-page">
+  <div class="auth-card-wrapper">
+    <div class="card auth-card">
+      <div class="auth-header" style="position: relative;">
+        <button type="button" class="notif-btn" style="position: absolute; top: 0; right: 0;" (click)="themeService.toggleTheme()">
+          {{ themeService.isDark() ? '☀️' : '🌙' }}
+        </button>
+        <img [src]="themeService.isDark() ? 'logo_phoenix_white.png' : 'logo_phoenix_dark.png'" alt="Phoenix Forms Logo" style="max-height: 54px; max-width: 100%; object-fit: contain; margin-bottom: 0.5rem;">
+        <h2>System Login</h2>
+        <p>Enter your credentials to access the management dashboard.</p>
+      </div>
+      
+      <div class="card-body">
+        
+        <!-- Login Form -->
+        <div *ngIf="!showForgotPassword">
+          <div *ngIf="error" class="alert alert-danger" style="text-align: center;">
+            {{ error }}
+          </div>
+
+          <form (ngSubmit)="onSubmit()">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-control" [(ngModel)]="credentials.email" name="email" required placeholder="name@company.com">
+            </div>
+            
+            <div class="form-group">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                <label class="form-label" style="margin-bottom:0;">Password</label>
+                <a href="javascript:void(0)" (click)="toggleForgotPassword()" class="text-primary" style="font-size:0.75rem;">Forgot Password?</a>
+              </div>
+              <div style="position: relative;">
+                <input [type]="showPassword ? 'text' : 'password'" class="form-control" [(ngModel)]="credentials.password" name="password" required placeholder="••••••••" style="padding-right: 2.5rem;">
+                <button type="button" (click)="togglePasswordVisibility()" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; padding: 0; cursor: pointer; color: #6b7280; display: flex; align-items: center; justify-content: center;" tabindex="-1">
+                  <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem; display:flex; align-items:center; gap:0.5rem;">
+              <input type="checkbox" id="remember" style="width:16px; height:16px; cursor:pointer;">
+              <label for="remember" style="font-size:0.8rem; color:var(--text-muted); cursor:pointer;">Keep me logged in</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; justify-content:center; padding: 0.8rem;" [disabled]="loading">
+              {{ loading ? '🔒 Authenticating...' : 'Sign In to Dashboard' }}
+            </button>
+          </form>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div *ngIf="showForgotPassword">
+          <div *ngIf="forgotPasswordError" class="alert alert-danger" style="text-align: center; margin-bottom: 1rem;">
+            {{ forgotPasswordError }}
+          </div>
+          <div *ngIf="forgotPasswordMessage" class="alert alert-success" style="text-align: center; margin-bottom: 1rem; color: #0f5132; background-color: #d1e7dd; border: 1px solid #badbcc; padding: 0.75rem; border-radius: 0.25rem;">
+            {{ forgotPasswordMessage }}
+          </div>
+
+          <form (ngSubmit)="onForgotPasswordSubmit()">
+            <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 1rem;">Enter your email address and we'll send a request to the admin to reset your password.</p>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-control" [(ngModel)]="forgotPasswordEmail" name="forgotPasswordEmail" required placeholder="name@company.com">
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; justify-content:center; padding: 0.8rem; margin-bottom: 1rem;" [disabled]="forgotPasswordLoading || cooldownTime > 0">
+              {{ forgotPasswordLoading ? 'Submitting...' : (cooldownTime > 0 ? 'Wait ' + cooldownTime + 's' : 'Submit Request') }}
+            </button>
+            <button type="button" class="btn btn-secondary btn-lg" style="width: 100%; justify-content:center; padding: 0.8rem; background: #e5e7eb; color: #374151; border: none;" (click)="toggleForgotPassword()" [disabled]="forgotPasswordLoading">
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="auth-footer">
+        <p>Don't have an account? Contact your administrator.</p>
+        <div class="separator" *ngIf="showForgotPassword"></div>
+        <a *ngIf="showForgotPassword" href="javascript:void(0)" (click)="toggleForgotPassword()" class="text-primary" style="font-size:0.82rem; font-weight:600;">← Back to Login</a>
+      </div>
+    </div>
+  </div>
+</div>

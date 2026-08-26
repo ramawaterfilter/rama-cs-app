@@ -1,0 +1,278 @@
+<div class="container mt-4">
+    <h2 class="page-title">New Service Query</h2>
+    <p class="text-muted">Fill in the details below to record a customer query or complaint.</p>
+ 
+    <div class="card public-card">
+      <div class="card-header">
+        <h3>📋 Service Entry Form</h3>
+      </div>
+      <div class="card-body">
+        
+        <!-- Success State -->
+        <div class="empty-state" *ngIf="successMsg">
+          <div class="empty-icon">✅</div>
+          <h2>Submission Successful!</h2>
+          <p>{{ successMsg }}</p>
+          <button class="btn btn-primary" (click)="successMsg = '';" style="margin-top:1.5rem">
+            Record Another Entry
+          </button>
+        </div>
+ 
+        <div class="alert alert-danger" *ngIf="errorMsg">{{ errorMsg }}</div>
+ 
+        <!-- Form -->
+        <form *ngIf="!successMsg" #queryForm="ngForm" (ngSubmit)="onSubmit(queryForm)">
+          
+          <!-- Agent & Order Info -->
+          <div class="form-section-title">👤 Agent & Order Details</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Agent Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" [(ngModel)]="formData.agent_name" name="agent_name" required 
+                     [readonly]="authService.isAuthenticated()" 
+                     placeholder="Enter agent name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Agent Email Address</label>
+              <input type="email" class="form-control" [(ngModel)]="formData.agent_email" name="agent_email" 
+                     [readonly]="authService.isAuthenticated()" 
+                     placeholder="agent@email.com (Optional)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Order ID</label>
+              <input type="text" class="form-control" [(ngModel)]="formData.order_id" name="order_id" placeholder="Enter Order ID (Optional)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Purchase Store</label>
+              <select class="form-control" [(ngModel)]="formData.purchase_store" name="purchase_store">
+                <option value="">— Select Purchase Store (Optional) —</option>
+                <option *ngFor="let p of purchaseStores" [value]="p.name">{{ p.name }}</option>
+              </select>
+            </div>
+          </div>
+ 
+          <!-- Customer Info -->
+          <div class="form-section-title">👥 Customer Information</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Customer Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" [(ngModel)]="formData.customer_name" name="customer_name" required placeholder="Enter customer name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Customer Email</label>
+              <input type="email" class="form-control" [(ngModel)]="formData.customer_email" name="customer_email" placeholder="customer@email.com (Optional)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Customer Phone</label>
+              <input type="text" class="form-control" [(ngModel)]="formData.customer_phone" name="customer_phone" placeholder="e.g. 9876543210 (Optional)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Country <span class="text-danger">*</span></label>
+              <select class="form-control" [(ngModel)]="formData.country_id" name="country_id" required>
+                <option value="">— Select Country —</option>
+                <option *ngFor="let c of countries" [value]="c.id">{{ c.name }}</option>
+              </select>
+            </div>
+            <div class="form-group span-2">
+              <label class="form-label">Address</label>
+              <textarea class="form-control" [(ngModel)]="formData.address" name="address" rows="2" placeholder="Full address (Optional)"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Customer Outreach <span class="text-danger">*</span></label>
+              <select class="form-control" [(ngModel)]="formData.customer_outreach_id" name="customer_outreach_id" required>
+                <option value="">— Select Outreach —</option>
+                <option *ngFor="let o of outreaches" [value]="o.id">{{ o.name }}</option>
+              </select>
+            </div>
+
+          </div>
+ 
+          <!-- Query Details -->
+          <div class="form-section-title">❓ Query Classification</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Query Channel <span class="text-danger">*</span></label>
+              <select class="form-control" [(ngModel)]="formData.query_channel_id" name="query_channel_id" required>
+                <option value="">— Select Channel —</option>
+                <option *ngFor="let ch of channels" [value]="ch.id">{{ ch.name }}</option>
+              </select>
+            </div>
+ 
+            <div class="form-group">
+              <label class="form-label">Query Type <span class="text-danger">*</span></label>
+              <select class="form-control" [(ngModel)]="formData.query_type_id" name="query_type_id" (change)="onTypeChange()" required>
+                <option value="">— Select Type —</option>
+                <option *ngFor="let qt of queryTypes" [value]="qt.id">{{ qt.name }}</option>
+              </select>
+            </div>
+ 
+            <!-- Searchable Category -->
+            <div class="form-group searchable-select-group">
+              <label class="form-label">Query Category <span class="text-danger">*</span></label>
+              <div class="searchable-select-container">
+                <input type="text" class="form-control" 
+                       [(ngModel)]="catSearch" name="catSearch"
+                       placeholder="Search Category..."
+                       (focus)="showCatDropdown = true" (blur)="hideDropdowns()"
+                       autocomplete="off">
+                <div class="searchable-dropdown" *ngIf="showCatDropdown && filteredCategories.length > 0">
+                  <div class="dropdown-item" *ngFor="let c of filteredCategories" (mousedown)="selectCategory(c)">
+                    {{ c.name }}
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" [(ngModel)]="selectedCategoryId" name="category_id" required>
+            </div>
+ 
+            <!-- Searchable Sub-Category -->
+            <div class="form-group searchable-select-group" *ngIf="selectedCategoryId">
+              <label class="form-label">Sub Category <span class="text-danger">*</span></label>
+              <div class="searchable-select-container">
+                <input type="text" class="form-control" 
+                       [(ngModel)]="subSearch" name="subSearch"
+                       placeholder="Search Sub Category..."
+                       (focus)="showSubDropdown = true" (blur)="hideDropdowns()"
+                       autocomplete="off">
+                <div class="searchable-dropdown" *ngIf="showSubDropdown && filteredSubCategories.length > 0">
+                  <div class="dropdown-item" *ngFor="let c of filteredSubCategories" (mousedown)="selectSubcategory(c)">
+                    {{ c.name }}
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" [(ngModel)]="selectedSubcategoryId" name="sub_category_id" required>
+            </div>
+ 
+            <!-- Searchable Child-Category -->
+            <div class="form-group searchable-select-group" *ngIf="selectedSubcategoryId">
+              <label class="form-label">Child Category <span class="text-danger">*</span></label>
+              <div class="searchable-select-container">
+                <input type="text" class="form-control" 
+                       [(ngModel)]="childSearch" name="childSearch"
+                       placeholder="Search Child Category..."
+                       (focus)="showChildDropdown = true" (blur)="hideDropdowns()"
+                       autocomplete="off">
+                <div class="searchable-dropdown" *ngIf="showChildDropdown && filteredChildCategories.length > 0">
+                  <div class="dropdown-item" *ngFor="let c of filteredChildCategories" (mousedown)="selectChildCategory(c)">
+                    {{ c.name }}
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" [(ngModel)]="selectedChildCategoryId" name="child_category_id" required>
+            </div>
+          </div>
+ 
+          <!-- Timestamps & Actions -->
+          <div class="form-section-title">⏱️ Timestamps & Action</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Query Received Date\Time <span class="text-danger">*</span></label>
+              <input type="datetime-local" class="form-control" [(ngModel)]="formData.received_at" name="received_at" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Query Resolved Date\Time <span class="text-danger">*</span></label>
+              <input type="datetime-local" class="form-control" [(ngModel)]="formData.resolved_at" name="resolved_at" required>
+            </div>
+            <div class="form-group span-2">
+              <label class="form-label">Query Description <span class="text-danger">*</span></label>
+              <textarea class="form-control" [(ngModel)]="formData.description" name="description" required rows="3" placeholder="Full description of the query..."></textarea>
+            </div>
+            <div class="form-group span-2">
+              <label class="form-label">Action Taken <span class="text-danger">*</span></label>
+              <textarea class="form-control" [(ngModel)]="formData.action_taken" name="action_taken" required rows="2" placeholder="Describe the action taken..."></textarea>
+            </div>
+          </div>
+ 
+          <!-- Optional Fields -->
+          <div class="form-section-title">✨ Optional Information</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Filters (Capacity)</label>
+              <select class="form-control" [(ngModel)]="formData.query_filter_id" name="query_filter_id">
+                <option value="">— Select —</option>
+                <option *ngFor="let f of queryFilters" [value]="f.id">{{ f.name }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status Open\Close</label>
+              <select class="form-control" [(ngModel)]="formData.status_id" name="status_id">
+                <option value="">— Select Status —</option>
+                <option *ngFor="let s of statuses" [value]="s.id">{{ s.name }}</option>
+              </select>
+            </div>
+            <div class="form-group" *ngIf="authService.getUserData()?.role === 'admin'">
+              <label class="form-label">Assign Executive</label>
+              <select class="form-control" [(ngModel)]="formData.executive_id" name="executive_id">
+                <option value="">— Select Executive (Optional) —</option>
+                <option *ngFor="let ex of executives" [value]="ex.id">{{ ex.name }}</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-footer">
+            <button type="submit" class="btn btn-primary btn-lg" [disabled]="loading || queryForm.invalid" 
+              style="width: 100%; justify-content: center; font-size: 1rem; padding: 1rem; border-radius: 10px;">
+              {{ loading ? '⏳ Submitting...' : '🚀 Submit Entry' }}
+            </button>
+            <p class="form-note">Fields marked with <span class="text-danger">*</span> are mandatory.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+</div>
+ 
+<style>
+  .form-section-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--primary-color, #2563eb);
+    margin: 1.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+  }
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .span-2 {
+    grid-column: span 2;
+  }
+  @media (max-width: 768px) {
+    .form-grid-2 {
+      grid-template-columns: 1fr;
+    }
+    .span-2 {
+      grid-column: span 1;
+    }
+  }
+  .searchable-select-container {
+    position: relative;
+  }
+  .searchable-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 0 0 8px 8px;
+  }
+  .dropdown-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .dropdown-item:hover {
+    background: #f8f9fa;
+    color: var(--primary-color);
+  }
+  .dropdown-item:last-child {
+    border-bottom: none;
+  }
+</style>

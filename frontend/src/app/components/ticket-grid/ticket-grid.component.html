@@ -1,0 +1,563 @@
+<div>
+  <div class="page-header">
+    <div class="breadcrumb"><span>Home</span> / Ticket Management</div>
+    <h2>{{ isAdmin ? (isRequestsView ? 'Ticket Requests' : 'All Tickets') : 'My Ticket Pool' }}</h2>
+    <p>View, manage and update all customer query tickets.</p>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="card" style="margin-bottom:1.25rem;">
+    <div class="card-body toolbar">
+      <div style="position: relative; display: inline-block;">
+        <span style="position: absolute; top: -16px; left: 4px; font-size: 0.65rem; color: var(--text-muted); white-space: nowrap;">Search (Name, Type, Cat...)</span>
+        <input type="text" class="form-control" placeholder="🔍 Search..." title="Search Name, Email, Query Type, Category, etc."
+          [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()">
+      </div>
+
+      <input type="text" class="form-control" style="max-width:140px;" placeholder="Order ID..."
+        [(ngModel)]="filterOrderId" (ngModelChange)="applyFilter()">
+
+      <select class="form-control" [(ngModel)]="filterCategory" (ngModelChange)="applyFilter()">
+        <option value="">All Categories</option>
+        <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+      </select>
+
+      <select class="form-control" *ngIf="isAdmin" [(ngModel)]="filterAssignee" (ngModelChange)="applyFilter()">
+        <option value="">All Assignees</option>
+        <option value="unassigned">Unassigned</option>
+        <option *ngFor="let cse of cses" [value]="cse.id">{{ cse.name }}</option>
+      </select>
+
+      <select class="form-control" [(ngModel)]="filterStatus" (ngModelChange)="applyFilter()">
+        <option value="">All Statuses</option>
+        <option *ngFor="let s of statuses" [value]="s.id">{{ s.name }}</option>
+      </select>
+
+      <div style="display:flex; align-items:center; gap:0.4rem; background:var(--bg-body); padding:0.2rem 0.5rem; border-radius:var(--radius-sm); border:1px solid var(--border-color); flex-shrink: 0;">
+        <input type="date" style="border:none; background:transparent; font-size:0.85rem; outline:none;" [(ngModel)]="fromDate" (ngModelChange)="applyFilter()">
+        <span style="font-size:0.75rem; color:var(--text-muted);">to</span>
+        <input type="date" style="border:none; background:transparent; font-size:0.85rem; outline:none;" [(ngModel)]="toDate" (ngModelChange)="applyFilter()">
+      </div>
+
+      <button class="btn btn-outline btn-sm" (click)="toggleSortDate()" title="Sort by Date">↕</button>
+      <button class="btn btn-outline btn-sm" (click)="exportXLSX()">📊 Excel</button>
+      <button class="btn btn-outline btn-sm" (click)="loadAll()" title="Reload Data">↻</button>
+      <button class="btn btn-outline btn-sm" (click)="resetFilters()" title="Reset Filters" style="color: var(--danger); border-color: var(--danger);">✕ Reset</button>
+      <span class="toolbar-info">
+        Showing {{ filteredTickets.length }} of {{ tickets.length }} tickets
+      </span>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card">
+    <div class="table-wrapper">
+      <div class="empty-state" *ngIf="loading">
+        <div class="empty-icon">⏳</div><p>Loading tickets...</p>
+      </div>
+
+      <table class="data-table" *ngIf="!loading">
+        <thead>
+          <tr>
+            <th>Ticket #</th>
+            <th>Customer Details</th>
+            <th>Agent / Email</th>
+            <th>Query Type / Cat</th>
+            <th>Hierarchy</th>
+            <th>Received</th>
+            <th>Submitted</th>
+            <th>Assigned To</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ticket of filteredTickets">
+            <td>
+              <span class="chip">#{{ ticket.id }}</span>
+              <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.2rem;">{{ ticket.order_id || '—' }}</div>
+            </td>
+            <td>
+              <div style="font-weight:600;">{{ ticket.customer_name }}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">{{ ticket.customer_email }}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">{{ ticket.customer_phone }}</div>
+            </td>
+            <td>
+              <div style="font-weight:500;">{{ ticket.agent_name || '—' }}</div>
+              <div style="font-size:0.7rem; color:var(--text-muted);">{{ ticket.agent_email || '—' }}</div>
+              <span class="badge badge-secondary" style="margin-top:0.2rem;">{{ ticket.query_channel?.name || ticket.query_source || 'N/A' }}</span>
+            </td>
+            <td>
+              <span class="badge badge-primary">{{ ticket.query_type?.name || ticket.type_of_query || '—' }}</span>
+              <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.2rem;">{{ ticket.category?.name }}</div>
+            </td>
+            <td>
+              <div style="font-size:0.75rem; font-weight:500;">{{ ticket.sub_category?.name || '—' }}</div>
+              <div style="font-size:0.7rem; color:var(--text-muted);" *ngIf="ticket.child_category">↳ {{ ticket.child_category?.name }}</div>
+            </td>
+            <td style="color:var(--text-muted); font-size:0.8rem;">{{ ticket.received_at | date:'d MMM y, h:mm a' }}</td>
+            <td style="color:var(--text-muted); font-size:0.8rem;">{{ ticket.created_at | date:'d MMM y, h:mm a' }}</td>
+            <td>
+              <span class="badge badge-success" *ngIf="ticket.executive">{{ ticket.executive?.name }}</span>
+              <span class="badge badge-warning" *ngIf="!ticket.executive">Unallocated</span>
+            </td>
+            <td>
+              <div style="display:flex; flex-direction:column; gap:0.3rem; align-items:flex-start;">
+                <span class="badge" [ngStyle]="getStatusStyle(ticket)">
+                  <span class="color-dot" [style.background]="getStatusDotColor(ticket)"></span>
+                  {{ ticket.status?.name || 'No Status' }}
+                </span>
+                
+                <span class="badge" *ngIf="ticket.replacement" [ngStyle]="getLogisticsStatusStyle(ticket.replacement.status)" style="font-size:0.65rem;" title="Replacement Status">
+                  📦 {{ ticket.replacement.status || 'Pending' }}
+                </span>
+                
+                <span class="badge" *ngIf="ticket.ticket_return" [ngStyle]="getLogisticsStatusStyle(ticket.ticket_return.status)" style="font-size:0.65rem;" title="Return Status">
+                  ↩️ {{ ticket.ticket_return.status || 'Pending' }}
+                </span>
+              </div>
+            </td>
+            <td>
+              <div style="display:flex; gap:0.4rem;">
+                <button class="btn btn-sm btn-outline" (click)="viewTicket(ticket)" title="View Details">👁️</button>
+                <button class="btn btn-sm btn-primary" (click)="openTicket(ticket)">✏️ Update</button>
+                <button class="btn btn-sm btn-outline" *ngIf="isAdmin" (click)="openTicket(ticket, true)">📋 Assign</button>
+                <button class="btn btn-sm btn-outline" *ngIf="isAdmin" (click)="deleteTicket(ticket.id)" style="color: var(--danger); border-color: var(--danger);">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredTickets.length === 0 && !loading">
+            <td colspan="9">
+              <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>No tickets match your filter.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Update / Allocate Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-box modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ allocateMode ? '📋 Allocate Ticket' : '✏️ Update Ticket' }} #{{ selectedTicket?.id }}</h3>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Ticket Info -->
+        <!-- Customer Info Block -->
+        <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;">
+          
+          <ng-container *ngIf="!isAdmin && !selectedTicket?.profile_edit_approved">
+            <div class="form-grid-modal">
+              <div class="detail-row"><div class="detail-label">Agent Info</div><div>{{ selectedTicket?.agent_name }} ({{ selectedTicket?.agent_email }})</div></div>
+              <div class="detail-row"><div class="detail-label">Customer Name</div><div>{{ selectedTicket?.customer_name }}</div></div>
+              <div class="detail-row"><div class="detail-label">Customer Phone</div><div>{{ selectedTicket?.customer_phone }}</div></div>
+              <div class="detail-row"><div class="detail-label">Customer Email</div><div>{{ selectedTicket?.customer_email }}</div></div>
+              <div class="detail-row"><div class="detail-label">Country & State</div><div>{{ selectedTicket?.country_dynamic?.name || '—' }} / {{ selectedTicket?.state?.name || '—' }}</div></div>
+              <div class="detail-row"><div class="detail-label">Address</div><div>{{ selectedTicket?.address || '—' }}</div></div>
+            </div>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); text-align: center;">
+              <button class="btn btn-sm btn-outline" (click)="requestProfileEdit()" *ngIf="!selectedTicket?.profile_edit_requested" [disabled]="saving">
+                🔓 Request Profile Update
+              </button>
+              <span class="badge badge-warning" *ngIf="selectedTicket?.profile_edit_requested">⏳ Profile Update Requested</span>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="isAdmin || selectedTicket?.profile_edit_approved">
+            <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); text-align: center;" *ngIf="isAdmin && selectedTicket?.profile_edit_requested && !selectedTicket?.profile_edit_approved">
+              <button class="btn btn-sm btn-success" (click)="approveProfileEdit()" [disabled]="saving">
+                ✅ Approve Profile Edit Request
+              </button>
+            </div>
+            <fieldset [disabled]="isAdmin" style="border:none; padding:0; margin:0;">
+              <div class="form-grid-modal">
+                <div class="form-group">
+                  <label class="form-label">Ticket created by (Name)</label>
+                  <input type="text" class="form-control" [(ngModel)]="updateForm.agent_name" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Ticket created by (Email)</label>
+                  <input type="text" class="form-control" [(ngModel)]="updateForm.agent_email" disabled>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Customer Name</label>
+                  <input type="text" class="form-control" [(ngModel)]="updateForm.customer_name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Customer Email</label>
+                  <input type="text" class="form-control" [(ngModel)]="updateForm.customer_email">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Customer Phone</label>
+                  <input type="text" class="form-control" [(ngModel)]="updateForm.customer_phone">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Country</label>
+                  <select class="form-control" [(ngModel)]="updateForm.country_id">
+                    <option value="">— Select Country —</option>
+                    <option *ngFor="let c of countries" [value]="c.id">{{ c.name }}</option>
+                  </select>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                  <label class="form-label">Address</label>
+                  <textarea class="form-control" [(ngModel)]="updateForm.address" rows="2"></textarea>
+                </div>
+              </div>
+            </fieldset>
+          </ng-container>
+        </div>
+
+        <!-- Restricted Ticket Info -->
+        <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;">
+          <ng-container *ngIf="!isAdmin && selectedTicket?.has_been_updated && !selectedTicket?.edit_approved">
+            <div class="form-grid-modal">
+              <div class="detail-row"><div class="detail-label">Order ID</div><div>{{ selectedTicket?.order_id }}</div></div>
+              <div class="detail-row"><div class="detail-label">Classification</div><div>{{ selectedTicket?.query_channel?.name }} / {{ selectedTicket?.query_type?.name }}</div></div>
+              <div class="detail-row"><div class="detail-label">Hierarchy</div><div>{{ selectedTicket?.category?.name }} > {{ selectedTicket?.sub_category?.name }}</div></div>
+              <div class="detail-row"><div class="detail-label">Filter</div><div>{{ selectedTicket?.query_filter?.name || '—' }}</div></div>
+            </div>
+            <div class="detail-row" style="margin-top:0.5rem;"><div class="detail-label">Description</div><div>{{ selectedTicket?.description || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Status</div><div>{{ selectedTicket?.status?.name || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Received Date</div><div>{{ selectedTicket?.received_at ? (selectedTicket.received_at | date:'medium') : '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Resolved Date</div><div>{{ selectedTicket?.resolved_at ? (selectedTicket.resolved_at | date:'medium') : '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Action Taken / Remarks</div><div>{{ selectedTicket?.remarks || '—' }}</div></div>
+            
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); text-align: center;">
+              <button class="btn btn-sm btn-outline" (click)="requestEdit()" *ngIf="!selectedTicket?.edit_requested" [disabled]="saving">
+                🔓 Request General Update
+              </button>
+              <span class="badge badge-warning" *ngIf="selectedTicket?.edit_requested">⏳ General Update Requested</span>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="isAdmin || !selectedTicket?.has_been_updated || selectedTicket?.edit_approved">
+            <fieldset [disabled]="isAdmin" style="border:none; padding:0; margin:0;">
+              <div class="form-grid-modal">
+                <div class="form-group">
+                  <label class="form-label">Order ID</label>
+                  <input type="text" class="form-control" [(ngModel)]="updateForm.order_id">
+                </div>
+              <div class="form-group">
+                <label class="form-label">Purchase Store</label>
+                <select class="form-control" [(ngModel)]="updateForm.purchase_store">
+                  <option value="">— Select Purchase Store —</option>
+                  <option *ngFor="let p of purchaseStores" [value]="p.name">{{ p.name }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Query Channel</label>
+                <select class="form-control" [(ngModel)]="updateForm.query_channel_id">
+                  <option value="">— Select Channel —</option>
+                  <option *ngFor="let ch of channels" [value]="ch.id">{{ ch.name }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Query Type</label>
+                <select class="form-control" [(ngModel)]="updateForm.query_type_id">
+                  <option value="">— Select Type —</option>
+                  <option *ngFor="let qt of queryTypes" [value]="qt.id">{{ qt.name }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Query Category</label>
+                <select class="form-control" [(ngModel)]="updateForm.category_id">
+                  <option value="">— Select Category —</option>
+                  <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Sub Category</label>
+                <select class="form-control" [(ngModel)]="updateForm.sub_category_id">
+                  <option value="">— Select Sub Category —</option>
+                  <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Child Category</label>
+                <select class="form-control" [(ngModel)]="updateForm.child_category_id">
+                  <option value="">— Select Child Category —</option>
+                  <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Capacity Filter</label>
+                <select class="form-control" [(ngModel)]="updateForm.query_filter_id">
+                  <option value="">— Select Filter —</option>
+                  <option *ngFor="let f of queryFilters" [value]="f.id">{{ f.name }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Customer Outreach</label>
+                <select class="form-control" [(ngModel)]="updateForm.customer_outreach_id">
+                  <option value="">— Select Outreach —</option>
+                  <option *ngFor="let o of outreaches" [value]="o.id">{{ o.name }}</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Detailed Description</label>
+              <textarea class="form-control" [(ngModel)]="updateForm.description" rows="2"></textarea>
+            </div>
+            
+            <!-- Logistics Section -->
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed var(--border-color);">
+              <h4 style="margin-top:0; margin-bottom: 1rem; color:var(--primary-color);">Logistics Request</h4>
+              
+              <div style="display:flex; gap:1.5rem; margin-bottom: 1rem;">
+                <label style="display:flex; align-items:center; gap:0.5rem;">
+                  <input type="radio" name="logistics_type" value="nil" [(ngModel)]="updateForm.logistics_type"> NIL
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem;">
+                  <input type="radio" name="logistics_type" value="replacement" [(ngModel)]="updateForm.logistics_type"> Replacement
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem;">
+                  <input type="radio" name="logistics_type" value="return" [(ngModel)]="updateForm.logistics_type"> Return
+                </label>
+              </div>
+
+              <!-- Replacement Form -->
+              <div *ngIf="updateForm.logistics_type === 'replacement'" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1rem; margin-bottom:1rem;">
+                <h5 style="margin-top:0; margin-bottom:1rem;">Replacement Request Details</h5>
+                <div class="form-grid-modal">
+                  <div class="form-group"><label class="form-label">Order ID</label><input type="text" class="form-control" [value]="updateForm.order_id" disabled></div>
+                  <div class="form-group"><label class="form-label">Customer Name</label><input type="text" class="form-control" [value]="updateForm.customer_name" disabled></div>
+                  <div class="form-group"><label class="form-label">Customer Contact</label><input type="text" class="form-control" [value]="updateForm.customer_phone" disabled></div>
+                  <div class="form-group"><label class="form-label">Customer Email</label><input type="text" class="form-control" [value]="updateForm.customer_email" disabled></div>
+                  <div class="form-group" style="grid-column: span 2;"><label class="form-label">Customer Address</label><textarea class="form-control" [value]="updateForm.address" disabled rows="1"></textarea></div>
+                  <div class="form-group"><label class="form-label">CSE Name</label><input type="text" class="form-control" [value]="selectedTicket?.executive?.name || selectedTicket?.agent_name || ''" disabled></div>
+                  
+                  <div class="form-group"><label class="form-label">Assign Logistics Exec.</label>
+                    <select class="form-control" [(ngModel)]="updateForm.replacement_form.le_id">
+                      <option value="">— Select LE —</option>
+                      <option *ngFor="let le of les" [value]="le.id">{{ le.name }}</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group"><label class="form-label">Ordered Product Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.ordered_product_name"></div>
+                  <div class="form-group"><label class="form-label">Ordered Product SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.ordered_product_sku"></div>
+                  <div class="form-group"><label class="form-label">Replacement Product Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_product_name"></div>
+                  <div class="form-group"><label class="form-label">Replacement Product SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_product_sku"></div>
+                  <div class="form-group"><label class="form-label">Replacement Qty</label><input type="number" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_qty"></div>
+                  <div class="form-group"><label class="form-label">Replacement Reason</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_reason"></div>
+                  <div class="form-group" style="grid-column: span 2;"><label class="form-label">Others</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.others"></div>
+                </div>
+              </div>
+
+              <!-- Return Form -->
+              <div *ngIf="updateForm.logistics_type === 'return'" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1rem; margin-bottom:1rem;">
+                <h5 style="margin-top:0; margin-bottom:1rem;">Return Request Details</h5>
+                <div class="form-grid-modal">
+                  <div class="form-group"><label class="form-label">Order ID</label><input type="text" class="form-control" [value]="updateForm.order_id" disabled></div>
+                  <div class="form-group"><label class="form-label">Customer Name</label><input type="text" class="form-control" [value]="updateForm.customer_name" disabled></div>
+                  <div class="form-group"><label class="form-label">Customer Contact</label><input type="text" class="form-control" [value]="updateForm.customer_phone" disabled></div>
+                  <div class="form-group"><label class="form-label">Customer Email</label><input type="text" class="form-control" [value]="updateForm.customer_email" disabled></div>
+                  <div class="form-group" style="grid-column: span 2;"><label class="form-label">Customer Address</label><textarea class="form-control" [value]="updateForm.address" disabled rows="1"></textarea></div>
+                  <div class="form-group"><label class="form-label">CSE Name</label><input type="text" class="form-control" [value]="selectedTicket?.executive?.name || selectedTicket?.agent_name || ''" disabled></div>
+                  
+                  <div class="form-group"><label class="form-label">Assign Logistics Exec.</label>
+                    <select class="form-control" [(ngModel)]="updateForm.return_form.le_id">
+                      <option value="">— Select LE —</option>
+                      <option *ngFor="let le of les" [value]="le.id">{{ le.name }}</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group"><label class="form-label">Marketplace Channel</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.marketplace_channel"></div>
+                  <div class="form-group"><label class="form-label">Product Country</label>
+                    <select class="form-control" [(ngModel)]="updateForm.return_form.country_id">
+                      <option value="">— Select Country —</option>
+                      <option *ngFor="let c of countries" [value]="c.id">{{ c.name }}</option>
+                    </select>
+                  </div>
+                  <div class="form-group"><label class="form-label">Ordered Product Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.ordered_product_name"></div>
+                  <div class="form-group"><label class="form-label">Ordered Product SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.ordered_product_sku"></div>
+                  <div class="form-group"><label class="form-label">Return Reasons</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.return_reasons"></div>
+                  <div class="form-group"><label class="form-label">Return Date</label><input type="date" class="form-control" [(ngModel)]="updateForm.return_form.return_date"></div>
+                  <div class="form-group"><label class="form-label">Courier Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.courier_name"></div>
+                  <div class="form-group"><label class="form-label">Tracking ID</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.tracking_id"></div>
+                  <div class="form-group"><label class="form-label">No. of Boxes</label><input type="number" class="form-control" [(ngModel)]="updateForm.return_form.no_of_boxes"></div>
+                  <div class="form-group"><label class="form-label">3PL Inbound Ref No</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.inbound_ref_no"></div>
+                  <div class="form-group"><label class="form-label">3PL Inbound Date</label><input type="date" class="form-control" [(ngModel)]="updateForm.return_form.inbound_ref_date"></div>
+                </div>
+              </div>
+            </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--border-color);">
+                <div class="form-group">
+                  <label class="form-label">Update Status</label>
+                  <select class="form-control" [(ngModel)]="updateForm.status_id">
+                    <option value="">— Select Status —</option>
+                    <option *ngFor="let s of statuses" [value]="s.id">{{ s.name }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Received Date\Time</label>
+                  <input type="datetime-local" class="form-control" [(ngModel)]="updateForm.received_at">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Resolved Date\Time</label>
+                  <input type="datetime-local" class="form-control" [(ngModel)]="updateForm.resolved_at">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Action Taken / Remarks</label>
+                <textarea class="form-control" [(ngModel)]="updateForm.remarks" placeholder="Describe the resolution..."></textarea>
+              </div>
+            </fieldset>
+            
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); text-align: center;" *ngIf="isAdmin && selectedTicket?.edit_requested && !selectedTicket?.edit_approved">
+              <button class="btn btn-sm btn-success" (click)="approveEdit()" [disabled]="saving">
+                ✅ Approve Edit Request
+              </button>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="alert alert-success" *ngIf="saveMsg && !saveMsg.includes('Error')">{{ saveMsg }}</div>
+        <div class="alert alert-danger" *ngIf="saveMsg && saveMsg.includes('Error')">{{ saveMsg }}</div>
+        <div class="alert alert-danger" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+        <!-- Allocate CSE (Admin only) -->
+        <ng-container *ngIf="isAdmin">
+          <div class="form-group">
+            <label class="form-label">Assign Executive</label>
+            <select class="form-control" [(ngModel)]="updateForm.executive_id">
+              <option value="">— Select CSE —</option>
+              <option *ngFor="let cse of cses" [value]="cse.id">{{ cse.name }}</option>
+            </select>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveTicket()" [disabled]="saving || (!isAdmin && selectedTicket?.has_been_updated && !selectedTicket?.edit_approved && !selectedTicket?.profile_edit_approved)">
+          {{ saving ? 'Saving...' : '💾 Save Changes' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- View Modal -->
+  <div class="modal-overlay" *ngIf="showViewModal" (click)="closeViewModal()">
+    <div class="modal-box modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>👁️ View Ticket #{{ viewedTicket?.id }}</h3>
+        <button class="modal-close" (click)="closeViewModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        
+        <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;">
+          <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Customer Details</h4>
+          <div class="form-grid-modal">
+            <div class="detail-row"><div class="detail-label">Agent Name</div><div>{{ viewedTicket?.agent_name || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Agent Email</div><div>{{ viewedTicket?.agent_email || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Customer Name</div><div>{{ viewedTicket?.customer_name }}</div></div>
+            <div class="detail-row"><div class="detail-label">Customer Email</div><div>{{ viewedTicket?.customer_email }}</div></div>
+            <div class="detail-row"><div class="detail-label">Customer Phone</div><div>{{ viewedTicket?.customer_phone }}</div></div>
+            <div class="detail-row"><div class="detail-label">Country</div><div>{{ viewedTicket?.country_dynamic?.name || '—' }}</div></div>
+            <div class="detail-row" style="grid-column: span 2;"><div class="detail-label">Address</div><div>{{ viewedTicket?.address || '—' }}</div></div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;">
+          <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Query Details</h4>
+          <div class="form-grid-modal">
+            <div class="detail-row"><div class="detail-label">Order ID</div><div>{{ viewedTicket?.order_id || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Purchase Store</div><div>{{ viewedTicket?.purchase_store || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Outreach</div><div>{{ viewedTicket?.customer_outreach?.name || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Query Channel</div><div>{{ viewedTicket?.query_channel?.name || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Query Type</div><div>{{ viewedTicket?.query_type?.name || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Category</div><div>{{ viewedTicket?.category?.name || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Sub Category</div><div>{{ viewedTicket?.sub_category?.name || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Child Category</div><div>{{ viewedTicket?.child_category?.name || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Filter</div><div>{{ viewedTicket?.query_filter?.name || '—' }}</div></div>
+          </div>
+          <div style="margin-top:0.75rem;">
+            <div class="detail-label">Detailed Description</div>
+            <div style="background:#fff; border:1px solid var(--border-color); border-radius:4px; padding:0.5rem; margin-top:0.25rem; font-size:0.85rem; white-space:pre-wrap;">{{ viewedTicket?.description || '—' }}</div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;" *ngIf="viewedTicket?.replacement || viewedTicket?.ticket_return">
+          <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Logistics Details</h4>
+          
+          <ng-container *ngIf="viewedTicket?.replacement">
+            <h5 style="margin-top:0; margin-bottom:0.5rem;">Replacement</h5>
+            <div class="form-grid-modal">
+              <div class="detail-row"><div class="detail-label">Assigned LE</div><div>{{ viewedTicket?.replacement?.le?.name || getLEName(viewedTicket?.replacement?.le_id) }}</div></div>
+              <div class="detail-row"><div class="detail-label">Status</div><div><span class="badge" [ngStyle]="getLogisticsStatusStyle(viewedTicket?.replacement?.status)">{{ viewedTicket?.replacement?.status || 'Pending' }}</span></div></div>
+              <div class="detail-row"><div class="detail-label">Ordered Product</div><div>{{ viewedTicket?.replacement?.ordered_product_name }} ({{ viewedTicket?.replacement?.ordered_product_sku }})</div></div>
+              <div class="detail-row"><div class="detail-label">Replacement Product</div><div>{{ viewedTicket?.replacement?.replacement_product_name }} ({{ viewedTicket?.replacement?.replacement_product_sku }})</div></div>
+              <div class="detail-row"><div class="detail-label">Qty</div><div>{{ viewedTicket?.replacement?.replacement_qty }}</div></div>
+              <div class="detail-row"><div class="detail-label">Reason</div><div>{{ viewedTicket?.replacement?.replacement_reason }}</div></div>
+            </div>
+            <div style="margin-top:0.5rem;" *ngIf="viewedTicket?.replacement?.remarks"><div class="detail-label">LE Remarks:</div><div>{{ viewedTicket?.replacement?.remarks }}</div></div>
+          </ng-container>
+
+          <ng-container *ngIf="viewedTicket?.ticket_return">
+            <h5 style="margin-top:0; margin-bottom:0.5rem;">Return</h5>
+            <div class="form-grid-modal">
+              <div class="detail-row"><div class="detail-label">Assigned LE</div><div>{{ viewedTicket?.ticket_return?.le?.name || getLEName(viewedTicket?.ticket_return?.le_id) }}</div></div>
+              <div class="detail-row"><div class="detail-label">Status</div><div><span class="badge" [ngStyle]="getLogisticsStatusStyle(viewedTicket?.ticket_return?.status)">{{ viewedTicket?.ticket_return?.status || 'Pending' }}</span></div></div>
+              <div class="detail-row"><div class="detail-label">Ordered Product</div><div>{{ viewedTicket?.ticket_return?.ordered_product_name }} ({{ viewedTicket?.ticket_return?.ordered_product_sku }})</div></div>
+              <div class="detail-row"><div class="detail-label">Return Reasons</div><div>{{ viewedTicket?.ticket_return?.return_reasons }}</div></div>
+              <div class="detail-row"><div class="detail-label">Courier & Tracking</div><div>{{ viewedTicket?.ticket_return?.courier_name }} ({{ viewedTicket?.ticket_return?.tracking_id }})</div></div>
+            </div>
+            <div style="margin-top:0.5rem;" *ngIf="viewedTicket?.ticket_return?.remarks"><div class="detail-label">LE Remarks:</div><div>{{ viewedTicket?.ticket_return?.remarks }}</div></div>
+          </ng-container>
+        </div>
+
+        <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem;">
+          <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Status & Resolution</h4>
+          <div class="form-grid-modal">
+            <div class="detail-row"><div class="detail-label">Assigned Executive</div><div>{{ viewedTicket?.executive?.name || 'Unallocated' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Current Status</div>
+              <div>
+                <span class="badge" [ngStyle]="getStatusStyle(viewedTicket)">
+                  {{ viewedTicket?.status?.name || 'No Status' }}
+                </span>
+              </div>
+            </div>
+            <div class="detail-row"><div class="detail-label">Received</div><div>{{ viewedTicket?.received_at | date:'d MMM y, h:mm a' || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Resolved</div><div>{{ viewedTicket?.resolved_at | date:'d MMM y, h:mm a' || '—' }}</div></div>
+          </div>
+          <div style="margin-top:0.75rem;">
+            <div class="detail-label">Action Taken / Remarks</div>
+            <div style="background:#fff; border:1px solid var(--border-color); border-radius:4px; padding:0.5rem; margin-top:0.25rem; font-size:0.85rem; white-space:pre-wrap;">{{ viewedTicket?.remarks || viewedTicket?.action_taken || '—' }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeViewModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+<style>
+  .form-grid-modal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .modal-lg {
+    max-width: 800px;
+    width: 90%;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 0.2rem 0;
+  }
+  .detail-label {
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+</style>

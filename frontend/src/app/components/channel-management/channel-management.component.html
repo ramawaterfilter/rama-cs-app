@@ -1,0 +1,73 @@
+<div>
+  <div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div>
+      <div class="breadcrumb"><span>Admin</span> / Query Channels</div>
+      <h2>Query Channels</h2>
+      <p>Manage the dynamic list of channels (Email, Call, Chat, etc.) for enquiry forms.</p>
+    </div>
+    <button class="btn btn-primary" (click)="openNew()">+ Add Channel</button>
+  </div>
+
+  <div class="card">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Channel Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of channels">
+            <td>#{{ c.id }}</td>
+            <td><strong>{{ c.name }}</strong></td>
+            <td>
+              <span class="badge" [ngClass]="c.is_active ? 'badge-success' : 'badge-secondary'">
+                {{ c.is_active ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td>
+              <div style="display:flex; gap:0.5rem;">
+                <button class="btn btn-sm btn-outline" (click)="openEdit(c)">✏️ Edit</button>
+                <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger);" (click)="delete(c.id)">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="channels.length === 0">
+            <td colspan="4" style="text-align:center; padding:2rem;">No channels found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editMode ? '✏️ Edit Channel' : '+ New Channel' }}</h3>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success" *ngIf="saveMsg && !saveMsg.includes('Error')">{{ saveMsg }}</div>
+        <div class="alert alert-danger" *ngIf="saveMsg && saveMsg.includes('Error')">{{ saveMsg }}</div>
+
+        <div class="form-group">
+          <label class="form-label">Channel Name</label>
+          <input type="text" class="form-control" [(ngModel)]="form.name" placeholder="e.g. WhatsApp">
+        </div>
+        <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+          <input type="checkbox" id="is_active" [(ngModel)]="form.is_active">
+          <label for="is_active" class="form-label" style="margin-bottom:0;">Is Active</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name">
+          {{ saving ? 'Saving...' : '💾 Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,157 @@
+<div>
+  <div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div>
+      <div class="breadcrumb"><span>Admin</span> / Users</div>
+      <h2>User Management</h2>
+      <p>Create and manage admin and customer service executive (CSE) accounts.</p>
+    </div>
+    <button class="btn btn-primary" (click)="openNew()">+ New User</button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem;">
+    <div class="stat-card">
+      <div class="stat-icon blue">👥</div>
+      <div class="stat-info">
+        <div class="label">Total Users</div>
+        <div class="value">{{ users.length }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">✅</div>
+      <div class="stat-info">
+        <div class="label">Active Users</div>
+        <div class="value">{{ activeCount }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">🎧</div>
+      <div class="stat-info">
+        <div class="label">Executives (CSE)</div>
+        <div class="value">{{ cseCount }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon purple">📦</div>
+      <div class="stat-info">
+        <div class="label">Logistics (LE)</div>
+        <div class="value">{{ leCount }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card">
+    <div class="card-header">
+      <h3>All Personnel</h3>
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of users">
+            <td><span class="chip">#{{ u.id }}</span></td>
+            <td>
+              <div style="display:flex; align-items:center; gap:0.6rem;">
+                <div style="width:32px; height:32px; border-radius:50%; background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; flex-shrink:0;">
+                  {{ u.name?.charAt(0)?.toUpperCase() }}
+                </div>
+                <div>
+                  <div style="font-weight:600;">{{ u.name }}</div>
+                </div>
+              </div>
+            </td>
+            <td style="color:var(--text-muted);">{{ u.email }}</td>
+            <td>
+              <span class="badge" [ngClass]="u.role === 'admin' ? 'badge-danger' : (u.role === 'le' ? 'badge-warning' : 'badge-primary')">
+                {{ u.role === 'admin' ? '🔐 Admin' : (u.role === 'le' ? '📦 LE' : '🎧 CSE') }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="u.is_active ? 'badge-success' : 'badge-danger'">
+                {{ u.is_active ? 'Active' : 'Deactivated' }}
+              </span>
+            </td>
+            <td style="color:var(--text-muted);">{{ u.created_at | date:'d MMM y' }}</td>
+            <td>
+              <div style="display:flex; gap:0.4rem;">
+                <button class="btn btn-sm btn-outline" (click)="openEdit(u)">✏️ Edit</button>
+                <button class="btn btn-sm"
+                  [ngClass]="u.is_active ? 'btn-danger' : 'btn-success'"
+                  (click)="toggleActive(u)"
+                  *ngIf="u.role !== 'admin'">
+                  {{ u.is_active ? 'Deactivate' : 'Activate' }}
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="users.length === 0">
+            <td colspan="7">
+              <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <p>No users found. Create one to get started.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-box" style="max-width:500px;" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editMode ? '✏️ Edit User' : '+ Create New User' }}</h3>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success" *ngIf="saveMsg && !saveMsg.includes('Error')">{{ saveMsg }}</div>
+        <div class="alert alert-danger" *ngIf="saveMsg && saveMsg.includes('Error')">{{ saveMsg }}</div>
+
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input type="text" class="form-control" [(ngModel)]="form.name" placeholder="e.g. Rajesh Kumar">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <input type="email" class="form-control" [(ngModel)]="form.email" placeholder="e.g. rajesh@phoenix.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">{{ editMode ? 'New Password (leave blank to keep current)' : 'Password *' }}</label>
+          <input type="password" class="form-control" [(ngModel)]="form.password" placeholder="Min. 6 characters">
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Role *</label>
+            <select class="form-control" [(ngModel)]="form.role">
+              <option value="cse">Customer Service Executive (CSE)</option>
+              <option value="le">Logistics Executive (LE)</option>
+              <option value="admin">Administrator</option>
+            </select>
+          </div>
+          <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; padding-top:1.6rem;">
+            <input type="checkbox" [(ngModel)]="form.is_active" id="userActive">
+            <label for="userActive" class="form-label" style="margin:0; cursor:pointer;">Account Active</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name || !form.email">
+          {{ saving ? 'Saving...' : '💾 Save User' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

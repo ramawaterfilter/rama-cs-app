@@ -1,0 +1,82 @@
+<div>
+  <div class="page-header">
+    <div class="breadcrumb"><span>Account</span> / Profile & Security</div>
+    <h2>Profile & Security Settings</h2>
+    <p>Manage your personal information and account security.</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; align-items:start;">
+
+    <!-- Profile Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3>👤 Personal Information</h3>
+      </div>
+      <div class="card-body">
+        <!-- Avatar -->
+        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border-color);">
+          <div style="width:64px; height:64px; border-radius:50%; background:var(--bg-sidebar-gradient); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.4rem; flex-shrink:0;">
+            {{ user?.name?.charAt(0)?.toUpperCase() }}
+          </div>
+          <div>
+            <div style="font-weight:700; font-size:1rem;">{{ user?.name }}</div>
+            <div style="font-size:0.78rem; color:var(--text-muted);">{{ user?.email }}</div>
+            <span class="badge" [ngClass]="user?.role === 'admin' ? 'badge-danger' : (user?.role === 'le' ? 'badge-success' : 'badge-primary')" style="margin-top:0.4rem;">
+              {{ user?.role === 'admin' ? '🔐 Administrator' : (user?.role === 'le' ? '🚚 Logistics Executive' : '🎧 Customer Service Executive') }}
+            </span>
+          </div>
+        </div>
+
+        <div class="alert alert-success" *ngIf="profileMsg && isSuccess(profileMsg)">{{ msgText(profileMsg) }}</div>
+        <div class="alert alert-danger" *ngIf="profileMsg && !isSuccess(profileMsg)">{{ msgText(profileMsg) }}</div>
+
+        <div class="form-group">
+          <label class="form-label">Display Name</label>
+          <input type="text" class="form-control" [(ngModel)]="profileForm.name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-control" [(ngModel)]="profileForm.email" disabled style="opacity:0.6; cursor:not-allowed;">
+          <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.3rem;">Email cannot be changed. Contact an admin if needed.</div>
+        </div>
+        <button class="btn btn-primary" (click)="saveProfile()" [disabled]="profileSaving">
+          {{ profileSaving ? 'Saving...' : '💾 Update Profile' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Security Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3>🔐 Change Password</h3>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-success" *ngIf="passwordMsg && isSuccess(passwordMsg)">{{ msgText(passwordMsg) }}</div>
+        <div class="alert alert-danger" *ngIf="passwordMsg && !isSuccess(passwordMsg)">{{ msgText(passwordMsg) }}</div>
+
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input type="password" class="form-control" [(ngModel)]="passwordForm.password" placeholder="Enter new password (min 6 chars)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" class="form-control" [(ngModel)]="passwordForm.password_confirm" placeholder="Re-enter new password">
+        </div>
+        <button class="btn btn-primary" (click)="savePassword()" [disabled]="passwordSaving || !passwordForm.password">
+          {{ passwordSaving ? 'Updating...' : '🔐 Change Password' }}
+        </button>
+
+        <div class="separator"></div>
+        <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem;">
+          <div style="font-weight:600; font-size:0.82rem; margin-bottom:0.5rem;">Password Requirements</div>
+          <ul style="font-size:0.78rem; color:var(--text-muted); padding-left:1.2rem; line-height:2;">
+            <li>Minimum 6 characters</li>
+            <li>Use a mix of letters and numbers</li>
+            <li>Avoid using your name or email</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

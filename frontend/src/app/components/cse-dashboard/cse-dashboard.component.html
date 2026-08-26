@@ -1,0 +1,125 @@
+<div>
+  <div class="page-header">
+    <div class="breadcrumb"><span>Home</span> / My Dashboard</div>
+    <h2>Executive Dashboard</h2>
+    <p>Welcome back, <strong>{{ user?.name }}</strong> — here's your ticket queue.</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue">🎫</div>
+      <div class="stat-info">
+        <div class="label">Total Tickets</div>
+        <div class="value">{{ stats.total }}</div>
+        <div class="sub">My assigned tickets</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">⏳</div>
+      <div class="stat-info">
+        <div class="label">Pending</div>
+        <div class="value">{{ stats.pending }}</div>
+        <div class="sub">Awaiting resolution</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">🎯</div>
+      <div class="stat-info">
+        <div class="label">Resolved</div>
+        <div class="value">{{ stats.resolved }}</div>
+        <div class="sub">Completed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logistics Stats Grid -->
+  <div class="page-header" style="margin-top: 1.5rem; margin-bottom: 1rem;">
+    <h3 style="font-size: 1.1rem; color: var(--text-main);">Logistics Overview</h3>
+  </div>
+  <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="stat-card">
+      <div class="stat-icon blue">📦</div>
+      <div class="stat-info">
+        <div class="label">Total Logistics</div>
+        <div class="value">{{ logisticsStats.total }}</div>
+        <div class="sub">My assigned tasks</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">⏳</div>
+      <div class="stat-info">
+        <div class="label">Pending Logistics</div>
+        <div class="value">{{ logisticsStats.pending }}</div>
+        <div class="sub">Awaiting resolution</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">✅</div>
+      <div class="stat-info">
+        <div class="label">Resolved Logistics</div>
+        <div class="value">{{ logisticsStats.resolved }}</div>
+        <div class="sub">Completed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Tickets Table -->
+  <div class="card" style="margin-top: 1.5rem;">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem;">
+      <h3 style="margin: 0; font-size: 1.1rem; color: #333;">Recent Tickets</h3>
+      <a class="btn btn-outline btn-sm" [routerLink]="['/dashboard/tickets']" style="text-decoration: none; font-size: 0.85rem;">View All →</a>
+    </div>
+    
+    <div class="table-wrapper" style="border-top: 1px solid var(--border-color);">
+      <div class="empty-state" *ngIf="loading">
+        <div class="empty-icon">⏳</div><p>Loading tickets...</p>
+      </div>
+
+      <table class="data-table" *ngIf="!loading">
+        <thead>
+          <tr>
+            <th style="padding-left: 1.5rem; width: 80px;">#</th>
+            <th>CUSTOMER</th>
+            <th>QUERY TYPE</th>
+            <th>STATUS</th>
+            <th>RECEIVED</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ticket of filteredTickets">
+            <td style="padding-left: 1.5rem;">
+              <span style="color: var(--primary); font-weight: 500; background: #e0e7ff; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">#{{ ticket.id }}</span>
+            </td>
+            <td>
+              <div style="font-weight: 600; color: #333;">{{ ticket.customer_name }}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);" *ngIf="ticket.customer_phone">{{ ticket.customer_phone }}</div>
+            </td>
+            <td>
+              <span style="background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">
+                {{ ticket.query_type?.name || ticket.type_of_query || 'N/A' }}
+              </span>
+            </td>
+            <td>
+              <span [ngStyle]="getStatusStyle(ticket)">
+                <span class="color-dot" [style.background]="ticket.status?.color || '#adb5bd'"></span>
+                {{ ticket.status?.name || 'PENDING REVIEW' | uppercase }}
+              </span>
+            </td>
+            <td style="color: var(--text-muted); font-size: 0.85rem;">
+              {{ ticket.received_at | date:'d MMM yyyy' }}
+            </td>
+          </tr>
+          <tr *ngIf="filteredTickets.length === 0 && !loading">
+            <td colspan="5">
+              <div class="empty-state" style="padding: 3rem 0;">
+                <div class="empty-icon">📭</div>
+                <p>No recent tickets found.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

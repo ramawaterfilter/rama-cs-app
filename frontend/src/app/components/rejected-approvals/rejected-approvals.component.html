@@ -1,0 +1,147 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Rejected Approvals</h2>
+    <p class="page-subtitle">Update and re-submit rejected logistics requests</p>
+  </div>
+</div>
+
+<!-- Toolbar -->
+<div class="card" style="margin-bottom:1.25rem;">
+  <div class="card-body toolbar">
+    <div style="position: relative; display: inline-block;">
+      <span style="position: absolute; top: -16px; left: 4px; font-size: 0.65rem; color: var(--text-muted); white-space: nowrap;">Search (Name, Email...)</span>
+      <input type="text" class="form-control" placeholder="🔍 Search..." title="Search Name, Email, Order ID..."
+        [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()">
+    </div>
+
+    <input type="text" class="form-control" style="max-width:140px;" placeholder="Order ID..."
+      [(ngModel)]="filterOrderId" (ngModelChange)="applyFilter()">
+
+    <div style="display:flex; align-items:center; gap:0.4rem; background:var(--bg-body); padding:0.2rem 0.5rem; border-radius:var(--radius-sm); border:1px solid var(--border-color); flex-shrink: 0;">
+      <input type="date" style="border:none; background:transparent; font-size:0.85rem; outline:none;" [(ngModel)]="fromDate" (ngModelChange)="applyFilter()">
+      <span style="font-size:0.75rem; color:var(--text-muted);">to</span>
+      <input type="date" style="border:none; background:transparent; font-size:0.85rem; outline:none;" [(ngModel)]="toDate" (ngModelChange)="applyFilter()">
+    </div>
+
+    <button class="btn btn-outline btn-sm" (click)="toggleSortDate()" title="Sort by Date">↕</button>
+    <button class="btn btn-outline btn-sm" (click)="loadData()" title="Reload Data">↻</button>
+    <button class="btn btn-outline btn-sm" (click)="resetFilters()" title="Reset Filters" style="color: var(--danger); border-color: var(--danger);">✕ Reset</button>
+    <span class="toolbar-info">
+      Showing {{ filteredTickets.length }} of {{ tickets.length }} tickets
+    </span>
+  </div>
+</div>
+
+<div class="card" style="padding:0;">
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Order ID</th>
+          <th>Customer Name</th>
+          <th>Type</th>
+          <th>Logistics Status</th>
+          <th>Created Date</th>
+          <th class="text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="loading">
+          <td colspan="7" class="text-center" style="padding: 2rem;">Loading tickets...</td>
+        </tr>
+        <tr *ngIf="!loading && filteredTickets.length === 0">
+          <td colspan="7" class="text-center" style="padding: 2rem;">No rejected tickets found.</td>
+        </tr>
+        <tr *ngFor="let t of filteredTickets">
+          <td><span class="badge badge-outline">#{{ t.id }}</span></td>
+          <td style="font-weight:500;">{{ t.order_id }}</td>
+          <td>
+            <div style="font-weight:500">{{ t.customer_name }}</div>
+            <small style="color:var(--text-secondary)">{{ t.customer_email }}</small>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="t.replacement ? 'badge-primary' : 'badge-warning'">
+              {{ t.replacement ? 'Replacement' : 'Return' }}
+            </span>
+          </td>
+          <td>
+            {{ (t.replacement ? t.replacement.status : (t.ticket_return ? t.ticket_return.status : '')) || 'Pending' }}
+          </td>
+          <td>{{ t.created_at | date:'mediumDate' }}</td>
+          <td class="text-right">
+            <button class="btn btn-sm btn-primary" (click)="openUpdateModal(t)">
+              ✏️ Update
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Update Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-box modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Update Logistics Request #{{ selectedTicket?.id }}</h3>
+      <button class="btn btn-sm btn-outline" (click)="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <!-- Rejection Reason Warning -->
+      <div class="alert alert-danger" *ngIf="selectedTicket?.logistic_rejection_reason">
+        <strong>Rejection Reason:</strong> {{ selectedTicket.logistic_rejection_reason }}
+      </div>
+
+      <fieldset style="border:none; padding:0; margin:0;">
+        <div class="form-group" style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+          <label class="form-label">Type of Action</label>
+          <div style="display:flex; gap:1rem; margin-top:0.5rem;">
+            <label style="display:flex; align-items:center; gap:0.25rem;"><input type="radio" [(ngModel)]="updateForm.logistics_type" value="nil"> Nil</label>
+            <label style="display:flex; align-items:center; gap:0.25rem;"><input type="radio" [(ngModel)]="updateForm.logistics_type" value="replacement"> Replacement</label>
+            <label style="display:flex; align-items:center; gap:0.25rem;"><input type="radio" [(ngModel)]="updateForm.logistics_type" value="return"> Return</label>
+          </div>
+        </div>
+
+        <div *ngIf="updateForm.logistics_type === 'replacement'">
+          <h4 style="margin-top:0; color:var(--primary-color);">Replacement Form</h4>
+          <div class="form-grid-modal">
+            <div class="form-group"><label class="form-label">Assign LE *</label><select class="form-control" [(ngModel)]="updateForm.replacement_form.le_id"><option value="">— Select LE —</option><option *ngFor="let ex of executives" [value]="ex.id">{{ ex.name }}</option></select></div>
+            <div class="form-group"><label class="form-label">Ordered Product Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.ordered_product_name"></div>
+            <div class="form-group"><label class="form-label">Ordered Product SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.ordered_product_sku"></div>
+            <div class="form-group"><label class="form-label">Replacement Product</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_product_name"></div>
+            <div class="form-group"><label class="form-label">Replacement SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_product_sku"></div>
+            <div class="form-group"><label class="form-label">Qty</label><input type="number" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_qty"></div>
+            <div class="form-group" style="grid-column: span 2;"><label class="form-label">Reason</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_reason"></div>
+            <div class="form-group" style="grid-column: span 2;"><label class="form-label">Others</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.others"></div>
+          </div>
+        </div>
+
+        <div *ngIf="updateForm.logistics_type === 'return'">
+          <h4 style="margin-top:0; color:var(--primary-color);">Return Form</h4>
+          <div class="form-grid-modal">
+            <div class="form-group"><label class="form-label">Assign LE *</label><select class="form-control" [(ngModel)]="updateForm.return_form.le_id"><option value="">— Select LE —</option><option *ngFor="let ex of executives" [value]="ex.id">{{ ex.name }}</option></select></div>
+            <div class="form-group"><label class="form-label">Ordered Product Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.ordered_product_name"></div>
+            <div class="form-group"><label class="form-label">Ordered Product SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.ordered_product_sku"></div>
+            <div class="form-group"><label class="form-label">Marketplace Channel</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.marketplace_channel"></div>
+            <div class="form-group"><label class="form-label">Return Reasons</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.return_reasons"></div>
+            <div class="form-group"><label class="form-label">Return Date</label><input type="date" class="form-control" [(ngModel)]="updateForm.return_form.return_date"></div>
+            <div class="form-group"><label class="form-label">Courier Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.courier_name"></div>
+            <div class="form-group"><label class="form-label">Tracking ID</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.tracking_id"></div>
+            <div class="form-group"><label class="form-label">No. of Boxes</label><input type="number" class="form-control" [(ngModel)]="updateForm.return_form.no_of_boxes"></div>
+            <div class="form-group"><label class="form-label">3PL Inbound Ref No</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.inbound_ref_no"></div>
+            <div class="form-group"><label class="form-label">3PL Inbound Date</label><input type="date" class="form-control" [(ngModel)]="updateForm.return_form.inbound_ref_date"></div>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <div class="modal-footer" style="flex-wrap: wrap;">
+      <div style="display: flex; gap: 0.5rem; margin-left: auto;">
+        <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveUpdate()" [disabled]="saving">
+          {{ saving ? 'Submitting...' : 'Re-submit for Approval' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

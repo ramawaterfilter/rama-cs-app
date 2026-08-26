@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class QueryChannel extends Model
+{
+    use HasFactory;
+
+    protected $fillable = ['name', 'is_active'];
+}

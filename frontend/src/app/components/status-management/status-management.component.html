@@ -1,0 +1,114 @@
+<div>
+  <div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div>
+      <div class="breadcrumb"><span>Admin</span> / Statuses</div>
+      <h2>Query Status Management</h2>
+      <p>Create and manage ticket statuses with custom colors.</p>
+    </div>
+    <button class="btn btn-primary" (click)="openNew()">+ Add Status</button>
+  </div>
+
+  <div class="card">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Status Name</th>
+            <th>Type</th>
+            <th>Color</th>
+            <th>Default?</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of statuses">
+            <td><span class="chip">#{{ s.id }}</span></td>
+            <td>
+              <span class="badge" [style.background]="s.color + '22'" [style.color]="s.color">
+                <span class="color-dot" [style.background]="s.color"></span>
+                {{ s.name }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="s.type === 'logistics' ? 'badge-primary' : 'badge-secondary'">
+                {{ s.type === 'logistics' ? 'Logistics' : 'General Ticket' }}
+              </span>
+            </td>
+            <td><code style="font-size:0.78rem;">{{ s.color }}</code></td>
+            <td>
+              <span class="badge badge-success" *ngIf="s.is_default">Yes</span>
+              <span class="badge badge-secondary" *ngIf="!s.is_default">No</span>
+            </td>
+            <td>
+              <div style="display:flex; gap:0.5rem;">
+                <button class="btn btn-sm btn-outline" (click)="openEdit(s)">✏️ Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="delete(s.id)">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="statuses.length === 0">
+            <td colspan="5">
+              <div class="empty-state">
+                <div class="empty-icon">🔖</div>
+                <p>No statuses yet.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-box" style="max-width:440px;" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editMode ? '✏️ Edit Status' : '+ New Status' }}</h3>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success" *ngIf="saveMsg && !saveMsg.includes('Error')">{{ saveMsg }}</div>
+        <div class="alert alert-danger" *ngIf="saveMsg && saveMsg.includes('Error')">{{ saveMsg }}</div>
+
+        <div class="form-group">
+          <label class="form-label">Status Name</label>
+          <input type="text" class="form-control" [(ngModel)]="form.name" placeholder="e.g. Pending Review">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Applicable For</label>
+          <select class="form-control" [(ngModel)]="form.type">
+            <option value="general">General Tickets (Admin & CSE)</option>
+            <option value="logistics">Logistics (LE)</option>
+          </select>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Badge Color</label>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <input type="color" [(ngModel)]="form.color" style="width:40px; height:36px; border:none; border-radius:4px; cursor:pointer;">
+              <input type="text" class="form-control" [(ngModel)]="form.color" placeholder="#545cd8">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Preview</label>
+            <span class="badge" [style.background]="form.color + '22'" [style.color]="form.color">
+              <span class="color-dot" [style.background]="form.color"></span>
+              {{ form.name || 'Preview' }}
+            </span>
+          </div>
+        </div>
+        <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+          <input type="checkbox" [(ngModel)]="form.is_default" id="isDefault">
+          <label for="isDefault" class="form-label" style="margin:0; cursor:pointer;">Set as default status for new tickets</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name">
+          {{ saving ? 'Saving...' : '💾 Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

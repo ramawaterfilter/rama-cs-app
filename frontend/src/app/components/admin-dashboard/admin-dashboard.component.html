@@ -1,0 +1,492 @@
+<div>
+  <div class="page-header">
+    <div class="breadcrumb"><span>Home</span> / Dashboard</div>
+    <h2>Admin Overview</h2>
+    <p>Welcome back, <strong>{{ user?.name }}</strong> — here's your real-time snapshot.</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue">🎫</div>
+      <div class="stat-info">
+        <div class="label">Total Queries</div>
+        <div class="value">{{ stats.total }}</div>
+        <div class="sub">All time</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">⏳</div>
+      <div class="stat-info">
+        <div class="label">Pending</div>
+        <div class="value">{{ stats.pending }}</div>
+        <div class="sub">Requires action</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">✅</div>
+      <div class="stat-info">
+        <div class="label">Resolved</div>
+        <div class="value">{{ stats.resolved }}</div>
+        <div class="sub">Completed</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon red">🚨</div>
+      <div class="stat-info">
+        <div class="label">Unallocated</div>
+        <div class="value">{{ stats.unallocated }}</div>
+        <div class="sub">Needs assignment</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logistics Stats Grid -->
+  <div class="page-header" style="margin-top: 1.5rem; margin-bottom: 1rem;">
+    <h3 style="font-size: 1.1rem; color: var(--text-main);">Logistics Overview</h3>
+  </div>
+  <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="stat-card">
+      <div class="stat-icon blue">📦</div>
+      <div class="stat-info">
+        <div class="label">Total Logistics</div>
+        <div class="value">{{ logisticsStats.total }}</div>
+        <div class="sub">All time</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">⏳</div>
+      <div class="stat-info">
+        <div class="label">Pending Logistics</div>
+        <div class="value">{{ logisticsStats.pending }}</div>
+        <div class="sub">Requires action</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">✅</div>
+      <div class="stat-info">
+        <div class="label">Resolved Logistics</div>
+        <div class="value">{{ logisticsStats.resolved }}</div>
+        <div class="sub">Completed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 1: Recent Tickets + Quick Actions -->
+  <div class="dashboard-grid-2-1">
+
+    <!-- Recent Tickets -->
+    <div class="card">
+      <div class="card-header">
+        <h3>Recent Tickets</h3>
+        <a routerLink="/dashboard/tickets" class="btn btn-outline btn-sm">View All →</a>
+      </div>
+      <div class="table-wrapper">
+        <table class="data-table" *ngIf="!loading">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Customer</th>
+              <th>Query Type</th>
+              <th>Status</th>
+              <th>Received</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of recentTickets">
+              <td><span class="chip">#{{ t.id }}</span></td>
+              <td>
+                <div style="font-weight:600;">{{ t.customer_name }}</div>
+                <div style="font-size:0.75rem; color:var(--text-muted)">{{ t.mobile_number }}</div>
+              </td>
+              <td><span class="badge badge-secondary">{{ t.query_type?.name || t.type_of_query || 'N/A' }}</span></td>
+              <td>
+                <span class="badge" [ngStyle]="getStatusStyle(t.status)">
+                  <span class="color-dot" [style.background]="t.status?.color || '#adb5bd'"></span>
+                  {{ t.status?.name || 'Unassigned' }}
+                </span>
+              </td>
+              <td style="color:var(--text-muted)">
+                <div>{{ t.received_at | date:'d MMM y' }}</div>
+                <div style="font-size: 0.7rem;">Updated: {{ t.updated_at | date:'d MMM y, h:mm a' }}</div>
+              </td>
+            </tr>
+            <tr *ngIf="recentTickets.length === 0">
+              <td colspan="5">
+                <div class="empty-state">
+                  <div class="empty-icon">📭</div>
+                  <p>No tickets submitted yet.</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="empty-state" *ngIf="loading">
+          <div class="empty-icon">⏳</div>
+          <p>Loading data...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card">
+      <div class="card-header"><h3>Quick Actions</h3></div>
+      <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
+        <a routerLink="/dashboard/tickets" class="btn btn-primary" style="justify-content:center;">
+          🎫 Manage Tickets
+        </a>
+        <a routerLink="/dashboard/users" class="btn btn-outline" style="justify-content:center;">
+          👥 Manage Users
+        </a>
+        <a routerLink="/dashboard/categories" class="btn btn-outline" style="justify-content:center;">
+          🗂️ Manage Categories
+        </a>
+        <a routerLink="/dashboard/products" class="btn btn-outline" style="justify-content:center;">
+          📦 Manage Products
+        </a>
+        <a routerLink="/dashboard/statuses" class="btn btn-outline" style="justify-content:center;">
+          🔖 Manage Statuses
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Row 2: Status Breakdown + CSE Performance -->
+  <div class="dashboard-grid-3">
+
+    <!-- Status Breakdown -->
+    <div class="card">
+      <div class="card-header">
+        <h3>📊 Status Breakdown</h3>
+        <span class="badge badge-secondary">{{ statusBreakdown.length }} statuses</span>
+      </div>
+      <div class="card-body">
+
+        <div *ngIf="loading" class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">⏳</div><p>Loading...</p>
+        </div>
+
+        <div *ngIf="statusBreakdown.length === 0 && !loading" class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">📋</div><p>No status data yet.</p>
+        </div>
+
+        <div *ngFor="let s of statusBreakdown" style="margin-bottom:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+            <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.83rem; font-weight:600;">
+              <span class="color-dot" [style.background]="s.color"></span>
+              {{ s.name }}
+            </div>
+            <div style="font-size:0.78rem; color:var(--text-muted);">
+              {{ s.count }} ticket{{ s.count === 1 ? '' : 's' }} &nbsp; <strong>{{ s.pct }}%</strong>
+            </div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-fill" [style.width.%]="s.pct" [style.background]="s.color"></div>
+          </div>
+        </div>
+
+        <div *ngIf="logisticBreakdown.length > 0">
+          <div class="separator"></div>
+          <h4 style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 1rem;">🚚 Logistics Statuses</h4>
+          <div *ngFor="let ls of logisticBreakdown" style="margin-bottom:1rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+              <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.83rem; font-weight:600;">
+                <span class="color-dot" style="background: var(--primary);"></span>
+                {{ ls.name | titlecase }}
+              </div>
+              <div style="font-size:0.78rem; color:var(--text-muted);">
+                {{ ls.count }} task{{ ls.count === 1 ? '' : 's' }} &nbsp; <strong>{{ ls.pct }}%</strong>
+              </div>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-fill" [style.width.%]="ls.pct" style="background: var(--primary);"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CSE Performance -->
+    <div class="card">
+      <div class="card-header">
+        <h3>👥 CSE Performance</h3>
+        <a routerLink="/dashboard/users" class="btn btn-outline btn-sm">Manage →</a>
+      </div>
+      <div class="card-body">
+
+        <div *ngIf="loading" class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">⏳</div><p>Loading...</p>
+        </div>
+
+        <div *ngIf="csePerformance.length === 0 && !loading" class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">👤</div><p>No executive data yet.</p>
+        </div>
+
+        <div *ngFor="let cse of csePerformance" class="cse-perf-row" style="display: flex; align-items: center; gap: 1.25rem; padding: 1rem; background: var(--bg-body); border-radius: var(--radius-md); margin-bottom: 0.75rem; border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-sm)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+          
+          <!-- Graphical Circular Progress -->
+          <div style="position: relative; width: 60px; height: 60px; flex-shrink: 0;">
+            <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--border-color)" stroke-width="3" />
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" [attr.stroke]="resolvedPct(cse) >= 75 ? 'var(--success)' : resolvedPct(cse) >= 40 ? 'var(--warning)' : 'var(--danger)'" stroke-width="3" stroke-linecap="round" [attr.stroke-dasharray]="resolvedPct(cse) + ', 100'" />
+            </svg>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.75rem; font-weight: 700;">
+              {{ resolvedPct(cse) }}%
+            </div>
+          </div>
+
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.25rem;">
+              <div>
+                <div style="font-size:0.9rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:0.5rem;">
+                  {{ cse.name }}
+                  <span class="status-indicator" [style.background]="cse.is_online ? 'var(--success)' : 'var(--border-color)'" [title]="'Last seen: ' + (cse.last_seen_at | date:'short')" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                </div>
+                <div style="font-size:0.7rem; color:var(--text-muted);">
+                  Last active: <strong>{{ getTimeAgo(cse.last_seen_at) }}</strong>
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                  {{ cse.email }}
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size:0.85rem; font-weight:600; color:var(--text-main);">{{ cse.resolved }} / {{ cse.total }}</div>
+                <div style="font-size:0.65rem; color:var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Resolved</div>
+              </div>
+            </div>
+            
+            <!-- Mini Status Badges -->
+            <div style="display:flex; gap:0.4rem; margin-top:0.5rem;">
+              <span class="badge" *ngIf="cse.is_online" style="font-size:0.6rem; background: var(--success-light); color: var(--success); border: none; padding: 0.1rem 0.4rem;">ONLINE</span>
+              <span class="badge" style="font-size:0.6rem; background: var(--bg-white); color: var(--text-muted); border: 1px solid var(--border-color); padding: 0.1rem 0.4rem;">{{ cse.total_tickets }} TOTAL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logistics (LE) Performance -->
+    <div class="card">
+      <div class="card-header">
+        <h3>🚚 Logistics Performance</h3>
+        <a routerLink="/dashboard/users" class="btn btn-outline btn-sm">Manage →</a>
+      </div>
+      <div class="card-body">
+
+        <div *ngIf="loading" class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">⏳</div><p>Loading...</p>
+        </div>
+
+        <div *ngIf="lePerformance.length === 0 && !loading" class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">🚚</div><p>No logistics data yet.</p>
+        </div>
+
+        <div *ngFor="let le of lePerformance" class="cse-perf-row" style="display: flex; align-items: center; gap: 1.25rem; padding: 1rem; background: var(--bg-body); border-radius: var(--radius-md); margin-bottom: 0.75rem; border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-sm)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+          
+          <!-- Graphical Circular Progress -->
+          <div style="position: relative; width: 60px; height: 60px; flex-shrink: 0;">
+            <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--border-color)" stroke-width="3" />
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" [attr.stroke]="resolvedPct(le) >= 75 ? 'var(--success)' : resolvedPct(le) >= 40 ? 'var(--warning)' : 'var(--danger)'" stroke-width="3" stroke-linecap="round" [attr.stroke-dasharray]="resolvedPct(le) + ', 100'" />
+            </svg>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.75rem; font-weight: 700;">
+              {{ resolvedPct(le) }}%
+            </div>
+          </div>
+
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.25rem;">
+              <div>
+                <div style="font-size:0.9rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:0.5rem;">
+                  {{ le.name }}
+                  <span class="status-indicator" [style.background]="le.is_online ? 'var(--success)' : 'var(--border-color)'" [title]="'Last seen: ' + (le.last_seen_at | date:'short')" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                </div>
+                <div style="font-size:0.7rem; color:var(--text-muted);">
+                  Last active: <strong>{{ getTimeAgo(le.last_seen_at) }}</strong>
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                  {{ le.email }}
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size:0.85rem; font-weight:600; color:var(--text-main);">{{ le.resolved }} / {{ le.total }}</div>
+                <div style="font-size:0.65rem; color:var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Resolved</div>
+              </div>
+            </div>
+            
+            <!-- Mini Status Badges -->
+            <div style="display:flex; gap:0.4rem; margin-top:0.5rem;">
+              <span class="badge" *ngIf="le.is_online" style="font-size:0.6rem; background: var(--success-light); color: var(--success); border: none; padding: 0.1rem 0.4rem;">ONLINE</span>
+              <span class="badge" style="font-size:0.6rem; background: var(--bg-white); color: var(--text-muted); border: 1px solid var(--border-color); padding: 0.1rem 0.4rem;">{{ le.total }} TOTAL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!-- Close dashboard-grid-3 for Performance Row -->
+
+  <!-- Row 3: Analytics & Activity -->
+  <div class="dashboard-grid-3" style="margin-top: 1.5rem;">
+    
+    <!-- CSE Analytics -->
+    <div class="card">
+      <div class="card-header">
+        <h3>📈 CSE Analytics</h3>
+      </div>
+      <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+        <div *ngIf="loading || !analytics" class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">⏳</div><p>Loading analytics...</p>
+        </div>
+        <div *ngIf="analytics" style="display:flex; flex-direction:column; gap:1.25rem;">
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-body); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+            <div>
+              <div style="font-weight:600; color:var(--text-main);">Long Pending Tickets</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Unresolved for > 7 days</div>
+            </div>
+            <div style="font-size:1.5rem; font-weight:700; color:var(--danger);">{{ analytics.long_pending_tickets }}</div>
+          </div>
+
+          <!-- Long Pending List -->
+          <div *ngIf="analytics.long_pending_list?.length > 0" style="background:var(--bg-body); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); overflow: hidden;">
+            <div style="font-weight:600; color:var(--text-main); margin-bottom: 0.5rem;">Tickets Exceeding 7 Days</div>
+            <div class="table-wrapper">
+              <table class="data-table" style="font-size: 0.8rem;">
+                <thead>
+                  <tr>
+                    <th>Ticket</th>
+                    <th>CSE</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let t of analytics.long_pending_list">
+                    <td>#{{ t.id }}</td>
+                    <td>{{ t.executive ? t.executive.name : 'Unassigned' }}</td>
+                    <td>{{ t.status ? t.status.name : 'Unknown' }}</td>
+                    <td><a [routerLink]="['/dashboard/tickets']" [queryParams]="{search: t.id}" class="btn btn-sm btn-outline">View</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-body); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+            <div>
+              <div style="font-weight:600; color:var(--text-main);">Average Resolution Time (Global)</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">From creation to close</div>
+            </div>
+            <div style="font-size:1.5rem; font-weight:700; color:var(--primary-color);">{{ analytics.avg_resolution_hours || 0 }} hrs</div>
+          </div>
+
+          <!-- Per CSE Resolution Time -->
+          <div *ngIf="analytics.avg_resolution_by_cse?.length > 0" style="background:var(--bg-body); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); overflow: hidden;">
+            <div style="font-weight:600; color:var(--text-main); margin-bottom: 0.5rem;">Average Time by CSE</div>
+            <div class="table-wrapper">
+              <table class="data-table" style="font-size: 0.8rem;">
+                <thead>
+                  <tr>
+                    <th>CSE Name</th>
+                    <th>Resolved Tickets</th>
+                    <th>Avg Hours Taken</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of analytics.avg_resolution_by_cse">
+                    <td>{{ c.cse_name }}</td>
+                    <td>{{ c.resolved_count }}</td>
+                    <td>{{ c.avg_hours }} hrs</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- Logistics Analytics -->
+    <div class="card">
+      <div class="card-header">
+        <h3>🚚 Logistics Analytics</h3>
+      </div>
+      <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+        <div *ngIf="loading || !analytics" class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">⏳</div><p>Loading analytics...</p>
+        </div>
+        <div *ngIf="analytics" style="display:flex; flex-direction:column; gap:1.25rem;">
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-body); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+            <div>
+              <div style="font-weight:600; color:var(--text-main);">Average Resolution Time (Logistics)</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">From assignment to resolved</div>
+            </div>
+            <div style="font-size:1.5rem; font-weight:700; color:var(--primary-color);">{{ analytics.global_logistics_avg_hours || 0 }} hrs</div>
+          </div>
+
+          <!-- Per LE Resolution Time -->
+          <div *ngIf="analytics.avg_resolution_by_le?.length > 0" style="background:var(--bg-body); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); overflow: hidden;">
+            <div style="font-weight:600; color:var(--text-main); margin-bottom: 0.5rem;">Average Time by LE</div>
+            <div class="table-wrapper">
+              <table class="data-table" style="font-size: 0.8rem;">
+                <thead>
+                  <tr>
+                    <th>LE Name</th>
+                    <th>Resolved Tasks</th>
+                    <th>Avg Hours Taken</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let le of analytics.avg_resolution_by_le">
+                    <td>{{ le.le_name }}</td>
+                    <td>{{ le.resolved_count }}</td>
+                    <td>{{ le.avg_hours }} hrs</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div *ngIf="analytics.avg_resolution_by_le?.length === 0" class="empty-state" style="padding:1rem;">
+            <p>No resolved logistics data yet.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- User Activities -->
+    <div class="card">
+      <div class="card-header">
+        <h3>🕰️ User Activity History</h3>
+      </div>
+      <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+        <div *ngIf="loading || activities.length === 0" class="empty-state" style="padding:2rem;">
+          <div class="empty-icon">⏳</div><p>No activity logs found.</p>
+        </div>
+        <div *ngIf="activities.length > 0">
+          <div *ngFor="let act of activities" style="padding:0.75rem; border-bottom:1px solid var(--border-color); display:flex; gap:1rem; align-items:flex-start;">
+            <div style="background:var(--bg-body); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:bold; color:var(--primary-color);">
+              {{ act.user ? act.user.name.charAt(0).toUpperCase() : '?' }}
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="font-size:0.9rem;">{{ act.user ? act.user.name : 'Unknown User' }}</strong>
+                <span class="badge" [ngStyle]="{ 'background': act.action.includes('Logged') ? 'var(--success-light)' : 'var(--primary-light)', 'color': act.action.includes('Logged') ? 'var(--success)' : 'var(--primary-color)', 'font-size': '0.65rem' }">
+                  {{ act.action }}
+                </span>
+              </div>
+              <p style="margin:0.2rem 0; font-size:0.8rem; color:var(--text-secondary);">{{ act.description }}</p>
+              <div style="font-size:0.7rem; color:var(--text-muted);">{{ act.created_at | date:'short' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

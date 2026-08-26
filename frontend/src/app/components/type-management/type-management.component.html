@@ -1,0 +1,73 @@
+<div>
+  <div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div>
+      <div class="breadcrumb"><span>Admin</span> / Query Types</div>
+      <h2>Query Types</h2>
+      <p>Manage the dynamic list of query types (Complaint, Inquiry, etc.) for enquiry forms.</p>
+    </div>
+    <button class="btn btn-primary" (click)="openNew()">+ Add Type</button>
+  </div>
+
+  <div class="card">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Type Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of types">
+            <td>#{{ t.id }}</td>
+            <td><strong>{{ t.name }}</strong></td>
+            <td>
+              <span class="badge" [ngClass]="t.is_active ? 'badge-success' : 'badge-secondary'">
+                {{ t.is_active ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td>
+              <div style="display:flex; gap:0.5rem;">
+                <button class="btn btn-sm btn-outline" (click)="openEdit(t)">✏️ Edit</button>
+                <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger);" (click)="delete(t.id)">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="types.length === 0">
+            <td colspan="4" style="text-align:center; padding:2rem;">No types found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editMode ? '✏️ Edit Type' : '+ New Type' }}</h3>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success" *ngIf="saveMsg && !saveMsg.includes('Error')">{{ saveMsg }}</div>
+        <div class="alert alert-danger" *ngIf="saveMsg && saveMsg.includes('Error')">{{ saveMsg }}</div>
+
+        <div class="form-group">
+          <label class="form-label">Type Name</label>
+          <input type="text" class="form-control" [(ngModel)]="form.name" placeholder="e.g. Feedback">
+        </div>
+        <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+          <input type="checkbox" id="is_active" [(ngModel)]="form.is_active">
+          <label for="is_active" class="form-label" style="margin-bottom:0;">Is Active</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name">
+          {{ saving ? 'Saving...' : '💾 Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

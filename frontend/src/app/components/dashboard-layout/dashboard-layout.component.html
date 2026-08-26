@@ -1,0 +1,151 @@
+<div class="app-layout">
+  <!-- Mobile Backdrop -->
+  <div class="sidebar-backdrop" *ngIf="mobileSidebarOpen" (click)="closeMobileSidebar()"></div>
+
+  <!-- ======= SIDEBAR ======= -->
+  <aside class="sidebar" [class.sidebar-mini]="sidebarCollapsed" [class.sidebar-open]="mobileSidebarOpen">
+    <div class="sidebar-logo" style="justify-content: center; padding: 1rem;">
+      <img [src]="themeService.isDark() ? 'logo_phoenix_white.png' : 'logo_phoenix_dark.png'" alt="Phoenix Forms" *ngIf="!sidebarCollapsed" style="max-width: 100%; max-height: 40px; object-fit: contain;">
+      <img [src]="themeService.isDark() ? 'logo_collapsed_white.png' : 'logo_collapsed_dark.png'" alt="Phoenix Forms" *ngIf="sidebarCollapsed" style="max-width: 36px; max-height: 36px; object-fit: contain;">
+      <button class="mobile-close-btn" (click)="closeMobileSidebar()" *ngIf="mobileSidebarOpen">×</button>
+    </div>
+
+    <ul class="nav-list">
+      <ng-container *ngFor="let item of navItems">
+        <!-- Section Header -->
+        <li *ngIf="item.section && !item.route" class="sidebar-section-title">
+          <span *ngIf="!sidebarCollapsed">{{ item.section }}</span>
+          <span *ngIf="sidebarCollapsed">—</span>
+        </li>
+
+        <!-- Nav Item -->
+        <li *ngIf="item.route">
+          <a class="nav-link" [routerLink]="item.route" routerLinkActive="active" (click)="closeMobileSidebar()"
+            [routerLinkActiveOptions]="{exact: item.route === '/dashboard/overview' || item.route === '/dashboard/cse'}"
+            [title]="sidebarCollapsed ? item.label : ''">
+            <span class="nav-icon">{{ item.icon }}</span>
+            <span class="nav-label" *ngIf="!sidebarCollapsed">{{ item.label }}</span>
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+
+    <div class="sidebar-footer" *ngIf="!sidebarCollapsed">
+      <div class="sidebar-avatar">{{ initials }}</div>
+      <div class="sidebar-user-info">
+        <div class="u-name">{{ user?.name }}</div>
+        <div class="u-role">{{ user?.role | uppercase }}</div>
+      </div>
+    </div>
+    <div class="sidebar-footer sidebar-footer-mini" *ngIf="sidebarCollapsed">
+      <div class="sidebar-avatar" [title]="user?.name">{{ initials }}</div>
+    </div>
+  </aside>
+
+  <!-- ======= MAIN AREA ======= -->
+  <div class="main-wrapper" [class.main-wrapper-expanded]="sidebarCollapsed">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" (click)="toggleSidebar()" title="Toggle Sidebar">
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+        </button>
+        <div class="topbar-title-group">
+          <h4>Phoenix Forms</h4>
+          <p class="hide-mobile">Water Purifier Distribution & Service</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="notif-btn" title="Toggle Theme" (click)="themeService.toggleTheme()">
+          {{ themeService.isDark() ? '☀️' : '🌙' }}
+        </button>
+        <div style="position: relative;" #notifContainer>
+          <button class="notif-btn" title="Notifications" (click)="toggleNotifDropdown()">
+            🔔
+            <span class="notif-dot"
+              *ngIf="(notifService.notifications$ | async)?.length || (notifService.requests$ | async)?.length || (notifService.passwordRequests$ | async)?.length"></span>
+          </button>
+
+          <!-- Notifications Dropdown -->
+          <div *ngIf="showNotifDropdown" class="notif-dropdown">
+            <div class="notif-header">
+              Recent Tickets
+            </div>
+            <div class="notif-body">
+              <ng-container *ngIf="(notifService.requests$ | async) as requests">
+                <div *ngIf="requests.length > 0">
+                  <div
+                    style="padding: 0.5rem; font-size: 0.75rem; font-weight: bold; color: var(--warning); border-bottom: 1px solid var(--border-color);">
+                    {{ user?.role === 'admin' ? 'Pending Requests' : 'Approved Requests' }}
+                  </div>
+                  <div *ngFor="let req of requests" class="notif-item" [routerLink]="'/dashboard/tickets'"
+                    [queryParams]="{openTicket: req.id}" (click)="showNotifDropdown = false"
+                    style="background: var(--warning-light);">
+                    <div class="notif-item-title">{{ req.customer_name }} <span class="notif-id">#{{ req.id }}</span>
+                    </div>
+                    <div class="notif-item-desc">{{ user?.role === 'admin' ? 'Edit request from ' + (req.executive?.name
+                      || req.agent_name || 'Agent') : 'Your edit request is approved!' }}</div>
+                  </div>
+                </div>
+              </ng-container>
+              
+              <!-- Password Reset Requests -->
+              <ng-container *ngIf="(notifService.passwordRequests$ | async) as pwRequests">
+                <div *ngIf="pwRequests.length > 0">
+                  <div
+                    style="padding: 0.5rem; font-size: 0.75rem; font-weight: bold; color: var(--danger); border-bottom: 1px solid var(--border-color);">
+                    Password Reset Requests
+                  </div>
+                  <div *ngFor="let req of pwRequests" class="notif-item" [routerLink]="'/dashboard/user-requests'"
+                    (click)="showNotifDropdown = false" style="background: var(--danger-light);">
+                    <div class="notif-item-title">{{ req.email }} <span class="notif-id">#{{ req.id }}</span>
+                    </div>
+                    <div class="notif-item-desc">User requested a password reset</div>
+                  </div>
+                </div>
+              </ng-container>
+              <div *ngFor="let n of (notifService.notifications$ | async)" class="notif-item"
+                [routerLink]="user?.role === 'le' ? '/dashboard/logistics' : '/dashboard/tickets'"
+                [queryParams]="user?.role === 'le' ? {} : {openTicket: n.id}" (click)="showNotifDropdown = false">
+                <div class="notif-item-title">{{ n.customer_name }} <span class="notif-id">#{{ n.id }}</span></div>
+                <div class="notif-item-desc">{{ user?.role === 'le' ? (n.replacement ? 'Replacement assigned' : 'Return
+                  assigned') : n.actual_question }}</div>
+              </div>
+              <div *ngIf="!(notifService.notifications$ | async)?.length && !(notifService.requests$ | async)?.length && !(notifService.passwordRequests$ | async)?.length"
+                class="notif-empty">
+                No new notifications.
+              </div>
+            </div>
+            <div class="notif-footer">
+              <a [routerLink]="user?.role === 'le' ? '/dashboard/logistics' : '/dashboard/tickets'"
+                (click)="showNotifDropdown = false">View All Tickets</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-chip" [routerLink]="'/dashboard/profile'">
+          <div class="chip-avatar">{{ initials }}</div>
+          <span class="hide-mobile">{{ user?.name }}</span>
+          <span style="font-size:0.65rem; color:var(--text-muted)">▾</span>
+        </div>
+        <button class="btn btn-outline btn-sm hide-mobile" (click)="logout()">Logout</button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="page-content">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+
+  <div class="toaster-container">
+    <div *ngFor="let t of toasts" class="toast-item" [ngClass]="'toast-' + (t.type || 'info')">
+      <div class="toast-title">{{ t.title }}</div>
+      <div class="toast-desc">{{ t.message }}</div>
+    </div>
+  </div>
+</div>
