@@ -10,6 +10,9 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './purchase-store-management.component.html',
 })
 export class PurchaseStoreManagementComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   list: any[] = [];
   showModal = false;
   editMode = false;

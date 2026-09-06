@@ -97,16 +97,11 @@ export class PublicFormComponent implements OnInit {
   get filteredCategories() {
     if (!this.formData.query_type_id) return [];
     
-    // Find the dynamic query type name (Inquiry/Complaint)
-    const selectedType = this.queryTypes.find(t => t.id == this.formData.query_type_id);
-    if (!selectedType) return [];
-
-    // Find the matching root in the category tree
-    const root = this.categories.find(c => c.name && c.name.toLowerCase() === selectedType.name.toLowerCase());
-    if (!root) return [];
-
-    // Return children of that root (those whose parent_id matches root.id)
-    const cats = this.categories.filter(c => c.parents && c.parents.some((p:any) => p.id == root.id));
+    const cats = this.categories.filter(c => 
+      c.query_type_id == this.formData.query_type_id && 
+      (!c.parents || c.parents.length === 0)
+    );
+    
     return cats.filter(c => c.name && c.name.toLowerCase().includes(this.catSearch.toLowerCase()));
   }
 

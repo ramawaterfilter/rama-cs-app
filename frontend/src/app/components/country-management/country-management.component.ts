@@ -10,6 +10,9 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './country-management.component.html',
 })
 export class CountryManagementComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   list: any[] = [];
   showModal = false;
   editMode = false;

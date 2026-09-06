@@ -13,6 +13,9 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./logistics-dashboard.component.scss']
 })
 export class LogisticsDashboardComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   tickets: any[] = [];
   filteredTickets: any[] = [];
   loading = true;

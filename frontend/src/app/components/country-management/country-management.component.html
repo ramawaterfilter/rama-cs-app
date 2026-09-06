@@ -13,15 +13,15 @@
           <table class="table table-hover mb-0">
             <thead class="bg-light">
               <tr>
-                <th style="width: 80px">ID</th>
+                <th style="width: 80px">No.</th>
                 <th>Country Name</th>
                 <th>Status</th>
                 <th class="text-end" style="width: 150px">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of list">
-                <td>{{ item.id }}</td>
+              <tr *ngFor="let item of list | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
+                <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
                 <td><strong>{{ item.name }}</strong></td>
                 <td>
                   <span class="badge" [class.bg-success]="item.is_active" [class.bg-secondary]="!item.is_active">

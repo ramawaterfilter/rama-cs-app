@@ -34,6 +34,9 @@ export class TicketGridComponent implements OnInit {
   fromDate = '';
   toDate = '';
   sortDate = 'desc';
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   categories: any[] = [];
   channels: any[] = [];
   queryTypes: any[] = [];
@@ -275,6 +278,7 @@ export class TicketGridComponent implements OnInit {
     }
 
     this.filteredTickets = list;
+    this.currentPage = 1;
   }
 
   toggleSortDate() {

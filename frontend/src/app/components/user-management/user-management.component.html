@@ -49,7 +49,7 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>No.</th>
             <th>Name</th>
             <th>Email</th>
             <th>Role</th>
@@ -59,8 +59,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let u of users">
-            <td><span class="chip">#{{ u.id }}</span></td>
+          <tr *ngFor="let u of users; let i = index">
+            <td><span class="chip">{{ i + 1 }}</span></td>
             <td>
               <div style="display:flex; align-items:center; gap:0.6rem;">
                 <div style="width:32px; height:32px; border-radius:50%; background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; flex-shrink:0;">

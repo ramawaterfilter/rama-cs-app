@@ -253,8 +253,8 @@
     top: 100%;
     left: 0;
     right: 0;
-    background: #fff;
-    border: 1px solid #ddd;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
     border-top: none;
     max-height: 200px;
     overflow-y: auto;
@@ -266,11 +266,12 @@
     padding: 0.75rem 1rem;
     cursor: pointer;
     font-size: 0.9rem;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
   }
   .dropdown-item:hover {
-    background: #f8f9fa;
-    color: var(--primary-color);
+    background: var(--primary-light);
+    color: var(--primary);
   }
   .dropdown-item:last-child {
     border-bottom: none;

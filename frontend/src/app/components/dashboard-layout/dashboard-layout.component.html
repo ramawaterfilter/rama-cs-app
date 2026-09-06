@@ -84,7 +84,7 @@
                   <div *ngFor="let req of requests" class="notif-item" [routerLink]="'/dashboard/tickets'"
                     [queryParams]="{openTicket: req.id}" (click)="showNotifDropdown = false"
                     style="background: var(--warning-light);">
-                    <div class="notif-item-title">{{ req.customer_name }} <span class="notif-id">#{{ req.id }}</span>
+                    <div class="notif-item-title">{{ req.customer_name }}
                     </div>
                     <div class="notif-item-desc">{{ user?.role === 'admin' ? 'Edit request from ' + (req.executive?.name
                       || req.agent_name || 'Agent') : 'Your edit request is approved!' }}</div>
@@ -101,7 +101,7 @@
                   </div>
                   <div *ngFor="let req of pwRequests" class="notif-item" [routerLink]="'/dashboard/user-requests'"
                     (click)="showNotifDropdown = false" style="background: var(--danger-light);">
-                    <div class="notif-item-title">{{ req.email }} <span class="notif-id">#{{ req.id }}</span>
+                    <div class="notif-item-title">{{ req.email }}
                     </div>
                     <div class="notif-item-desc">User requested a password reset</div>
                   </div>
@@ -110,7 +110,7 @@
               <div *ngFor="let n of (notifService.notifications$ | async)" class="notif-item"
                 [routerLink]="user?.role === 'le' ? '/dashboard/logistics' : '/dashboard/tickets'"
                 [queryParams]="user?.role === 'le' ? {} : {openTicket: n.id}" (click)="showNotifDropdown = false">
-                <div class="notif-item-title">{{ n.customer_name }} <span class="notif-id">#{{ n.id }}</span></div>
+                <div class="notif-item-title">{{ n.customer_name }}</div>
                 <div class="notif-item-desc">{{ user?.role === 'le' ? (n.replacement ? 'Replacement assigned' : 'Return
                   assigned') : n.actual_question }}</div>
               </div>

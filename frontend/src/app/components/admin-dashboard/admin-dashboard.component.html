@@ -85,7 +85,8 @@
         <table class="data-table" *ngIf="!loading">
           <thead>
             <tr>
-              <th>#</th>
+              <th>No.</th>
+              <th>Ticket #</th>
               <th>Customer</th>
               <th>Query Type</th>
               <th>Status</th>
@@ -93,8 +94,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let t of recentTickets">
-              <td><span class="chip">#{{ t.id }}</span></td>
+            <tr *ngFor="let t of recentTickets | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
+              <td>
+                <span class="chip" style="background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-color);">{{ (currentPage - 1) * pageSize + i + 1 }}</span>
+              </td>
+              <td>
+                <span class="chip" style="font-weight: 700; color: var(--primary);">PTMS{{ t.id }}</span>
+              </td>
               <td>
                 <div style="font-weight:600;">{{ t.customer_name }}</div>
                 <div style="font-size:0.75rem; color:var(--text-muted)">{{ t.mobile_number }}</div>
@@ -112,7 +118,7 @@
               </td>
             </tr>
             <tr *ngIf="recentTickets.length === 0">
-              <td colspan="5">
+              <td colspan="6">
                 <div class="empty-state">
                   <div class="empty-icon">📭</div>
                   <p>No tickets submitted yet.</p>
@@ -364,7 +370,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let t of analytics.long_pending_list">
-                    <td>#{{ t.id }}</td>
+                    <td>PTMS{{ t.id }}</td>
                     <td>{{ t.executive ? t.executive.name : 'Unassigned' }}</td>
                     <td>{{ t.status ? t.status.name : 'Unknown' }}</td>
                     <td><a [routerLink]="['/dashboard/tickets']" [queryParams]="{search: t.id}" class="btn btn-sm btn-outline">View</a></td>

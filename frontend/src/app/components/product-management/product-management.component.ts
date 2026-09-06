@@ -10,6 +10,9 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './product-management.component.html',
 })
 export class ProductManagementComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   products: any[] = [];
   showModal = false;
   editMode = false;

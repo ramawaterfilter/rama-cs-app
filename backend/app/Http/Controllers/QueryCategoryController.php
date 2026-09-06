@@ -23,13 +23,31 @@ class QueryCategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string',
             'type' => 'nullable|string',
+            'query_type_id' => 'required|exists:query_types,id',
             'parent_ids' => 'nullable|array',
             'parent_ids.*' => 'exists:query_categories,id'
         ]);
 
+        $newName = strtolower(trim($validated['name']));
+        $existingCategories = QueryCategory::where('query_type_id', $validated['query_type_id'])
+            ->where('type', $validated['type'] ?? null)
+            ->get();
+
+        foreach ($existingCategories as $existing) {
+            $existingName = strtolower(trim($existing->name));
+            if ($existingName === $newName) {
+                return response()->json(['message' => 'Duplicate category name is not allowed.'], 422);
+            }
+            similar_text($newName, $existingName, $percent);
+            if ($percent > 85) {
+                return response()->json(['message' => "Similar name '{$existing->name}' already exists."], 422);
+            }
+        }
+
         $category = QueryCategory::create([
             'name' => $validated['name'],
             'type' => $validated['type'] ?? null,
+            'query_type_id' => $validated['query_type_id'],
         ]);
 
         if (!empty($validated['parent_ids'])) {
@@ -51,15 +69,39 @@ class QueryCategoryController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|string',
             'type' => 'nullable|string',
+            'query_type_id' => 'sometimes|required|exists:query_types,id',
             'parent_ids' => 'nullable|array',
             'parent_ids.*' => 'exists:query_categories,id'
         ]);
 
         if (isset($validated['name'])) {
+            $newName = strtolower(trim($validated['name']));
+            
+            $queryTypeId = $validated['query_type_id'] ?? $category->query_type_id;
+            $type = $validated['type'] ?? $category->type;
+            
+            $existingCategories = QueryCategory::where('query_type_id', $queryTypeId)
+                ->where('type', $type)
+                ->where('id', '!=', $category->id)
+                ->get();
+
+            foreach ($existingCategories as $existing) {
+                $existingName = strtolower(trim($existing->name));
+                if ($existingName === $newName) {
+                    return response()->json(['message' => 'Duplicate category name is not allowed.'], 422);
+                }
+                similar_text($newName, $existingName, $percent);
+                if ($percent > 85) {
+                    return response()->json(['message' => "Similar name '{$existing->name}' already exists."], 422);
+                }
+            }
             $category->name = $validated['name'];
         }
         if (isset($validated['type'])) {
             $category->type = $validated['type'];
+        }
+        if (isset($validated['query_type_id'])) {
+            $category->query_type_id = $validated['query_type_id'];
         }
         $category->save();
 

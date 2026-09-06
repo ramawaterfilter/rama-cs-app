@@ -12,6 +12,9 @@ import { NotificationService } from '../../services/notification.service';
   styleUrls: ['./user-profile-requests.component.scss']
 })
 export class UserProfileRequestsComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   private http = inject(HttpClient);
   private notifService = inject(NotificationService);
 

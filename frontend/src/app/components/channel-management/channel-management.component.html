@@ -13,15 +13,15 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>No.</th>
             <th>Channel Name</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let c of channels">
-            <td>#{{ c.id }}</td>
+          <tr *ngFor="let c of channels | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
+            <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
             <td><strong>{{ c.name }}</strong></td>
             <td>
               <span class="badge" [ngClass]="c.is_active ? 'badge-success' : 'badge-secondary'">
@@ -40,6 +40,13 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Pagination Controls -->
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="channels.length > 0">
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+        <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(channels.length / pageSize) || 1 }}</span>
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= channels.length" (click)="currentPage = currentPage + 1">Next</button>
+      </div>
     </div>
   </div>
 

@@ -10,6 +10,9 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './outreach-management.component.html',
 })
 export class OutreachManagementComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   list: any[] = [];
   showModal = false;
   editMode = false;

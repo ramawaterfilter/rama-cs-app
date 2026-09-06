@@ -22,12 +22,20 @@ class QueryTypeController extends Controller
             'is_active' => 'boolean'
         ]);
 
+        $newName = strtolower(trim($validated['name']));
+        $existingTypes = QueryType::all();
+        foreach ($existingTypes as $existing) {
+            $existingName = strtolower(trim($existing->name));
+            if ($existingName === $newName) {
+                return response()->json(['message' => 'Duplicate query type name is not allowed.'], 422);
+            }
+            similar_text($newName, $existingName, $percent);
+            if ($percent > 85) {
+                return response()->json(['message' => "Similar name '{$existing->name}' already exists."], 422);
+            }
+        }
+
         $type = QueryType::create($validated);
-        
-        \App\Models\QueryCategory::create([
-            'name' => $type->name,
-            'type' => 'category'
-        ]);
 
         return response()->json($type, 201);
     }
@@ -44,25 +52,29 @@ class QueryTypeController extends Controller
             'is_active' => 'boolean'
         ]);
 
-        $oldName = $queryType->name;
-        $queryType->update($validated);
-
-        if (isset($validated['name']) && $validated['name'] !== $oldName) {
-            $cat = \App\Models\QueryCategory::where('name', $oldName)->whereDoesntHave('parents')->first();
-            if ($cat) {
-                $cat->update(['name' => $validated['name']]);
+        if (isset($validated['name'])) {
+            $newName = strtolower(trim($validated['name']));
+            $existingTypes = QueryType::where('id', '!=', $queryType->id)->get();
+            foreach ($existingTypes as $existing) {
+                $existingName = strtolower(trim($existing->name));
+                if ($existingName === $newName) {
+                    return response()->json(['message' => 'Duplicate query type name is not allowed.'], 422);
+                }
+                similar_text($newName, $existingName, $percent);
+                if ($percent > 85) {
+                    return response()->json(['message' => "Similar name '{$existing->name}' already exists."], 422);
+                }
             }
         }
+
+        $oldName = $queryType->name;
+        $queryType->update($validated);
 
         return response()->json($queryType);
     }
 
     public function destroy(QueryType $queryType)
     {
-        $cat = \App\Models\QueryCategory::where('name', $queryType->name)->whereDoesntHave('parents')->first();
-        if ($cat) {
-            $cat->delete();
-        }
         $queryType->delete();
         return response()->json(['message' => 'Deleted']);
     }

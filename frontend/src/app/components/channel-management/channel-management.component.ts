@@ -10,6 +10,9 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './channel-management.component.html',
 })
 export class ChannelManagementComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   channels: any[] = [];
   showModal = false;
   editMode = false;

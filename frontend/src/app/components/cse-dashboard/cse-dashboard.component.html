@@ -79,7 +79,8 @@
       <table class="data-table" *ngIf="!loading">
         <thead>
           <tr>
-            <th style="padding-left: 1.5rem; width: 80px;">#</th>
+            <th style="padding-left: 1.5rem; width: 80px;">(No)</th>
+            <th>Ticket #</th>
             <th>CUSTOMER</th>
             <th>QUERY TYPE</th>
             <th>STATUS</th>
@@ -87,9 +88,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let ticket of filteredTickets">
+          <tr *ngFor="let ticket of filteredTickets; let i = index">
             <td style="padding-left: 1.5rem;">
-              <span style="color: var(--primary); font-weight: 500; background: #e0e7ff; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">#{{ ticket.id }}</span>
+              <span class="chip" style="background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-color);">{{ i + 1 }}</span>
+            </td>
+            <td>
+              <span class="chip" style="font-weight: 700; color: var(--primary);">PTMS{{ ticket.id }}</span>
             </td>
             <td>
               <div style="font-weight: 600; color: #333;">{{ ticket.customer_name }}</div>

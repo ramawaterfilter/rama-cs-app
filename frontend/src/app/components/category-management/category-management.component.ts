@@ -10,13 +10,17 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './category-management.component.html',
 })
 export class CategoryManagementComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   categories: any[] = [];
+  queryTypes: any[] = [];
   showModal = false;
   editMode = false;
   saving = false;
   saveMsg = '';
 
-  form: any = { name: '', type: 'category', parent_ids: [] };
+  form: any = { name: '', type: 'category', query_type_id: null, parent_ids: [] };
   editId: any = null;
   categorySearch = '';
   showCatDropdown = false;
@@ -28,10 +32,11 @@ export class CategoryManagementComponent implements OnInit {
 
   load() {
     this.http.get<any[]>(`${this.apiUrl}/categories`).subscribe(d => this.categories = d);
+    this.http.get<any[]>(`${this.apiUrl}/query-types`).subscribe(d => this.queryTypes = d);
   }
 
   openNew() {
-    this.form = { name: '', type: 'category', parent_ids: [] };
+    this.form = { name: '', type: 'category', query_type_id: null, parent_ids: [] };
     this.editId = null;
     this.editMode = false;
     this.saveMsg = '';
@@ -41,7 +46,8 @@ export class CategoryManagementComponent implements OnInit {
   openEdit(cat: any) {
     this.form = { 
         name: cat.name, 
-        type: cat.type || 'category', 
+        type: cat.type || 'category',
+        query_type_id: cat.query_type_id || null, 
         parent_ids: cat.parents ? cat.parents.map((p:any) => p.id) : [] 
     };
     this.editId = cat.id;
@@ -65,7 +71,10 @@ export class CategoryManagementComponent implements OnInit {
         this.load();
         setTimeout(() => this.closeModal(), 1000);
       },
-      error: () => { this.saving = false; this.saveMsg = 'Error saving category.'; }
+      error: (err) => { 
+        this.saving = false; 
+        this.saveMsg = err.error?.message ? 'Error: ' + err.error.message : 'Error saving category.'; 
+      }
     });
   }
 
@@ -76,7 +85,33 @@ export class CategoryManagementComponent implements OnInit {
 
   closeModal() { this.showModal = false; }
 
-  get topLevel() { return this.categories.filter(c => !c.parents || c.parents.length === 0); }
+  searchCategoryTerm = '';
+  filterQueryType = '';
+
+  get topLevel() { 
+    return this.categories.filter(c => !c.parents || c.parents.length === 0); 
+  }
+
+  get filteredTopLevel() {
+    let list = this.topLevel;
+    
+    if (this.filterQueryType) {
+      list = list.filter(c => c.query_type_id == this.filterQueryType);
+    }
+
+    if (this.searchCategoryTerm) {
+      const term = this.searchCategoryTerm.toLowerCase();
+      list = list.filter(c => {
+         if (c.name.toLowerCase().includes(term)) return true;
+         const children = this.getChildren(c.id);
+         if (children.some(sub => sub.name.toLowerCase().includes(term))) return true;
+         const grand = children.flatMap(sub => this.getGrandChildren(sub.id));
+         if (grand.some(g => g.name.toLowerCase().includes(term))) return true;
+         return false;
+      });
+    }
+    return list;
+  }
   getChildren(id: any) { return this.categories.filter(c => c.parents && c.parents.some((p:any) => p.id === id)); }
   getGrandChildren(id: any) { return this.getChildren(id); } // Just reuse getChildren
 
@@ -85,8 +120,26 @@ export class CategoryManagementComponent implements OnInit {
     return c ? c.name : '';
   }
 
+  getQueryTypeName(qtId: any) {
+    const qt = this.queryTypes.find(q => q.id == qtId);
+    return qt ? qt.name : '';
+  }
+
   availableParents() {
     let parents = this.categories.filter(c => !this.form.parent_ids.includes(c.id) && c.id !== this.editId);
+    
+    if (this.form.query_type_id) {
+        parents = parents.filter(c => c.query_type_id == this.form.query_type_id);
+    }
+
+    if (this.form.type === 'category') {
+        return [];
+    } else if (this.form.type === 'subcategory') {
+        parents = parents.filter(c => c.type === 'category' || !c.type);
+    } else if (this.form.type === 'child') {
+        parents = parents.filter(c => c.type === 'subcategory');
+    }
+
     if (this.categorySearch.trim()) {
       const term = this.categorySearch.toLowerCase();
       parents = parents.filter(c => c.name.toLowerCase().includes(term));

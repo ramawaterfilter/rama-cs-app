@@ -20,4 +20,9 @@ class QueryCategory extends Model
     {
         return $this->belongsToMany(QueryCategory::class, 'category_relationships', 'child_id', 'parent_id');
     }
+
+    public function queryType()
+    {
+        return $this->belongsTo(QueryType::class, 'query_type_id');
+    }
 }

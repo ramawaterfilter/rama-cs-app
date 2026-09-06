@@ -10,6 +10,9 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './type-management.component.html',
 })
 export class TypeManagementComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   types: any[] = [];
   showModal = false;
   editMode = false;
@@ -53,7 +56,10 @@ export class TypeManagementComponent implements OnInit {
         this.load();
         setTimeout(() => this.closeModal(), 1000);
       },
-      error: () => { this.saving = false; this.saveMsg = 'Error saving type.'; }
+      error: (err) => { 
+        this.saving = false; 
+        this.saveMsg = err.error?.message ? 'Error: ' + err.error.message : 'Error saving type.'; 
+      }
     });
   }
 

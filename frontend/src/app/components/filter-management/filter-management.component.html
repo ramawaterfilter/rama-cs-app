@@ -13,15 +13,15 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>No.</th>
             <th>Filter Name</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let f of filters">
-            <td><span class="chip">#{{ f.id }}</span></td>
+          <tr *ngFor="let f of filters | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
+            <td><span class="chip">{{ (currentPage - 1) * pageSize + i + 1 }}</span></td>
             <td><strong>{{ f.name }}</strong></td>
             <td>
               <span class="badge badge-success" *ngIf="f.is_active">Active</span>
@@ -44,6 +44,13 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Pagination Controls -->
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="filters.length > 0">
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+        <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(filters.length / pageSize) || 1 }}</span>
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filters.length" (click)="currentPage = currentPage + 1">Next</button>
+      </div>
     </div>
   </div>
 

@@ -17,6 +17,9 @@ export class StatusManagementComponent implements OnInit {
   saveMsg = '';
   editId: any = null;
   form: any = { name: '', color: '#545cd8', is_default: false, type: 'general' };
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
 
   private http = inject(HttpClient);
   private apiUrl = '/api';

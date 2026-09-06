@@ -13,7 +13,7 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>No.</th>
             <th>Product Name</th>
             <th>SKU</th>
             <th>Brand / Model</th>
@@ -24,8 +24,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let p of products">
-            <td><span class="chip">#{{ p.id }}</span></td>
+          <tr *ngFor="let p of products | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
+            <td><span class="chip">{{ (currentPage - 1) * pageSize + i + 1 }}</span></td>
             <td>
               <div style="font-weight:600;">{{ p.name }}</div>
               <div style="font-size:0.72rem; color:var(--text-muted);">{{ p.description }}</div>
@@ -67,6 +67,13 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Pagination Controls -->
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="products.length > 0">
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+        <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(products.length / pageSize) || 1 }}</span>
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= products.length" (click)="currentPage = currentPage + 1">Next</button>
+      </div>
     </div>
   </div>
 

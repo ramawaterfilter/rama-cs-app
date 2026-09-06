@@ -8,16 +8,44 @@
     <button class="btn btn-primary" (click)="openNew()">+ Add Category</button>
   </div>
 
+  <div class="card" style="margin-bottom:1.25rem;">
+    <div class="card-body toolbar">
+      <div style="position: relative; display: inline-block; flex-grow: 1;">
+        <span style="position: absolute; top: -16px; left: 4px; font-size: 0.65rem; color: var(--text-muted); white-space: nowrap;">Search Category</span>
+        <input type="text" class="form-control" placeholder="🔍 Search categories..." 
+          [(ngModel)]="searchCategoryTerm">
+      </div>
+
+      <div style="position: relative; display: inline-block;">
+        <span style="position: absolute; top: -16px; left: 4px; font-size: 0.65rem; color: var(--text-muted); white-space: nowrap;">Filter by Query Type</span>
+        <select class="form-control" [(ngModel)]="filterQueryType">
+          <option value="">All Query Types</option>
+          <option *ngFor="let qt of queryTypes" [value]="qt.id">{{ qt.name }}</option>
+        </select>
+      </div>
+      <button class="btn btn-outline btn-sm" (click)="searchCategoryTerm = ''; filterQueryType = '';" title="Reset Filters" style="color: var(--danger); border-color: var(--danger); margin-top: auto; margin-bottom: auto;">✕ Reset</button>
+    </div>
+  </div>
+
   <div class="card">
-    <div class="card-header"><h3>All Categories</h3></div>
+    <div class="card-header">
+      <div style="display:flex; justify-content:space-between; width: 100%;">
+        <h3>All Categories</h3>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Showing {{ filteredTopLevel.length }} top-level categories</span>
+      </div>
+    </div>
     <div class="card-body">
-      <ng-container *ngFor="let top of topLevel">
+      <div *ngIf="filteredTopLevel.length === 0" class="text-center" style="padding: 2rem; color: var(--text-muted);">
+        No categories found.
+      </div>
+      <ng-container *ngFor="let top of filteredTopLevel | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
         <!-- Level 1 -->
         <div class="tree-node" style="background:var(--primary-light); border-radius:var(--radius-md); margin-bottom:0.5rem;">
           <div style="display:flex; align-items:center; gap:0.5rem;">
             <span style="font-size:1rem;">📁</span>
             <strong>{{ top.name }}</strong>
             <span class="badge badge-primary" style="margin-left:0.5rem;">{{ top.type || 'category' }}</span>
+            <span class="badge badge-outline" style="margin-left:0.5rem; font-size: 0.8em; border: 1px solid var(--primary); padding: 0.2rem 0.5rem; border-radius: 12px; color: var(--primary);" *ngIf="top.query_type_id">{{ getQueryTypeName(top.query_type_id) }}</span>
           </div>
           <div style="display:flex; gap:0.4rem;">
             <button class="btn btn-icon btn-sm" (click)="openEdit(top)">✏️</button>
@@ -33,6 +61,7 @@
                 <span>📂</span>
                 <span>{{ sub.name }}</span>
                 <span class="badge badge-info" style="margin-left:0.5rem;">{{ sub.type || 'subcategory' }}</span>
+                <span class="badge badge-outline" style="margin-left:0.5rem; font-size: 0.8em; border: 1px solid var(--info); padding: 0.2rem 0.5rem; border-radius: 12px; color: var(--info);" *ngIf="sub.query_type_id">{{ getQueryTypeName(sub.query_type_id) }}</span>
               </div>
               <div style="display:flex; gap:0.4rem;">
                 <button class="btn btn-icon btn-sm" (click)="openEdit(sub)">✏️</button>
@@ -47,6 +76,7 @@
                   <span>📄</span>
                   <span style="color:var(--text-muted);">{{ child.name }}</span>
                   <span class="badge badge-secondary" style="margin-left:0.5rem;">{{ child.type || 'child' }}</span>
+                  <span class="badge badge-outline" style="margin-left:0.5rem; font-size: 0.8em; border: 1px solid var(--secondary); padding: 0.2rem 0.5rem; border-radius: 12px; color: var(--secondary);" *ngIf="child.query_type_id">{{ getQueryTypeName(child.query_type_id) }}</span>
                 </div>
                 <div style="display:flex; gap:0.4rem;">
                   <button class="btn btn-icon btn-sm" (click)="openEdit(child)">✏️</button>
@@ -60,9 +90,15 @@
         <div class="separator"></div>
       </ng-container>
 
-      <div class="empty-state" *ngIf="topLevel.length === 0">
+      <div class="empty-state" *ngIf="filteredTopLevel.length === 0">
         <div class="empty-icon">🗂️</div>
         <p>No categories yet. Start by adding one!</p>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="filteredTopLevel.length > 0">
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+        <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(filteredTopLevel.length / pageSize) || 1 }}</span>
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filteredTopLevel.length" (click)="currentPage = currentPage + 1">Next</button>
       </div>
     </div>
   </div>
@@ -79,7 +115,14 @@
         <div class="alert alert-danger" *ngIf="saveMsg && saveMsg.includes('Error')">{{ saveMsg }}</div>
 
         <div class="form-group">
-          <label class="form-label">Category Name</label>
+          <label class="form-label">Query Type <span style="color:var(--danger)">*</span></label>
+          <select class="form-control" [(ngModel)]="form.query_type_id">
+            <option [ngValue]="null">Select Query Type</option>
+            <option *ngFor="let qt of queryTypes" [ngValue]="qt.id">{{ qt.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category Name <span style="color:var(--danger)">*</span></label>
           <input type="text" class="form-control" [(ngModel)]="form.name" placeholder="e.g. Water Purifiers">
         </div>
         <div class="form-grid-2">
@@ -91,7 +134,7 @@
               <option value="child">Child Category (Level 3)</option>
             </select>
           </div>
-          <div class="form-group" style="grid-column: span 2;">
+          <div class="form-group" style="grid-column: span 2;" *ngIf="form.type !== 'category'">
             <label class="form-label">Parent Categories (Optional - Multi-select)</label>
             <div class="chip-input-container" style="border: 1px solid var(--border-color); padding: 0.5rem; border-radius: var(--radius-md); display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; background: var(--bg-white); position: relative;">
               <span class="chip" *ngFor="let pId of form.parent_ids" style="background: var(--primary-light); color: var(--primary); padding: 0.3rem 0.6rem; border-radius: 15px; display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; font-weight: 500;">
@@ -112,7 +155,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
-        <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name">
+        <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name || !form.query_type_id">
           {{ saving ? 'Saving...' : '💾 Save' }}
         </button>
       </div>

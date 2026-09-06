@@ -59,6 +59,7 @@
       <table class="data-table" *ngIf="!loading">
         <thead>
           <tr>
+            <th>No.</th>
             <th>Ticket #</th>
             <th>Customer Details</th>
             <th>Agent / Email</th>
@@ -72,9 +73,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let ticket of filteredTickets">
+          <tr *ngFor="let ticket of filteredTickets | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
             <td>
-              <span class="chip">#{{ ticket.id }}</span>
+              <span class="chip" style="background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-color);">{{ (currentPage - 1) * pageSize + i + 1 }}</span>
+            </td>
+            <td>
+              <span class="chip" style="font-weight: 700; color: var(--primary);">PTMS{{ ticket.id }}</span>
               <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.2rem;">{{ ticket.order_id || '—' }}</div>
             </td>
             <td>
@@ -127,7 +131,7 @@
             </td>
           </tr>
           <tr *ngIf="filteredTickets.length === 0 && !loading">
-            <td colspan="9">
+            <td colspan="10">
               <div class="empty-state">
                 <div class="empty-icon">📭</div>
                 <p>No tickets match your filter.</p>
@@ -136,6 +140,13 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Pagination Controls -->
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="filteredTickets.length > 0">
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+        <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(filteredTickets.length / pageSize) || 1 }}</span>
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filteredTickets.length" (click)="currentPage = currentPage + 1">Next</button>
+      </div>
     </div>
   </div>
 
@@ -143,7 +154,7 @@
   <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
     <div class="modal-box modal-lg" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3>{{ allocateMode ? '📋 Allocate Ticket' : '✏️ Update Ticket' }} #{{ selectedTicket?.id }}</h3>
+        <h3>{{ allocateMode ? '📋 Allocate Ticket' : '✏️ Update Ticket' }} PTMS{{ selectedTicket?.id }}</h3>
         <button class="modal-close" (click)="closeModal()">✕</button>
       </div>
       <div class="modal-body">
@@ -448,7 +459,7 @@
   <div class="modal-overlay" *ngIf="showViewModal" (click)="closeViewModal()">
     <div class="modal-box modal-lg" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3>👁️ View Ticket #{{ viewedTicket?.id }}</h3>
+        <h3>👁️ View Ticket PTMS{{ viewedTicket?.id }}</h3>
         <button class="modal-close" (click)="closeViewModal()">✕</button>
       </div>
       <div class="modal-body">

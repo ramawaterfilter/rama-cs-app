@@ -11,6 +11,9 @@ import { RouterLink } from '@angular/router';
   templateUrl: './admin-dashboard.component.html',
 })
 export class AdminDashboardComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   tickets: any[] = [];
   users: any[] = [];
   statuses: any[] = [];

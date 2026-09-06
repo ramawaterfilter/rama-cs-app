@@ -10,6 +10,9 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './filter-management.component.html',
 })
 export class FilterManagementComponent implements OnInit {
+  currentPage = 1;
+  pageSize = 10;
+  Math = Math;
   filters: any[] = [];
   showModal = false;
   editMode = false;
