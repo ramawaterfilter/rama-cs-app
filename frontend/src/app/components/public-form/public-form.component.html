@@ -18,7 +18,13 @@
           </button>
         </div>
  
-        <div class="alert alert-danger" *ngIf="errorMsg">{{ errorMsg }}</div>
+        <div class="alert alert-danger" *ngIf="errorMsg">
+          {{ errorMsg }}
+          <a *ngIf="existingTicketId"
+             [routerLink]="['/dashboard/tickets']"
+             [queryParams]="{ openTicket: existingTicketId }"
+             class="btn btn-outline btn-sm" style="margin-left:0.75rem;">View existing ticket →</a>
+        </div>
  
         <!-- Form -->
         <form *ngIf="!successMsg" #queryForm="ngForm" (ngSubmit)="onSubmit(queryForm)">
@@ -169,8 +175,8 @@
               <input type="datetime-local" class="form-control" [(ngModel)]="formData.received_at" name="received_at" required>
             </div>
             <div class="form-group">
-              <label class="form-label">Query Resolved Date\Time <span class="text-danger">*</span></label>
-              <input type="datetime-local" class="form-control" [(ngModel)]="formData.resolved_at" name="resolved_at" required>
+              <label class="form-label">Query Resolved Date\Time</label>
+              <input type="datetime-local" class="form-control" [(ngModel)]="formData.resolved_at" name="resolved_at">
             </div>
             <div class="form-group span-2">
               <label class="form-label">Query Description <span class="text-danger">*</span></label>
