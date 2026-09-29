@@ -5,16 +5,21 @@ namespace Database\Seeders;
 use App\Models\QueryCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class QueryCategorySeeder extends Seeder
 {
     public function run(): void
     {
         // Clear existing categories and relationships
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('category_relationships')->truncate();
-        QueryCategory::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        Schema::disableForeignKeyConstraints();
+
+        try {
+            DB::table('category_relationships')->truncate();
+            QueryCategory::truncate();
+        } finally {
+            Schema::enableForeignKeyConstraints();
+        }
 
         $inquiry = QueryCategory::create(['name' => 'Inquiry']);
         $complaint = QueryCategory::create(['name' => 'Complaint']);

@@ -5,8 +5,8 @@
   <!-- ======= SIDEBAR ======= -->
   <aside class="sidebar" [class.sidebar-mini]="sidebarCollapsed" [class.sidebar-open]="mobileSidebarOpen">
     <div class="sidebar-logo" style="justify-content: center; padding: 1rem;">
-      <img [src]="themeService.isDark() ? 'logo_phoenix_white.png' : 'logo_phoenix_dark.png'" alt="Phoenix Forms" *ngIf="!sidebarCollapsed" style="max-width: 100%; max-height: 40px; object-fit: contain;">
-      <img [src]="themeService.isDark() ? 'logo_collapsed_white.png' : 'logo_collapsed_dark.png'" alt="Phoenix Forms" *ngIf="sidebarCollapsed" style="max-width: 36px; max-height: 36px; object-fit: contain;">
+      <img src="logo_rama.svg" alt="Rama Forms" *ngIf="!sidebarCollapsed" style="max-width: 100%; max-height: 40px; object-fit: contain;">
+      <img src="logo_rama.svg" alt="Rama Forms" *ngIf="sidebarCollapsed" style="max-width: 36px; max-height: 36px; object-fit: contain;">
       <button class="mobile-close-btn" (click)="closeMobileSidebar()" *ngIf="mobileSidebarOpen">×</button>
     </div>
 
@@ -54,7 +54,7 @@
           <span class="toggle-bar"></span>
         </button>
         <div class="topbar-title-group">
-          <h4>Phoenix Forms</h4>
+          <h4>RAMA Forms</h4>
           <p class="hide-mobile">Water Purifier Distribution & Service</p>
         </div>
       </div>

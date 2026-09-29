@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             QueryChannelTypeSeeder::class,
             QueryCategorySeeder::class,
+            TicketSeeder::class,
         ]);
     }
 }

@@ -1,0 +1,27 @@
+services:
+    backend:
+      build:
+        context: ./backend
+      env_file:
+        - ./backend/.env
+      environment:
+        APP_ENV: local
+        APP_DEBUG: "true"
+        APP_URL: http://localhost:8000
+        DB_CONNECTION: sqlite
+        DB_DATABASE: /var/www/html/database/database.sqlite
+      volumes:
+        - ./backend/database:/var/www/html/database
+      ports:
+        - "8000:8000"
+      command: >
+        sh -c "php artisan migrate --force &&
+               php artisan serve --host=0.0.0.0 --port=8000"
+
+    frontend:
+      build:
+        context: ./frontend
+      depends_on:
+        - backend
+      ports:
+        - "4200:80"

@@ -141,7 +141,7 @@ export class TicketGridComponent implements OnInit {
     this.notifService.allTickets$.subscribe(data => {
       if (data !== null) {
         this.tickets = data;
-        this.applyFilter();
+        this.applyFilter(false);
         this.loading = false;
         
         // Open the modal if a specific ticket was requested from notification click
@@ -223,7 +223,7 @@ export class TicketGridComponent implements OnInit {
     }
   }
 
-  applyFilter() {
+  applyFilter(resetPage = true) {
     let list = [...this.tickets];
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
@@ -278,7 +278,9 @@ export class TicketGridComponent implements OnInit {
     }
 
     this.filteredTickets = list;
-    this.currentPage = 1;
+    // ponytail: never lose the user's page on a background poll — only clamp it
+    const pages = Math.max(1, Math.ceil(list.length / this.pageSize));
+    this.currentPage = resetPage ? 1 : Math.min(this.currentPage, pages);
   }
 
   toggleSortDate() {
