@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 import { AuthService } from '../../services/auth.service';
@@ -10,7 +9,7 @@ import { NotificationService } from '../../services/notification.service';
 @Component({
   selector: 'app-public-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './public-form.component.html',
 })
 export class PublicFormComponent implements OnInit {
@@ -62,7 +61,6 @@ export class PublicFormComponent implements OnInit {
 
   successMsg = '';
   errorMsg = '';
-  existingTicketId: number | null = null;
   loading = false;
   
   private http = inject(HttpClient);
@@ -187,7 +185,6 @@ export class PublicFormComponent implements OnInit {
     this.loading = true;
     this.successMsg = '';
     this.errorMsg = '';
-    this.existingTicketId = null;
     this.http.post(`${this.apiUrl}/tickets/public`, payload).subscribe({
       next: (res: any) => {
         this.loading = false;
@@ -219,12 +216,7 @@ export class PublicFormComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        if (err.status === 409) {
-          this.errorMsg = err.error?.message || 'An open ticket already exists for this customer.';
-          this.existingTicketId = err.error?.existing_ticket_id ?? null;
-        } else {
-          this.errorMsg = 'Error submitting query. Please try again.';
-        }
+        this.errorMsg = 'Error submitting query. Please try again.';
         window.scrollTo(0, 0);
       }
     });

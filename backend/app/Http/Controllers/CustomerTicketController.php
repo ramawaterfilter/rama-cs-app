@@ -69,48 +69,6 @@ class CustomerTicketController extends Controller
             }
         }
         
-        $norm = fn ($v) => strtolower(trim((string) $v));
-        $name = $norm($data['customer_name'] ?? '');
-        $email = $norm($data['customer_email'] ?? '');
-        $phone = $norm($data['customer_phone'] ?? '');
-
-        $dup = CustomerTicket::whereNull('resolved_at')
-    ->where(function ($q) use ($name, $email, $phone) {
-        if ($name  !== '') $q->orWhereRaw('LOWER(TRIM(customer_name))  = ?', [$name]);
-        if ($email !== '') $q->orWhereRaw('LOWER(TRIM(customer_email)) = ?', [$email]);
-        if ($phone !== '') $q->orWhereRaw('LOWER(TRIM(customer_phone)) = ?', [$phone]);
-    })
-    ->first();
-
-if ($dup) {
-    return response()->json([
-        'message'             => "An open ticket (#{$dup->id}) already exists for this customer.",
-        'existing_ticket_id'  => $dup->id,
-        'existing_ticket'     => $dup,
-    ], 409);
-}
-
-
-        // Block new tickets while the customer already has an open one (email or phone match)
-        $norm = fn ($v) => strtolower(trim((string) $v));
-        $email = $norm($data['customer_email'] ?? '');
-        $phone = $norm($data['customer_phone'] ?? '');
-
-        $dup = CustomerTicket::whereNull('resolved_at')
-            ->where(function ($q) use ($email, $phone) {
-                if ($email !== '') $q->orWhereRaw('LOWER(TRIM(customer_email)) = ?', [$email]);
-                if ($phone !== '') $q->orWhereRaw('LOWER(TRIM(customer_phone)) = ?', [$phone]);
-            })
-            ->first();
-
-        if ($dup) {
-            return response()->json([
-                'message'            => "An open ticket (#{$dup->id}) already exists for this customer.",
-                'existing_ticket_id' => $dup->id,
-                'existing_ticket'    => $dup,
-            ], 409);
-        }
-
         $ticket = CustomerTicket::create($data);
 
         return response()->json(['message' => 'Query submitted successfully', 'ticket' => $ticket], 201);
