@@ -31,6 +31,7 @@ export class TicketGridComponent implements OnInit {
   filterCategory = '';
   filterAssignee = '';
   filterOrderId = '';
+  filterCustomerEmail = '';
   fromDate = '';
   toDate = '';
   sortDate = 'desc';
@@ -244,6 +245,10 @@ export class TicketGridComponent implements OnInit {
     if (this.filterOrderId) {
       list = list.filter(t => t.order_id?.toLowerCase().includes(this.filterOrderId.toLowerCase()));
     }
+    if (this.filterCustomerEmail) {
+      const email = this.filterCustomerEmail.toLowerCase();
+      list = list.filter(t => t.customer_email?.toLowerCase().includes(email));
+    }
     if (this.filterStatus) {
       list = list.filter(t => String(t.status_id) === String(this.filterStatus));
     }
@@ -291,6 +296,7 @@ export class TicketGridComponent implements OnInit {
   resetFilters() {
     this.searchTerm = '';
     this.filterOrderId = '';
+    this.filterCustomerEmail = '';
     this.filterCategory = '';
     this.filterAssignee = '';
     this.filterStatus = '';
@@ -393,6 +399,21 @@ export class TicketGridComponent implements OnInit {
     this.saveMsg = '';
     this.errorMsg = '';
     this.showModal = true;
+  }
+
+  onUpdateStatusChange(id: any) {
+    const s = this.statuses.find(x => x.id == id);
+    if (s && /close|resolv|complete/i.test(s.name)) {
+      if (!this.updateForm.resolved_at) this.updateForm.resolved_at = this.nowLocal();
+    } else {
+      this.updateForm.resolved_at = '';
+    }
+  }
+
+  private nowLocal() {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
   }
 
   closeModal() {

@@ -18,7 +18,7 @@ class LogisticsController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        // Fetch tickets that have a replacement or return assigned to this LE, or created by this CSE
+        // Fetch tickets that have a replacement or return (LEs only see their own)
         $query = CustomerTicket::with(['category', 'status', 'executive', 'replacement', 'ticketReturn'])
             ->where(function($q) use ($user) {
                 $q->whereHas('replacement', function ($sub) use ($user) {
@@ -28,10 +28,6 @@ class LogisticsController extends Controller
                     if ($user->role === 'le') $sub->where('le_id', $user->id);
                 });
             });
-
-        if ($user->role === 'cse') {
-            $query->where('executive_id', $user->id);
-        }
 
         if ($user->role === 'le') {
             $query->where('is_logistic_approved', true);

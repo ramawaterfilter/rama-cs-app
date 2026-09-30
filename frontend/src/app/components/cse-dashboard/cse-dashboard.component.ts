@@ -38,7 +38,8 @@ export class CseDashboardComponent implements OnInit {
     this.loading = true;
     this.http.get<any[]>(`${this.apiUrl}/tickets`).subscribe({
       next: (data) => {
-        this.tickets = data;
+        // ponytail: /tickets now returns everything; this dashboard stays personal to the logged-in CSE
+        this.tickets = data.filter((t: any) => String(t.executive_id) === String(this.user?.id));
         this.computeStats();
         this.applyFilter();
         this.loading = false;

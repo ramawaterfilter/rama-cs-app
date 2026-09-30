@@ -1,7 +1,7 @@
 <div>
   <div class="page-header">
     <div class="breadcrumb"><span>Home</span> / Ticket Management</div>
-    <h2>{{ isAdmin ? (isRequestsView ? 'Ticket Requests' : 'All Tickets') : 'My Ticket Pool' }}</h2>
+    <h2>{{ isRequestsView ? 'Ticket Requests' : 'All Tickets' }}</h2>
     <p>View, manage and update all customer query tickets.</p>
   </div>
 
@@ -14,6 +14,12 @@
           [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()">
       </div>
 
+      <div style="position: relative; display: inline-block;">
+        <span style="position: absolute; top: -16px; left: 4px; font-size: 0.65rem; color: var(--text-muted); white-space: nowrap;">Customer Email</span>
+        <input type="text" class="form-control" style="max-width:180px;" placeholder="customer@example.com"
+          [(ngModel)]="filterCustomerEmail" (ngModelChange)="applyFilter()">
+      </div>
+
       <input type="text" class="form-control" style="max-width:140px;" placeholder="Order ID..."
         [(ngModel)]="filterOrderId" (ngModelChange)="applyFilter()">
 
@@ -22,7 +28,7 @@
         <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
       </select>
 
-      <select class="form-control" *ngIf="isAdmin" [(ngModel)]="filterAssignee" (ngModelChange)="applyFilter()">
+      <select class="form-control" [(ngModel)]="filterAssignee" (ngModelChange)="applyFilter()">
         <option value="">All Assignees</option>
         <option value="unassigned">Unassigned</option>
         <option *ngFor="let cse of cses" [value]="cse.id">{{ cse.name }}</option>
@@ -401,7 +407,7 @@
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--border-color);">
                 <div class="form-group">
                   <label class="form-label">Update Status</label>
-                  <select class="form-control" [(ngModel)]="updateForm.status_id">
+                  <select class="form-control" [(ngModel)]="updateForm.status_id" (ngModelChange)="onUpdateStatusChange($event)">
                     <option value="">— Select Status —</option>
                     <option *ngFor="let s of statuses" [value]="s.id">{{ s.name }}</option>
                   </select>
@@ -412,7 +418,7 @@
                 </div>
                 <div class="form-group">
                   <label class="form-label">Resolved Date\Time</label>
-                  <input type="datetime-local" class="form-control" [(ngModel)]="updateForm.resolved_at">
+                  <input type="datetime-local" class="form-control" [(ngModel)]="updateForm.resolved_at" placeholder="Auto-captured when status is Closed">
                 </div>
               </div>
 

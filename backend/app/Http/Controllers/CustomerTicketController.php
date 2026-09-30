@@ -12,19 +12,15 @@ class CustomerTicketController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
+        // ponytail: no role scoping here — every CSE sees every ticket; executive_id is informational only
         $query = CustomerTicket::with(['category', 'subCategory', 'childCategory', 'status', 'executive', 'queryChannel', 'queryType', 'queryFilter', 'outreach', 'countryDynamic', 'replacement.le', 'ticketReturn.le']);
-        
-        if ($user->role === 'cse') {
-            // CSEs can only see tickets allocated to them
-            $query->where('executive_id', $user->id);
-        }
 
         // Add filter support
         if ($request->country_id) $query->where('country_id', $request->country_id);
         if ($request->executive_id) $query->where('executive_id', $request->executive_id);
         if ($request->category_id) $query->where('category_id', $request->category_id);
         if ($request->order_id) $query->where('order_id', 'like', '%' . $request->order_id . '%');
+        if ($request->customer_email) $query->where('customer_email', 'like', '%' . $request->customer_email . '%');
         
         $sortOrder = $request->sort_date === 'asc' ? 'asc' : 'desc';
         
@@ -69,6 +65,7 @@ class CustomerTicketController extends Controller
             }
         }
         
+        $this->applyTimestamps($data);
         $ticket = CustomerTicket::create($data);
 
         return response()->json(['message' => 'Query submitted successfully', 'ticket' => $ticket], 201);
@@ -82,7 +79,8 @@ class CustomerTicketController extends Controller
     public function update(Request $request, CustomerTicket $ticket)
     {
         $user = $request->user();
-        if ($user->role !== 'admin' && $ticket->executive_id !== $user->id) {
+        // ponytail: ownership no longer gates edits — admin and any CSE can edit any ticket
+        if (!in_array($user->role, ['admin', 'cse'])) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -152,6 +150,7 @@ class CustomerTicketController extends Controller
             $data['has_been_updated'] = true;
         }
 
+        $this->applyTimestamps($data, $ticket);
         $ticket->update($data);
 
         // Reset edit approval after update if it was an approved core edit by CSE
@@ -186,6 +185,29 @@ class CustomerTicketController extends Controller
         return response()->json($ticket);
     }
 
+    // Auto-captures timestamps: received defaults to submit time, resolved is
+    // stamped when status becomes Closed/Resolved/Completed and cleared on reopen.
+    private function applyTimestamps(array &$data, ?CustomerTicket $ticket = null): void
+    {
+        if (empty($data['received_at'])) {
+            // ponytail: on update, an empty value means "leave as-is" rather than backdating
+            if ($ticket) unset($data['received_at']);
+            else $data['received_at'] = now();
+        }
+
+        $statusId = $data['status_id'] ?? $ticket?->status_id;
+        $name = $statusId ? QueryStatus::find($statusId)?->name : null;
+        $closed = $name && preg_match('/close|resolv|complete/i', $name);
+
+        if ($closed) {
+            if (!empty($data['resolved_at'])) return;            // manual value wins
+            if ($ticket && $ticket->resolved_at) { unset($data['resolved_at']); return; } // keep existing
+            $data['resolved_at'] = now();
+        } elseif (array_key_exists('status_id', $data) || array_key_exists('resolved_at', $data)) {
+            $data['resolved_at'] = null;
+        }
+    }
+
     public function destroy(Request $request, CustomerTicket $ticket)
     {
         if ($request->user()->role !== 'admin') {
@@ -198,7 +220,7 @@ class CustomerTicketController extends Controller
 
     public function requestEdit(Request $request, CustomerTicket $ticket)
     {
-        if ($ticket->executive_id !== $request->user()->id) {
+        if (!in_array($request->user()->role, ['admin', 'cse'])) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -237,7 +259,7 @@ class CustomerTicketController extends Controller
 
     public function requestProfileEdit(Request $request, CustomerTicket $ticket)
     {
-        if ($ticket->executive_id !== $request->user()->id) {
+        if (!in_array($request->user()->role, ['admin', 'cse'])) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 

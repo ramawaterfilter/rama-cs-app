@@ -87,7 +87,7 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
         { section: 'MY WORKSPACE' },
         { label: 'My Dashboard', icon: '🏠', route: '/dashboard/cse' },
         { label: 'New Query', icon: '📝', route: '/dashboard/new-query' },
-        { label: 'My Tickets', icon: '🎫', route: '/dashboard/tickets' },
+        { label: 'All Tickets', icon: '🎫', route: '/dashboard/tickets' },
         { label: 'Logistics', icon: '🚚', route: '/dashboard/logistics' },
         { label: 'Rejected Approvals', icon: '❌', route: '/dashboard/rejected-approvals' },
         { section: 'ACCOUNT' },
