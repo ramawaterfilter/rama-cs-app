@@ -322,9 +322,8 @@ export class TicketGridComponent implements OnInit {
     return le ? le.name : String(id);
   }
 
-  async exportXLSX() {
-    const XLSX = await import('xlsx');
-    const data = this.filteredTickets.map(t => {
+  buildExportRows() {
+    return this.filteredTickets.map(t => {
       const isReplacement = !!t.replacement;
       const isReturn = !!t.ticket_return;
       const log = t.replacement || t.ticket_return || null;
@@ -338,14 +337,15 @@ export class TicketGridComponent implements OnInit {
         'Customer Email': t.customer_email,
         'Customer Phone': t.customer_phone,
         'Purchase Store': t.purchase_store,
-        'Country': t.countryDynamic?.name || t.country,
+        'Country': t.country_dynamic?.name || t.country,
+        'Address': t.address,
         'Query Channel': t.query_channel?.name || t.query_source,
         'Query Type': t.query_type?.name || t.type_of_query,
         'Category': t.category?.name,
         'Sub-Category': t.sub_category?.name,
         'Child-Category': t.child_category?.name,
         'Description': t.description,
-        'Action Taken': t.action_taken,
+        'Action Taken': t.remarks || t.action_taken,
         'Outreach': t.outreach?.name || t.customer_outreach,
         'Filters': t.query_filter?.name || t.filters,
         'Received At': t.received_at ? new Date(t.received_at).toLocaleString() : '',
@@ -360,13 +360,22 @@ export class TicketGridComponent implements OnInit {
         'Replacement Product': isReplacement ? `${t.replacement.replacement_product_name} (${t.replacement.replacement_product_sku})` : '',
         'Logistics Qty': isReplacement ? t.replacement.replacement_qty : '',
         'Logistics Reason': isReplacement ? t.replacement.replacement_reason : (isReturn ? t.ticket_return.return_reasons : ''),
+        'Logistics Others': isReplacement ? t.replacement.others : '',
+        'Marketplace': isReturn ? t.ticket_return.marketplace_channel : '',
+        'Return Date': isReturn ? t.ticket_return.return_date : '',
+        'No. of Boxes': isReturn ? t.ticket_return.no_of_boxes : '',
+        'Inbound Ref No': isReturn ? t.ticket_return.inbound_ref_no : '',
+        'Inbound Ref Date': isReturn ? t.ticket_return.inbound_ref_date : '',
         'Courier Name': isReturn ? t.ticket_return.courier_name : '',
         'Tracking ID': isReturn ? t.ticket_return.tracking_id : '',
         'LE Remarks': log ? log.remarks : ''
       };
     });
+  }
 
-    const ws = XLSX.utils.json_to_sheet(data);
+  async exportXLSX() {
+    const XLSX = await import('xlsx');
+    const ws = XLSX.utils.json_to_sheet(this.buildExportRows());
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Tickets');
     XLSX.writeFile(wb, 'Service_Tickets_Report.xlsx');
