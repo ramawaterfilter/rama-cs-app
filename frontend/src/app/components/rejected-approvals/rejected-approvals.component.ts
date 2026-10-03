@@ -77,9 +77,15 @@ export class RejectedApprovalsComponent implements OnInit {
     this.selectedTicket = ticket;
     this.updateForm.logistics_type = ticket.replacement ? 'replacement' : (ticket.ticket_return ? 'return' : 'nil');
     this.updateForm.replacement_form = ticket.replacement ? { ...ticket.replacement } : { le_id: '', ordered_product_name: '', ordered_product_sku: '', replacement_product_name: '', replacement_product_sku: '', replacement_qty: 1, replacement_reason: '', others: '' };
-    this.updateForm.return_form = ticket.ticket_return ? { ...ticket.ticket_return } : { le_id: '', ordered_product_name: '', ordered_product_sku: '', marketplace_channel: '', return_reasons: '', return_date: '', courier_name: '', tracking_id: '', no_of_boxes: 1, inbound_ref_no: '', inbound_ref_date: '' };
-    
+    this.updateForm.return_form = ticket.ticket_return ? { ...ticket.ticket_return } : { le_id: '', ordered_product_name: '', ordered_product_sku: '', marketplace_channel: '', return_reasons: '', return_date: this.today(), courier_name: '', tracking_id: '', no_of_boxes: 1, inbound_ref_no: '', inbound_ref_date: this.today() };
+
     this.showModal = true;
+  }
+
+  private today() {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 10);
   }
 
   applyFilter() {

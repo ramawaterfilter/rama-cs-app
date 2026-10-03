@@ -397,14 +397,14 @@ export class TicketGridComponent implements OnInit {
       order_id: ticket.order_id || '',
       purchase_store: ticket.purchase_store || '',
       customer_outreach_id: ticket.customer_outreach_id || '',
-      received_at: ticket.received_at ? new Date(ticket.received_at).toISOString().slice(0, 16) : '',
+      received_at: ticket.received_at ? new Date(ticket.received_at).toISOString().slice(0, 16) : this.nowLocal(),
       resolved_at: ticket.resolved_at ? new Date(ticket.resolved_at).toISOString().slice(0, 16) : '',
       logistics_type: ticket.replacement ? 'replacement' : (ticket.ticket_return ? 'return' : 'nil'),
       replacement_form: ticket.replacement ? { ...ticket.replacement } : {
         le_id: '', ordered_product_name: '', ordered_product_sku: '', replacement_product_name: '', replacement_product_sku: '', replacement_qty: 1, replacement_reason: '', others: ''
       },
       return_form: ticket.ticket_return ? { ...ticket.ticket_return } : {
-        le_id: '', marketplace_channel: '', country_id: '', ordered_product_name: '', ordered_product_sku: '', return_reasons: '', return_date: '', courier_name: '', tracking_id: '', no_of_boxes: 1, inbound_ref_no: '', inbound_ref_date: ''
+        le_id: '', marketplace_channel: '', country_id: '', ordered_product_name: '', ordered_product_sku: '', return_reasons: '', return_date: this.today(), courier_name: '', tracking_id: '', no_of_boxes: 1, inbound_ref_no: '', inbound_ref_date: this.today()
       }
     };
     this.saveMsg = '';
@@ -425,6 +425,12 @@ export class TicketGridComponent implements OnInit {
     const d = new Date();
     d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
     return d.toISOString().slice(0, 16);
+  }
+
+  private today() {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 10);
   }
 
   closeModal() {
