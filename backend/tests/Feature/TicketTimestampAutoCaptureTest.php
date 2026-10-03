@@ -84,4 +84,25 @@ class TicketTimestampAutoCaptureTest extends TestCase
 
         $this->assertSame('2026-01-02 03:04:00', $ticket->refresh()->resolved_at->format('Y-m-d H:i:s'));
     }
+
+    public function test_last_updated_by_is_tracked_and_returned(): void
+    {
+        $this->actingAs($this->admin, 'sanctum')
+            ->postJson('/api/tickets/public', ['status_id' => $this->open->id])
+            ->assertStatus(201);
+        $ticket = CustomerTicket::first();
+        $this->assertSame($this->admin->id, $ticket->created_by);
+        $this->assertSame($this->admin->id, $ticket->updated_by);
+
+        $cse = User::create(['name' => 'CSE One', 'email' => 'cse@example.com', 'password' => 'secret', 'role' => 'cse']);
+        $this->actingAs($cse, 'sanctum')
+            ->putJson("/api/tickets/{$ticket->id}", ['description' => 'changed'])
+            ->assertOk();
+        $this->assertSame($cse->id, $ticket->refresh()->updated_by);
+
+        $row = collect($this->actingAs($cse, 'sanctum')->getJson('/api/tickets')->json())
+            ->firstWhere('id', $ticket->id);
+        $this->assertSame('CSE One', $row['updater']['name'] ?? null);
+        $this->assertSame('Admin', $row['creator']['name'] ?? null);
+    }
 }

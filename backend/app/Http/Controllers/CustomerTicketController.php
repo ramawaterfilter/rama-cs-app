@@ -13,7 +13,7 @@ class CustomerTicketController extends Controller
     public function index(Request $request)
     {
         // ponytail: no role scoping here — every CSE sees every ticket; executive_id is informational only
-        $query = CustomerTicket::with(['category', 'subCategory', 'childCategory', 'status', 'executive', 'queryChannel', 'queryType', 'queryFilter', 'outreach', 'countryDynamic', 'replacement.le', 'ticketReturn.le']);
+        $query = CustomerTicket::with(['category', 'subCategory', 'childCategory', 'status', 'executive', 'queryChannel', 'queryType', 'queryFilter', 'outreach', 'countryDynamic', 'replacement.le', 'ticketReturn.le', 'creator', 'updater']);
 
         // Add filter support
         if ($request->country_id) $query->where('country_id', $request->country_id);
@@ -30,10 +30,13 @@ class CustomerTicketController extends Controller
     public function storePublic(Request $request)
     {
         $data = $request->all();
+        unset($data['created_by'], $data['updated_by']);
         
         // If user is logged in, auto-set executive_id (Assigned To)
         $user = $request->user();
         if ($user) {
+            $data['created_by'] = $user->id;
+            $data['updated_by'] = $user->id;
             if ($user->role === 'admin') {
                 if (!empty($data['executive_id'])) {
                     $data['is_allocated'] = true;
@@ -73,7 +76,7 @@ class CustomerTicketController extends Controller
 
     public function show(CustomerTicket $ticket)
     {
-        return response()->json($ticket->load(['category', 'subCategory', 'childCategory', 'status', 'executive', 'queryChannel', 'queryType', 'queryFilter', 'outreach', 'countryDynamic', 'replacement', 'ticketReturn']));
+        return response()->json($ticket->load(['category', 'subCategory', 'childCategory', 'status', 'executive', 'queryChannel', 'queryType', 'queryFilter', 'outreach', 'countryDynamic', 'replacement', 'ticketReturn', 'creator', 'updater']));
     }
 
     public function update(Request $request, CustomerTicket $ticket)
@@ -86,6 +89,7 @@ class CustomerTicketController extends Controller
 
         // CSE updating core fields requires approval
         $data = $request->all();
+        unset($data['created_by'], $data['updated_by']);
         $coreFields = [
             'order_id', 'purchase_store', 'query_channel_id', 'query_type_id', 'query_filter_id', 'category_id', 
             'sub_category_id', 'child_category_id', 'description', 'action_taken', 
@@ -151,6 +155,7 @@ class CustomerTicketController extends Controller
         }
 
         $this->applyTimestamps($data, $ticket);
+        $data['updated_by'] = $user->id;
         $ticket->update($data);
 
         // Reset edit approval after update if it was an approved core edit by CSE
@@ -182,7 +187,7 @@ class CustomerTicketController extends Controller
             'ip_address' => $request->ip()
         ]);
 
-        return response()->json($ticket);
+        return response()->json($ticket->load(['creator', 'updater']));
     }
 
     // Auto-captures timestamps: received defaults to submit time, resolved is
@@ -224,7 +229,7 @@ class CustomerTicketController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $ticket->update(['edit_requested' => true]);
+        $ticket->update(['edit_requested' => true, 'updated_by' => $request->user()->id]);
 
         UserActivity::create([
             'user_id' => $request->user()->id,
@@ -243,6 +248,7 @@ class CustomerTicketController extends Controller
         }
 
         $ticket->update([
+            'updated_by' => $request->user()->id,
             'edit_requested' => false,
             'edit_approved' => true
         ]);
@@ -263,7 +269,7 @@ class CustomerTicketController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $ticket->update(['profile_edit_requested' => true]);
+        $ticket->update(['profile_edit_requested' => true, 'updated_by' => $request->user()->id]);
 
         UserActivity::create([
             'user_id' => $request->user()->id,
@@ -282,6 +288,7 @@ class CustomerTicketController extends Controller
         }
 
         $ticket->update([
+            'updated_by' => $request->user()->id,
             'profile_edit_requested' => false,
             'profile_edit_approved' => true
         ]);
@@ -303,6 +310,7 @@ class CustomerTicketController extends Controller
         }
 
         $ticket->update([
+            'updated_by' => $request->user()->id,
             'is_logistic_approved' => true,
             'is_logistic_rejected' => false,
             'logistic_rejection_reason' => null
@@ -325,6 +333,7 @@ class CustomerTicketController extends Controller
         }
 
         $ticket->update([
+            'updated_by' => $request->user()->id,
             'is_logistic_approved' => false,
             'is_logistic_rejected' => true,
             'logistic_rejection_reason' => $request->input('reason')
@@ -347,6 +356,7 @@ class CustomerTicketController extends Controller
         }
 
         $ticket->update([
+            'updated_by' => $request->user()->id,
             'executive_id' => $request->user()->id,
             'is_allocated' => true
         ]);
@@ -370,6 +380,7 @@ class CustomerTicketController extends Controller
         $request->validate(['executive_id' => 'required|exists:users,id']);
 
         $ticket->update([
+            'updated_by' => $request->user()->id,
             'executive_id' => $request->executive_id,
             'is_allocated' => true
         ]);

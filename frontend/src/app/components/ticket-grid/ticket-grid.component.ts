@@ -5,9 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-ticket-grid',
@@ -312,7 +309,8 @@ export class TicketGridComponent implements OnInit {
     return le ? le.name : String(id);
   }
 
-  exportXLSX() {
+  async exportXLSX() {
+    const XLSX = await import('xlsx');
     const data = this.filteredTickets.map(t => {
       const isReplacement = !!t.replacement;
       const isReturn = !!t.ticket_return;
@@ -355,8 +353,8 @@ export class TicketGridComponent implements OnInit {
       };
     });
 
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Tickets');
     XLSX.writeFile(wb, 'Service_Tickets_Report.xlsx');
   }

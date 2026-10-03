@@ -75,6 +75,7 @@
             <th>Submitted</th>
             <th>Assigned To</th>
             <th>Status</th>
+            <th>Last Updated By</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -127,6 +128,10 @@
                 </span>
               </div>
             </td>
+            <td style="font-size:0.75rem; color:var(--text-muted);">
+              <div style="font-weight:600; color:var(--text);">{{ ticket.updater?.name || ticket.creator?.name || '—' }}</div>
+              <div>{{ ticket.updated_at | date:'d MMM y, h:mm a' }}</div>
+            </td>
             <td>
               <div style="display:flex; gap:0.4rem;">
                 <button class="btn btn-sm btn-outline" (click)="viewTicket(ticket)" title="View Details">👁️</button>
@@ -137,7 +142,7 @@
             </td>
           </tr>
           <tr *ngIf="filteredTickets.length === 0 && !loading">
-            <td colspan="10">
+            <td colspan="12">
               <div class="empty-state">
                 <div class="empty-icon">📭</div>
                 <p>No tickets match your filter.</p>
@@ -243,6 +248,7 @@
             <div class="detail-row"><div class="detail-label">Status</div><div>{{ selectedTicket?.status?.name || '—' }}</div></div>
             <div class="detail-row"><div class="detail-label">Received Date</div><div>{{ selectedTicket?.received_at ? (selectedTicket.received_at | date:'medium') : '—' }}</div></div>
             <div class="detail-row"><div class="detail-label">Resolved Date</div><div>{{ selectedTicket?.resolved_at ? (selectedTicket.resolved_at | date:'medium') : '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Last Updated By</div><div>{{ selectedTicket?.updater?.name || selectedTicket?.creator?.name || '—' }} ({{ selectedTicket?.updated_at | date:'medium' }})</div></div>
             <div class="detail-row"><div class="detail-label">Action Taken / Remarks</div><div>{{ selectedTicket?.remarks || '—' }}</div></div>
             
             <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); text-align: center;">
@@ -404,6 +410,10 @@
                 </div>
               </div>
             </div>
+              <div style="margin-top:1rem; font-size:0.8rem; color:var(--text-muted);">
+                Last updated by <strong style="color:var(--text);">{{ selectedTicket?.updater?.name || selectedTicket?.creator?.name || '—' }}</strong>
+                on {{ selectedTicket?.updated_at | date:'medium' }}
+              </div>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--border-color);">
                 <div class="form-group">
                   <label class="form-label">Update Status</label>
@@ -544,6 +554,7 @@
             </div>
             <div class="detail-row"><div class="detail-label">Received</div><div>{{ viewedTicket?.received_at | date:'d MMM y, h:mm a' || '—' }}</div></div>
             <div class="detail-row"><div class="detail-label">Resolved</div><div>{{ viewedTicket?.resolved_at | date:'d MMM y, h:mm a' || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Last Updated By</div><div>{{ viewedTicket?.updater?.name || viewedTicket?.creator?.name || '—' }} <span style="color:var(--text-muted);">({{ viewedTicket?.updated_at | date:'d MMM y, h:mm a' }})</span></div></div>
           </div>
           <div style="margin-top:0.75rem;">
             <div class="detail-label">Action Taken / Remarks</div>
