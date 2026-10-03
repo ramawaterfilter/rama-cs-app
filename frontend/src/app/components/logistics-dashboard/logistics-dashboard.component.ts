@@ -36,7 +36,8 @@ export class LogisticsDashboardComponent implements OnInit {
   saving = false;
   updateForm = {
     status_id: '',
-    remarks: ''
+    remarks: '',
+    tracking_id: ''
   };
 
   private http = inject(HttpClient);
@@ -75,6 +76,7 @@ export class LogisticsDashboardComponent implements OnInit {
     this.selectedTicket = ticket;
     this.updateForm.status_id = ticket.replacement ? ticket.replacement.status : (ticket.ticket_return ? ticket.ticket_return.status : '');
     this.updateForm.remarks = ticket.replacement ? ticket.replacement.remarks : (ticket.ticket_return ? ticket.ticket_return.remarks : '');
+    this.updateForm.tracking_id = ticket.ticket_return ? (ticket.ticket_return.tracking_id || '') : '';
     this.showRejectInput = false;
     this.rejectionReason = '';
     this.showModal = true;
@@ -186,7 +188,8 @@ export class LogisticsDashboardComponent implements OnInit {
 
     const payload = {
       status: this.updateForm.status_id,
-      remarks: this.updateForm.remarks
+      remarks: this.updateForm.remarks,
+      tracking_id: this.updateForm.tracking_id
     };
 
     let updateSub;
@@ -211,6 +214,7 @@ export class LogisticsDashboardComponent implements OnInit {
       });
     } else {
       this.saving = false;
+      this.notifService.showToast({ title: 'Error', message: 'This request is not assigned to you.', type: 'danger' });
     }
   }
 

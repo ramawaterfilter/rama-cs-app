@@ -177,6 +177,11 @@
         <label class="form-label">Remarks</label>
         <textarea class="form-control" [(ngModel)]="updateForm.remarks" placeholder="Enter remarks..." [disabled]="user?.role !== 'le'"></textarea>
       </div>
+
+      <div class="form-group" *ngIf="selectedTicket?.ticket_return">
+        <label class="form-label">Tracking ID</label>
+        <input class="form-control" [(ngModel)]="updateForm.tracking_id" placeholder="Enter tracking ID..." [disabled]="user?.role !== 'le'">
+      </div>
     </div>
     <div class="modal-footer" style="flex-wrap: wrap;">
       <div style="width: 100%; margin-bottom: 1rem;" *ngIf="user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && showRejectInput">

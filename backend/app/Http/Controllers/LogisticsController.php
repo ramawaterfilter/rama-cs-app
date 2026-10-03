@@ -41,7 +41,11 @@ class LogisticsController extends Controller
     public function updateReplacement(Request $request, $id)
     {
         $replacement = TicketReplacement::findOrFail($id);
-        
+
+        if (!$this->canEdit($request->user(), $replacement->le_id)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $oldStatus = $replacement->status;
         $replacement->status = $request->status ?? $replacement->status;
         $replacement->remarks = $request->remarks ?? $replacement->remarks;
@@ -76,10 +80,17 @@ class LogisticsController extends Controller
     public function updateReturn(Request $request, $id)
     {
         $ticketReturn = TicketReturn::findOrFail($id);
-        
+
+        if (!$this->canEdit($request->user(), $ticketReturn->le_id)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $oldStatus = $ticketReturn->status;
         $ticketReturn->status = $request->status ?? $ticketReturn->status;
         $ticketReturn->remarks = $request->remarks ?? $ticketReturn->remarks;
+        if ($request->has('tracking_id')) {
+            $ticketReturn->tracking_id = $request->tracking_id;
+        }
         $ticketReturn->save();
 
         if ($oldStatus !== $ticketReturn->status) {
@@ -106,5 +117,12 @@ class LogisticsController extends Controller
         }
 
         return response()->json(['message' => 'Return updated successfully']);
+    }
+
+    // ponytail: admins can edit any record, LEs only their own — no policy class needed
+    private function canEdit($user, $leId): bool
+    {
+        if ($user->role === 'admin') return true;
+        return $user->role === 'le' && $leId !== null && (int) $leId === (int) $user->id;
     }
 }
