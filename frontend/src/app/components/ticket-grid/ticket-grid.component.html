@@ -350,10 +350,10 @@
                 <h5 style="margin-top:0; margin-bottom:1rem;">Replacement Request Details</h5>
                 <div class="form-grid-modal">
                   <div class="form-group"><label class="form-label">Order ID</label><input type="text" class="form-control" [value]="updateForm.order_id" disabled></div>
-                  <div class="form-group"><label class="form-label">Customer Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.customer_name" [disabled]="!isAdmin && !selectedTicket?.profile_edit_approved"></div>
-                  <div class="form-group"><label class="form-label">Customer Contact</label><input type="text" class="form-control" [(ngModel)]="updateForm.customer_phone" [disabled]="!isAdmin && !selectedTicket?.profile_edit_approved"></div>
-                  <div class="form-group"><label class="form-label">Customer Email</label><input type="text" class="form-control" [(ngModel)]="updateForm.customer_email" [disabled]="!isAdmin && !selectedTicket?.profile_edit_approved"></div>
-                  <div class="form-group" style="grid-column: span 2;"><label class="form-label">Customer Address</label><textarea class="form-control" [(ngModel)]="updateForm.address" [disabled]="!isAdmin && !selectedTicket?.profile_edit_approved" rows="1"></textarea></div>
+                  <div class="form-group"><label class="form-label">Customer Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.customer_name"></div>
+                  <div class="form-group"><label class="form-label">Customer Contact</label><input type="text" class="form-control" [(ngModel)]="updateForm.customer_phone"></div>
+                  <div class="form-group"><label class="form-label">Customer Email</label><input type="text" class="form-control" [(ngModel)]="updateForm.customer_email"></div>
+                  <div class="form-group" style="grid-column: span 2;"><label class="form-label">Customer Address</label><textarea class="form-control" [(ngModel)]="updateForm.address" rows="1"></textarea></div>
                   <div class="form-group"><label class="form-label">CSE Name</label><input type="text" class="form-control" [value]="selectedTicket?.executive?.name || selectedTicket?.agent_name || ''" disabled></div>
 
                   <div class="form-group"><label class="form-label">Assign Logistics Exec.</label>

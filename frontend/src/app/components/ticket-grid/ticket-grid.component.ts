@@ -445,8 +445,9 @@ export class TicketGridComponent implements OnInit {
       remarks: this.updateForm.remarks
     };
     
-    // Add profile fields if Admin or if CSE has profile edit approval
-    if (this.isAdmin || this.selectedTicket.profile_edit_approved) {
+    // Add profile fields if Admin, if CSE has profile edit approval, or when
+    // they ride along with a replacement request (dispatch needs the address)
+    if (this.isAdmin || this.selectedTicket.profile_edit_approved || this.updateForm.logistics_type === 'replacement') {
       payload.customer_name = this.updateForm.customer_name;
       payload.customer_email = this.updateForm.customer_email;
       payload.customer_phone = this.updateForm.customer_phone;

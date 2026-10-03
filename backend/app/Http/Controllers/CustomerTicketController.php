@@ -120,16 +120,20 @@ class CustomerTicketController extends Controller
             }
         }
 
+        $logisticsType = $request->input('logistics_type');
+
         if ($user->role === 'cse') {
             if ($updatingCore && $ticket->has_been_updated && !$ticket->edit_approved) {
                 return response()->json(['message' => 'Edit approval required for general fields'], 403);
             }
-            if ($updatingProfile && !$ticket->profile_edit_approved) {
+            // ponytail: dispatch details travel with the customer's address — a replacement/
+            // return request may update contact fields without a separate profile approval
+            $isLogisticsRequest = in_array($logisticsType, ['replacement', 'return'], true);
+            if ($updatingProfile && !$ticket->profile_edit_approved && !$isLogisticsRequest) {
                 return response()->json(['message' => 'Edit approval required for profile fields'], 403);
             }
         }
 
-        $logisticsType = $request->input('logistics_type');
         $replacementData = $request->input('replacement_form');
         $returnData = $request->input('return_form');
 
