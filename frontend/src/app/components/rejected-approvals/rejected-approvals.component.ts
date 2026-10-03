@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NotificationService } from '../../services/notification.service';
 import { AuthService } from '../../services/auth.service';
+import { productNameOptions, productSkuOptions, pickCatalogProduct, ORDERED_PRODUCT_KEYS, REPLACEMENT_PRODUCT_KEYS } from '../../product-options';
 
 @Component({
   selector: 'app-rejected-approvals',
@@ -19,6 +20,13 @@ export class RejectedApprovalsComponent implements OnInit {
   user: any;
   statuses: any[] = [];
   executives: any[] = [];
+  products: any[] = [];
+
+  // product dropdowns — shared helpers from product-options.ts
+  nameOptions = (current: string) => productNameOptions(this.products, current);
+  skuOptions = (current: string) => productSkuOptions(this.products, current);
+  pickOrdered = (form: any, by: 'name' | 'sku', value: string) => pickCatalogProduct(this.products, form, ORDERED_PRODUCT_KEYS, by, value);
+  pickReplacement = (form: any, by: 'name' | 'sku', value: string) => pickCatalogProduct(this.products, form, REPLACEMENT_PRODUCT_KEYS, by, value);
   
   // Filter states
   searchTerm = '';
@@ -46,6 +54,7 @@ export class RejectedApprovalsComponent implements OnInit {
     this.user = this.authService.getUserData();
     this.loadData();
     this.http.get<any[]>(`${this.apiUrl}/le-list`).subscribe(d => this.executives = d);
+    this.http.get<any[]>(`${this.apiUrl}/products`).subscribe(d => this.products = d);
   }
 
   loadData() {

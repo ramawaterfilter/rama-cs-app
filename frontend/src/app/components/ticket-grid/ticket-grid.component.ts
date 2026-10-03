@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
+import { productNameOptions, productSkuOptions, pickCatalogProduct, ORDERED_PRODUCT_KEYS, REPLACEMENT_PRODUCT_KEYS } from '../../product-options';
 
 @Component({
   selector: 'app-ticket-grid',
@@ -42,6 +43,13 @@ export class TicketGridComponent implements OnInit {
   countries: any[] = [];
   outreaches: any[] = [];
   purchaseStores: any[] = [];
+  products: any[] = [];
+
+  // product dropdowns — shared helpers from product-options.ts
+  nameOptions = (current: string) => productNameOptions(this.products, current);
+  skuOptions = (current: string) => productSkuOptions(this.products, current);
+  pickOrdered = (form: any, by: 'name' | 'sku', value: string) => pickCatalogProduct(this.products, form, ORDERED_PRODUCT_KEYS, by, value);
+  pickReplacement = (form: any, by: 'name' | 'sku', value: string) => pickCatalogProduct(this.products, form, REPLACEMENT_PRODUCT_KEYS, by, value);
 
   // Modal state
   showModal = false;
@@ -205,6 +213,11 @@ export class TicketGridComponent implements OnInit {
     this.http.get<any[]>(`${this.apiUrl}/purchase-stores`).subscribe({
       next: (d) => this.purchaseStores = d,
       error: (err) => console.error('Failed to load purchase-stores:', err)
+    });
+
+    this.http.get<any[]>(`${this.apiUrl}/products`).subscribe({
+      next: (d) => this.products = d,
+      error: (err) => console.error('Failed to load products:', err)
     });
 
 

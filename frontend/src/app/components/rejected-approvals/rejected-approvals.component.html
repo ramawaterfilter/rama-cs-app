@@ -109,10 +109,30 @@
           <h4 style="margin-top:0; color:var(--primary-color);">Replacement Form</h4>
           <div class="form-grid-modal">
             <div class="form-group"><label class="form-label">Assign LE *</label><select class="form-control" [(ngModel)]="updateForm.replacement_form.le_id"><option value="">— Select LE —</option><option *ngFor="let ex of executives" [value]="ex.id">{{ ex.name }}</option></select></div>
-            <div class="form-group"><label class="form-label">Ordered Product Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.ordered_product_name"></div>
-            <div class="form-group"><label class="form-label">Ordered Product SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.ordered_product_sku"></div>
-            <div class="form-group"><label class="form-label">Replacement Product</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_product_name"></div>
-            <div class="form-group"><label class="form-label">Replacement SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_product_sku"></div>
+            <div class="form-group"><label class="form-label">Ordered Product Name</label>
+              <select class="form-control" [ngModel]="updateForm.replacement_form.ordered_product_name" (ngModelChange)="pickOrdered(updateForm.replacement_form, 'name', $event)">
+                <option value="">— Select Product —</option>
+                <option *ngFor="let o of nameOptions(updateForm.replacement_form.ordered_product_name)" [value]="o.value">{{ o.label }}</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Ordered Product SKU</label>
+              <select class="form-control" [ngModel]="updateForm.replacement_form.ordered_product_sku" (ngModelChange)="pickOrdered(updateForm.replacement_form, 'sku', $event)">
+                <option value="">— Select SKU —</option>
+                <option *ngFor="let o of skuOptions(updateForm.replacement_form.ordered_product_sku)" [value]="o.value">{{ o.label }}</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Replacement Product</label>
+              <select class="form-control" [ngModel]="updateForm.replacement_form.replacement_product_name" (ngModelChange)="pickReplacement(updateForm.replacement_form, 'name', $event)">
+                <option value="">— Select Product —</option>
+                <option *ngFor="let o of nameOptions(updateForm.replacement_form.replacement_product_name)" [value]="o.value">{{ o.label }}</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Replacement SKU</label>
+              <select class="form-control" [ngModel]="updateForm.replacement_form.replacement_product_sku" (ngModelChange)="pickReplacement(updateForm.replacement_form, 'sku', $event)">
+                <option value="">— Select SKU —</option>
+                <option *ngFor="let o of skuOptions(updateForm.replacement_form.replacement_product_sku)" [value]="o.value">{{ o.label }}</option>
+              </select>
+            </div>
             <div class="form-group"><label class="form-label">Qty</label><input type="number" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_qty"></div>
             <div class="form-group" style="grid-column: span 2;"><label class="form-label">Reason</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_reason"></div>
             <div class="form-group" style="grid-column: span 2;"><label class="form-label">Others</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.others"></div>
@@ -123,8 +143,18 @@
           <h4 style="margin-top:0; color:var(--primary-color);">Return Form</h4>
           <div class="form-grid-modal">
             <div class="form-group"><label class="form-label">Assign LE *</label><select class="form-control" [(ngModel)]="updateForm.return_form.le_id"><option value="">— Select LE —</option><option *ngFor="let ex of executives" [value]="ex.id">{{ ex.name }}</option></select></div>
-            <div class="form-group"><label class="form-label">Ordered Product Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.ordered_product_name"></div>
-            <div class="form-group"><label class="form-label">Ordered Product SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.ordered_product_sku"></div>
+            <div class="form-group"><label class="form-label">Ordered Product Name</label>
+              <select class="form-control" [ngModel]="updateForm.return_form.ordered_product_name" (ngModelChange)="pickOrdered(updateForm.return_form, 'name', $event)">
+                <option value="">— Select Product —</option>
+                <option *ngFor="let o of nameOptions(updateForm.return_form.ordered_product_name)" [value]="o.value">{{ o.label }}</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Ordered Product SKU</label>
+              <select class="form-control" [ngModel]="updateForm.return_form.ordered_product_sku" (ngModelChange)="pickOrdered(updateForm.return_form, 'sku', $event)">
+                <option value="">— Select SKU —</option>
+                <option *ngFor="let o of skuOptions(updateForm.return_form.ordered_product_sku)" [value]="o.value">{{ o.label }}</option>
+              </select>
+            </div>
             <div class="form-group"><label class="form-label">Marketplace Channel</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.marketplace_channel"></div>
             <div class="form-group"><label class="form-label">Return Reasons</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.return_reasons"></div>
             <div class="form-group"><label class="form-label">Return Date</label><input type="date" class="form-control" [(ngModel)]="updateForm.return_form.return_date"></div>
