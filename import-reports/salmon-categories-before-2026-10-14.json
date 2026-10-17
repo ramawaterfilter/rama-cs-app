@@ -1,0 +1,2512 @@
+{
+  "host": "https://salmon-mule-212046.hostingersite.com",
+  "file": "RAMA Customer Category Sheet - Sheet1.csv",
+  "startedAt": "2026-10-14T07:51:17.419Z",
+  "phase": "preview",
+  "rows": [
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Follow Up",
+      "Sub Category": "Adress confirmation",
+      "Child Category": "Follow up through call"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Follow Up",
+      "Sub Category": "Adress confirmation",
+      "Child Category": "Follow up through email"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Follow Up",
+      "Sub Category": "Purchase inquiry",
+      "Child Category": "Follow up through call"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Follow Up",
+      "Sub Category": "Purchase inquiry",
+      "Child Category": "Follow up through email"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Follow Up",
+      "Sub Category": "Return status",
+      "Child Category": "Follow up through call"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Follow Up",
+      "Sub Category": "Return status",
+      "Child Category": "Follow up through email"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Customer Info",
+      "Sub Category": "Address",
+      "Child Category": "Address change"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Customer Info",
+      "Sub Category": "Address",
+      "Child Category": "confirmation"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Customer Info",
+      "Sub Category": "Address",
+      "Child Category": "email phone number change"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Payment",
+      "Sub Category": "Customer Payment",
+      "Child Category": "Payment Method"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Review",
+      "Sub Category": "Positive",
+      "Child Category": "Thanking Note"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Review",
+      "Sub Category": "Negative Review",
+      "Child Category": "Thanking Note"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Review",
+      "Sub Category": "Email Feedback",
+      "Child Category": "Thanking Note"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Tracking info",
+      "Sub Category": "Shipping Status",
+      "Child Category": "Replacement Tracking Details"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Brand Store",
+      "Sub Category": "Return & Refunds status",
+      "Child Category": "Refund confirmation"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Brand Store",
+      "Sub Category": "Return & Refunds status",
+      "Child Category": "Return tracking confirmation"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Call Status",
+      "Sub Category": "Call Status",
+      "Child Category": "ABC calling"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Customer Request",
+      "Sub Category": "Call back",
+      "Child Category": "Call Back Request"
+    },
+    {
+      "Type of Query": "Communication",
+      "Query Category": "Customer Request",
+      "Sub Category": "Call back",
+      "Child Category": "Talk to expert"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "MFGD Defect",
+      "Sub Category": "Spirit Candles",
+      "Child Category": "Black Particles"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "MFGD Defect",
+      "Sub Category": "Spirit Candles",
+      "Child Category": "Loose WingNut"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "MFGD Defect",
+      "Sub Category": "Spirit Candles",
+      "Child Category": "Slow Filtration"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "MFGD Defect",
+      "Sub Category": "Spirit Candles",
+      "Child Category": "Fast Filtration"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "MFGD Defect",
+      "Sub Category": "Spirit Candles",
+      "Child Category": "Limesacling"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "MFGD Defect",
+      "Sub Category": "Carbon Candles",
+      "Child Category": "Slow Filtration"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "MFGD Defect",
+      "Sub Category": "Carbon Candles",
+      "Child Category": "Fast Filtration"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "MFGD Defect",
+      "Sub Category": "Tap",
+      "Child Category": "Leakage"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Shipping",
+      "Sub Category": "Delivery issues",
+      "Child Category": "Delay in Delivery / Lost package / Lost in transit / Wrong delivery / Delivery Partner Issue / Incorrect address delivery"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Shipping & Logistics",
+      "Sub Category": "Logistics issues",
+      "Child Category": "Delay in Delivery"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Shipping & Logistics",
+      "Sub Category": "Logistics issues",
+      "Child Category": "Lost package"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Shipping & Logistics",
+      "Sub Category": "Logistics issues",
+      "Child Category": "Lost in transit"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Shipping & Logistics",
+      "Sub Category": "Logistics issues",
+      "Child Category": "Delivery Partner Issue"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Shipping & Logistics",
+      "Sub Category": "Logistics issues",
+      "Child Category": "Incorrect Product delivery"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Return",
+      "Sub Category": "Return reason",
+      "Child Category": "Not satisfied"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Return",
+      "Sub Category": "Return reason",
+      "Child Category": "Bad Taste"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Return",
+      "Sub Category": "Return reason",
+      "Child Category": "Bad odor"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Return",
+      "Sub Category": "Return reason",
+      "Child Category": "Black particles"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Return",
+      "Sub Category": "Return reason",
+      "Child Category": "limescale"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Return",
+      "Sub Category": "Return reason",
+      "Child Category": "size issues"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Return",
+      "Sub Category": "Return reason",
+      "Child Category": "Others"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Return",
+      "Sub Category": "Return Instruction",
+      "Child Category": "Return instruction request"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Return",
+      "Sub Category": "Return Instruction",
+      "Child Category": "Return address shared"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Return",
+      "Sub Category": "Return status",
+      "Child Category": "Awaiting logistics confirmation"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "MFGD Defect",
+      "Sub Category": "Filter unit , Refill media , Cartridges or filter elements , Vision tap , Stand , Lid ,Knob , wingnuts and Washers , Water bottle",
+      "Child Category": "Broken, Rusting , Torrn packages , Dent , Scratches , Wobble , Cap Issues"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Brand Store",
+      "Sub Category": "Email Flow Issue",
+      "Child Category": "Communication Not Received"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "Carbon Candles/Spirit Candles",
+      "Child Category": "Bad Taste"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "Carbon Candles/Spirit Candles",
+      "Child Category": "Ultra Fast Filtration"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "Carbon Candles/Spirit Candles",
+      "Child Category": "Slow Filtration"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "Carbon Candles/Spirit Candles",
+      "Child Category": "Black Particles"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "Carbon Candles/Spirit Candles",
+      "Child Category": "Smell issues"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "POSTreat",
+      "Child Category": "Black Particles"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "POSTreat",
+      "Child Category": "White Particales"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Tap",
+      "Child Category": "Vision Tap"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Tap",
+      "Child Category": "SS Tap"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Missing Parts",
+      "Sub Category": "carbon filter elements or cartridges",
+      "Child Category": "Washers and wingnuts"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Missing Parts",
+      "Sub Category": "carbon filter elements or cartridges",
+      "Child Category": "Prime easy tool"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Filter system",
+      "Child Category": "Washers and wingnuts"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Filter system",
+      "Child Category": "Knob"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Filter system",
+      "Child Category": "Air lock vent clips"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Filter system",
+      "Child Category": "hole blockers plugs"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Stand",
+      "Child Category": "SS stand"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "Leakage",
+      "Child Category": "Tap"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "Leakage",
+      "Child Category": "Vision Tap"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "Leakage",
+      "Child Category": "between chambers"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Packaging Defect",
+      "Sub Category": "Smell Issue",
+      "Child Category": "Carton Box"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Packaging Defect",
+      "Sub Category": "Ripped package",
+      "Child Category": "Damaged Box"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Technical Issues",
+      "Sub Category": "Payment Issue",
+      "Child Category": "Double Charge"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Technical Issues",
+      "Sub Category": "Payment Issue",
+      "Child Category": "Payment not validated"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Technical Issues",
+      "Sub Category": "Web Site Issue",
+      "Child Category": "Checkout Issue"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Technical Issues",
+      "Sub Category": "Web Site Issue",
+      "Child Category": "Discount Code Not Working"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Functionality",
+      "Sub Category": "Limescale in filter unit",
+      "Child Category": "Limescale sediment"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Replacement",
+      "Sub Category": "Broken / Missing / Rusting / Dye test Failed / Cloged filters or cartridges / Dent / Adhesive issues / Cap Threading issues , Request",
+      "Child Category": "Carbon Filter elements or cartridges / refill media / lid / Filter unit , Accessories / POSTreat ,"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Availability",
+      "Sub Category": "Out of Stock issues",
+      "Child Category": "Product list - cart"
+    },
+    {
+      "Type of Query": "Complaint",
+      "Query Category": "Availability",
+      "Sub Category": "Out of Stock issues",
+      "Child Category": "accessories"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Functionality",
+      "Sub Category": "Carbon Filters /Limescale in filter unit",
+      "Child Category": "Bad Taste / Limescale sediment"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Filter Unit",
+      "Child Category": "Product Question"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "POSTreat",
+      "Child Category": "Product Question"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Cartridge",
+      "Child Category": "Product Question"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Accessories",
+      "Child Category": "Product Question"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Compatability",
+      "Sub Category": "Compatability Inquiry",
+      "Child Category": "Compatable with Others"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Order Enquiry",
+      "Sub Category": "Shipping Status",
+      "Child Category": "Tracking Details"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Order Enquiry",
+      "Sub Category": "Order status",
+      "Child Category": "Tracking Details"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Payment",
+      "Sub Category": "Payment Method",
+      "Child Category": "Subscription Payment Method"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Certification",
+      "Sub Category": "Filters",
+      "Child Category": "Lab Test Reports"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Certification",
+      "Sub Category": "Cartridges",
+      "Child Category": "Lab Test Reports"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Availability",
+      "Sub Category": "Stock Availability / Refill media, Catridges, Filter system, POSTreat filter cartridges",
+      "Child Category": "In-stock/ Out of stock"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Customer Discount",
+      "Sub Category": "Discount Code",
+      "Child Category": "Discount"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Shipping Info",
+      "Sub Category": "Delivery Locations",
+      "Child Category": "Others"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Purchase",
+      "Sub Category": "Product Price",
+      "Child Category": "Purchase inquiry"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Lab report",
+      "Sub Category": "Filter System / Cartridges",
+      "Child Category": "Requesting Lab report"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Feedback",
+      "Sub Category": "Suggestion",
+      "Child Category": "Product improvement"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Referal",
+      "Sub Category": "Affiliate",
+      "Child Category": "Affiliate Program"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Inquiry",
+      "Child Category": "Filter Unit"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Inquiry",
+      "Child Category": "POSTreat"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Inquiry",
+      "Child Category": "Cartridge"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Inquiry",
+      "Child Category": "Accessories"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Inquiry",
+      "Child Category": "Product Warranty"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Dimensions and size Variant",
+      "Child Category": "Filter Unit/POSTreat/Cartridge/Accessories"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Vision Tap",
+      "Child Category": "Filter Unit/POSTreat/Cartridge/Accessories"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Exchange",
+      "Sub Category": "Upgrade/Downgrade",
+      "Child Category": "Filter System Unit / Accessories"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Testing Inquiry",
+      "Sub Category": "Cartridges",
+      "Child Category": "Turmeric Test"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Pricing",
+      "Child Category": "Filter Unit"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Pricing",
+      "Child Category": "POSTreat"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Pricing",
+      "Child Category": "Cartridge"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Pricing",
+      "Child Category": "Accessories"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Customer Invoice",
+      "Sub Category": "Invoice Copy",
+      "Child Category": "Requesting Invoice"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Customer Invoice",
+      "Sub Category": "Invoice Copy",
+      "Child Category": "Invoice shared"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Instruction manual",
+      "Sub Category": "French instruction manual",
+      "Child Category": "Requestiong instruction manual"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Instruction manual",
+      "Sub Category": "French instruction manual",
+      "Child Category": "Instruction manual shared"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Accessories",
+      "Child Category": "Washers and Wignut"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Accessories",
+      "Child Category": "TAP Washers"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Accessories",
+      "Child Category": "Air lock"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Accessories",
+      "Child Category": "Knob screw"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Missing Parts",
+      "Sub Category": "Accessories",
+      "Child Category": "Hole blockers"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Assembly",
+      "Sub Category": "Installation Guidance",
+      "Child Category": "Accessories"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Assembly",
+      "Sub Category": "Installation Guidance",
+      "Child Category": "Accessories"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Filtration speed Fast / slow",
+      "Child Category": "Filter Unit/POSTreat/Cartridge/Accessories"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Maintenance",
+      "Child Category": "Filter Unit"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Maintenance",
+      "Child Category": "POSTreat"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Maintenance",
+      "Child Category": "Cartridge"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Product Discription",
+      "Sub Category": "Product Maintenance",
+      "Child Category": "Accessories"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Filters/Cartridges",
+      "Sub Category": "Cleaning Spirit Candles",
+      "Child Category": "Cleaning Instruction"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Filters/Cartridges",
+      "Sub Category": "Priming Carbon filters",
+      "Child Category": "Priming Instruction"
+    },
+    {
+      "Type of Query": "Inquiry",
+      "Query Category": "Filters/Cartridges",
+      "Sub Category": "POSTreat filters or catridges",
+      "Child Category": "Priming Instruction"
+    }
+  ],
+  "before": [],
+  "typesBefore": [
+    {
+      "id": 1,
+      "name": "Inquiry",
+      "is_active": 1,
+      "created_at": "2026-09-20T18:52:29.000000Z",
+      "updated_at": "2026-09-20T18:52:29.000000Z"
+    },
+    {
+      "id": 2,
+      "name": "Complaint",
+      "is_active": 1,
+      "created_at": "2026-09-20T18:52:29.000000Z",
+      "updated_at": "2026-09-20T18:52:29.000000Z"
+    }
+  ],
+  "types": [
+    {
+      "id": 1,
+      "name": "Inquiry",
+      "is_active": 1,
+      "created_at": "2026-09-20T18:52:29.000000Z",
+      "updated_at": "2026-09-20T18:52:29.000000Z"
+    },
+    {
+      "id": 2,
+      "name": "Complaint",
+      "is_active": 1,
+      "created_at": "2026-09-20T18:52:29.000000Z",
+      "updated_at": "2026-09-20T18:52:29.000000Z"
+    }
+  ],
+  "nodes": [
+    {
+      "key": "[\"communication\",\"category\",\"follow up\"]",
+      "name": "Follow Up",
+      "type": "category",
+      "queryType": "Communication",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"communication\",\"category\",\"customer info\"]",
+      "name": "Customer Info",
+      "type": "category",
+      "queryType": "Communication",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"communication\",\"category\",\"payment\"]",
+      "name": "Payment",
+      "type": "category",
+      "queryType": "Communication",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"communication\",\"category\",\"review\"]",
+      "name": "Review",
+      "type": "category",
+      "queryType": "Communication",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"communication\",\"category\",\"tracking info\"]",
+      "name": "Tracking info",
+      "type": "category",
+      "queryType": "Communication",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"communication\",\"category\",\"brand store\"]",
+      "name": "Brand Store",
+      "type": "category",
+      "queryType": "Communication",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"communication\",\"category\",\"call status\"]",
+      "name": "Call Status",
+      "type": "category",
+      "queryType": "Communication",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"communication\",\"category\",\"customer request\"]",
+      "name": "Customer Request",
+      "type": "category",
+      "queryType": "Communication",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"mfgd defect\"]",
+      "name": "MFGD Defect",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"shipping\"]",
+      "name": "Shipping",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"shipping & logistics\"]",
+      "name": "Shipping & Logistics",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"return\"]",
+      "name": "Return",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"brand store\"]",
+      "name": "Brand Store",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"functionality\"]",
+      "name": "Functionality",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"missing parts\"]",
+      "name": "Missing Parts",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"packaging defect\"]",
+      "name": "Packaging Defect",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"technical issues\"]",
+      "name": "Technical Issues",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"replacement\"]",
+      "name": "Replacement",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"complaint\",\"category\",\"availability\"]",
+      "name": "Availability",
+      "type": "category",
+      "queryType": "Complaint",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"functionality\"]",
+      "name": "Functionality",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"product discription\"]",
+      "name": "Product Discription",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"compatability\"]",
+      "name": "Compatability",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"order enquiry\"]",
+      "name": "Order Enquiry",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"payment\"]",
+      "name": "Payment",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"certification\"]",
+      "name": "Certification",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"product availability\"]",
+      "name": "Product Availability",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"customer discount\"]",
+      "name": "Customer Discount",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"shipping info\"]",
+      "name": "Shipping Info",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"product purchase\"]",
+      "name": "Product Purchase",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"lab report\"]",
+      "name": "Lab report",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"feedback\"]",
+      "name": "Feedback",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"referal\"]",
+      "name": "Referal",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"product exchange\"]",
+      "name": "Product Exchange",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"testing inquiry\"]",
+      "name": "Testing Inquiry",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"customer invoice\"]",
+      "name": "Customer Invoice",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"instruction manual\"]",
+      "name": "Instruction manual",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"missing parts\"]",
+      "name": "Missing Parts",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"assembly\"]",
+      "name": "Assembly",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"inquiry\",\"category\",\"filters/cartridges\"]",
+      "name": "Filters/Cartridges",
+      "type": "category",
+      "queryType": "Inquiry",
+      "parentKeys": []
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"adress confirmation\"]",
+      "name": "Adress confirmation",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"follow up\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"purchase inquiry\"]",
+      "name": "Purchase inquiry",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"follow up\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"return status\"]",
+      "name": "Return status",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"follow up\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"address\"]",
+      "name": "Address",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"customer info\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"customer payment\"]",
+      "name": "Customer Payment",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"payment\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"positive\"]",
+      "name": "Positive",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"review\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"negative review\"]",
+      "name": "Negative Review",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"review\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"email feedback\"]",
+      "name": "Email Feedback",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"review\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"shipping status\"]",
+      "name": "Shipping Status",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"tracking info\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"return & refunds status\"]",
+      "name": "Return & Refunds status",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"brand store\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"call status\"]",
+      "name": "Call Status",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"call status\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"subcategory\",\"call back\"]",
+      "name": "Call back",
+      "type": "subcategory",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"category\",\"customer request\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"spirit candles\"]",
+      "name": "Spirit Candles",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"mfgd defect\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"carbon candles\"]",
+      "name": "Carbon Candles",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"mfgd defect\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"tap\"]",
+      "name": "Tap",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"mfgd defect\"]",
+        "[\"complaint\",\"category\",\"missing parts\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"delivery issues\"]",
+      "name": "Delivery issues",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"shipping\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"logistics issues\"]",
+      "name": "Logistics issues",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"shipping & logistics\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"return reason\"]",
+      "name": "Return reason",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"return\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"return instruction\"]",
+      "name": "Return Instruction",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"return\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"return status\"]",
+      "name": "Return status",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"return\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"filter unit , refill media , cartridges or filter elements , vision tap , stand , lid ,knob , wingnuts and washers , water bottle\"]",
+      "name": "Filter unit , Refill media , Cartridges or filter elements , Vision tap , Stand , Lid ,Knob , wingnuts and Washers , Water bottle",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"mfgd defect\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"email flow issue\"]",
+      "name": "Email Flow Issue",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"brand store\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"carbon candles/spirit candles\"]",
+      "name": "Carbon Candles/Spirit Candles",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"functionality\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"postreat\"]",
+      "name": "POSTreat",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"functionality\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"carbon filter elements or cartridges\"]",
+      "name": "carbon filter elements or cartridges",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"missing parts\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"filter system\"]",
+      "name": "Filter system",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"missing parts\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"stand\"]",
+      "name": "Stand",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"missing parts\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"leakage\"]",
+      "name": "Leakage",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"functionality\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"smell issue\"]",
+      "name": "Smell Issue",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"packaging defect\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"ripped package\"]",
+      "name": "Ripped package",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"packaging defect\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"payment issue\"]",
+      "name": "Payment Issue",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"technical issues\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"web site issue\"]",
+      "name": "Web Site Issue",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"technical issues\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"limescale in filter unit\"]",
+      "name": "Limescale in filter unit",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"functionality\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"broken / missing / rusting / dye test failed / cloged filters or cartridges / dent / adhesive issues / cap threading issues , request\"]",
+      "name": "Broken / Missing / Rusting / Dye test Failed / Cloged filters or cartridges / Dent / Adhesive issues / Cap Threading issues , Request",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"replacement\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"subcategory\",\"out of stock issues\"]",
+      "name": "Out of Stock issues",
+      "type": "subcategory",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"category\",\"availability\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"carbon filters /limescale in filter unit\"]",
+      "name": "Carbon Filters /Limescale in filter unit",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"functionality\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"filter unit\"]",
+      "name": "Filter Unit",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product discription\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"postreat\"]",
+      "name": "POSTreat",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product discription\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"cartridge\"]",
+      "name": "Cartridge",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product discription\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"accessories\"]",
+      "name": "Accessories",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product discription\"]",
+        "[\"inquiry\",\"category\",\"missing parts\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"compatability inquiry\"]",
+      "name": "Compatability Inquiry",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"compatability\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"shipping status\"]",
+      "name": "Shipping Status",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"order enquiry\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"order status\"]",
+      "name": "Order status",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"order enquiry\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"payment method\"]",
+      "name": "Payment Method",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"payment\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"filters\"]",
+      "name": "Filters",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"certification\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"cartridges\"]",
+      "name": "Cartridges",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"certification\"]",
+        "[\"inquiry\",\"category\",\"testing inquiry\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"stock availability / refill media, catridges, filter system, postreat filter cartridges\"]",
+      "name": "Stock Availability / Refill media, Catridges, Filter system, POSTreat filter cartridges",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product availability\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"discount code\"]",
+      "name": "Discount Code",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"customer discount\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"delivery locations\"]",
+      "name": "Delivery Locations",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"shipping info\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"product price\"]",
+      "name": "Product Price",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product purchase\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"filter system / cartridges\"]",
+      "name": "Filter System / Cartridges",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"lab report\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"suggestion\"]",
+      "name": "Suggestion",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"feedback\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"affiliate\"]",
+      "name": "Affiliate",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"referal\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"product inquiry\"]",
+      "name": "Product Inquiry",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product discription\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"product dimensions and size variant\"]",
+      "name": "Product Dimensions and size Variant",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product discription\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"vision tap\"]",
+      "name": "Vision Tap",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product discription\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"upgrade/downgrade\"]",
+      "name": "Upgrade/Downgrade",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product exchange\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"product pricing\"]",
+      "name": "Product Pricing",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product discription\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"invoice copy\"]",
+      "name": "Invoice Copy",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"customer invoice\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"french instruction manual\"]",
+      "name": "French instruction manual",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"instruction manual\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"installation guidance\"]",
+      "name": "Installation Guidance",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"assembly\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"filtration speed fast / slow\"]",
+      "name": "Filtration speed Fast / slow",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product discription\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"product maintenance\"]",
+      "name": "Product Maintenance",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"product discription\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"cleaning spirit candles\"]",
+      "name": "Cleaning Spirit Candles",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"filters/cartridges\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"priming carbon filters\"]",
+      "name": "Priming Carbon filters",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"filters/cartridges\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"subcategory\",\"postreat filters or catridges\"]",
+      "name": "POSTreat filters or catridges",
+      "type": "subcategory",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"category\",\"filters/cartridges\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"follow up through call\"]",
+      "name": "Follow up through call",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"adress confirmation\"]",
+        "[\"communication\",\"subcategory\",\"purchase inquiry\"]",
+        "[\"communication\",\"subcategory\",\"return status\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"follow up through email\"]",
+      "name": "Follow up through email",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"adress confirmation\"]",
+        "[\"communication\",\"subcategory\",\"purchase inquiry\"]",
+        "[\"communication\",\"subcategory\",\"return status\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"address change\"]",
+      "name": "Address change",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"address\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"confirmation\"]",
+      "name": "confirmation",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"address\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"email phone number change\"]",
+      "name": "email phone number change",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"address\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"payment method\"]",
+      "name": "Payment Method",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"customer payment\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"thanking note\"]",
+      "name": "Thanking Note",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"positive\"]",
+        "[\"communication\",\"subcategory\",\"negative review\"]",
+        "[\"communication\",\"subcategory\",\"email feedback\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"replacement tracking details\"]",
+      "name": "Replacement Tracking Details",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"shipping status\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"refund confirmation\"]",
+      "name": "Refund confirmation",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"return & refunds status\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"return tracking confirmation\"]",
+      "name": "Return tracking confirmation",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"return & refunds status\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"abc calling\"]",
+      "name": "ABC calling",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"call status\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"call back request\"]",
+      "name": "Call Back Request",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"call back\"]"
+      ]
+    },
+    {
+      "key": "[\"communication\",\"child\",\"talk to expert\"]",
+      "name": "Talk to expert",
+      "type": "child",
+      "queryType": "Communication",
+      "parentKeys": [
+        "[\"communication\",\"subcategory\",\"call back\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"black particles\"]",
+      "name": "Black Particles",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"spirit candles\"]",
+        "[\"complaint\",\"subcategory\",\"return reason\"]",
+        "[\"complaint\",\"subcategory\",\"carbon candles/spirit candles\"]",
+        "[\"complaint\",\"subcategory\",\"postreat\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"loose wingnut\"]",
+      "name": "Loose WingNut",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"spirit candles\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"slow filtration\"]",
+      "name": "Slow Filtration",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"spirit candles\"]",
+        "[\"complaint\",\"subcategory\",\"carbon candles\"]",
+        "[\"complaint\",\"subcategory\",\"carbon candles/spirit candles\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"fast filtration\"]",
+      "name": "Fast Filtration",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"spirit candles\"]",
+        "[\"complaint\",\"subcategory\",\"carbon candles\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"limesacling\"]",
+      "name": "Limesacling",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"spirit candles\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"leakage\"]",
+      "name": "Leakage",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"tap\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"delay in delivery / lost package / lost in transit / wrong delivery / delivery partner issue / incorrect address delivery\"]",
+      "name": "Delay in Delivery / Lost package / Lost in transit / Wrong delivery / Delivery Partner Issue / Incorrect address delivery",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"delivery issues\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"delay in delivery\"]",
+      "name": "Delay in Delivery",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"logistics issues\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"lost package\"]",
+      "name": "Lost package",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"logistics issues\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"lost in transit\"]",
+      "name": "Lost in transit",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"logistics issues\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"delivery partner issue\"]",
+      "name": "Delivery Partner Issue",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"logistics issues\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"incorrect product delivery\"]",
+      "name": "Incorrect Product delivery",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"logistics issues\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"not satisfied\"]",
+      "name": "Not satisfied",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"return reason\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"bad taste\"]",
+      "name": "Bad Taste",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"return reason\"]",
+        "[\"complaint\",\"subcategory\",\"carbon candles/spirit candles\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"bad odor\"]",
+      "name": "Bad odor",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"return reason\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"limescale\"]",
+      "name": "limescale",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"return reason\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"size issues\"]",
+      "name": "size issues",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"return reason\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"others\"]",
+      "name": "Others",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"return reason\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"return instruction request\"]",
+      "name": "Return instruction request",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"return instruction\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"return address shared\"]",
+      "name": "Return address shared",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"return instruction\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"awaiting logistics confirmation\"]",
+      "name": "Awaiting logistics confirmation",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"return status\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"broken, rusting , torrn packages , dent , scratches , wobble , cap issues\"]",
+      "name": "Broken, Rusting , Torrn packages , Dent , Scratches , Wobble , Cap Issues",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"filter unit , refill media , cartridges or filter elements , vision tap , stand , lid ,knob , wingnuts and washers , water bottle\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"communication not received\"]",
+      "name": "Communication Not Received",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"email flow issue\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"ultra fast filtration\"]",
+      "name": "Ultra Fast Filtration",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"carbon candles/spirit candles\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"smell issues\"]",
+      "name": "Smell issues",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"carbon candles/spirit candles\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"white particales\"]",
+      "name": "White Particales",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"postreat\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"vision tap\"]",
+      "name": "Vision Tap",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"tap\"]",
+        "[\"complaint\",\"subcategory\",\"leakage\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"ss tap\"]",
+      "name": "SS Tap",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"tap\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"washers and wingnuts\"]",
+      "name": "Washers and wingnuts",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"carbon filter elements or cartridges\"]",
+        "[\"complaint\",\"subcategory\",\"filter system\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"prime easy tool\"]",
+      "name": "Prime easy tool",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"carbon filter elements or cartridges\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"knob\"]",
+      "name": "Knob",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"filter system\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"air lock vent clips\"]",
+      "name": "Air lock vent clips",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"filter system\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"hole blockers plugs\"]",
+      "name": "hole blockers plugs",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"filter system\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"ss stand\"]",
+      "name": "SS stand",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"stand\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"tap\"]",
+      "name": "Tap",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"leakage\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"between chambers\"]",
+      "name": "between chambers",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"leakage\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"carton box\"]",
+      "name": "Carton Box",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"smell issue\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"damaged box\"]",
+      "name": "Damaged Box",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"ripped package\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"double charge\"]",
+      "name": "Double Charge",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"payment issue\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"payment not validated\"]",
+      "name": "Payment not validated",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"payment issue\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"checkout issue\"]",
+      "name": "Checkout Issue",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"web site issue\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"discount code not working\"]",
+      "name": "Discount Code Not Working",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"web site issue\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"limescale sediment\"]",
+      "name": "Limescale sediment",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"limescale in filter unit\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"carbon filter elements or cartridges / refill media / lid / filter unit , accessories / postreat ,\"]",
+      "name": "Carbon Filter elements or cartridges / refill media / lid / Filter unit , Accessories / POSTreat ,",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"broken / missing / rusting / dye test failed / cloged filters or cartridges / dent / adhesive issues / cap threading issues , request\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"product list - cart\"]",
+      "name": "Product list - cart",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"out of stock issues\"]"
+      ]
+    },
+    {
+      "key": "[\"complaint\",\"child\",\"accessories\"]",
+      "name": "accessories",
+      "type": "child",
+      "queryType": "Complaint",
+      "parentKeys": [
+        "[\"complaint\",\"subcategory\",\"out of stock issues\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"bad taste / limescale sediment\"]",
+      "name": "Bad Taste / Limescale sediment",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"carbon filters /limescale in filter unit\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"product question\"]",
+      "name": "Product Question",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"filter unit\"]",
+        "[\"inquiry\",\"subcategory\",\"postreat\"]",
+        "[\"inquiry\",\"subcategory\",\"cartridge\"]",
+        "[\"inquiry\",\"subcategory\",\"accessories\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"compatable with others\"]",
+      "name": "Compatable with Others",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"compatability inquiry\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"tracking details\"]",
+      "name": "Tracking Details",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"shipping status\"]",
+        "[\"inquiry\",\"subcategory\",\"order status\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"subscription payment method\"]",
+      "name": "Subscription Payment Method",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"payment method\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"lab test reports\"]",
+      "name": "Lab Test Reports",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"filters\"]",
+        "[\"inquiry\",\"subcategory\",\"cartridges\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"in-stock/ out of stock\"]",
+      "name": "In-stock/ Out of stock",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"stock availability / refill media, catridges, filter system, postreat filter cartridges\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"discount\"]",
+      "name": "Discount",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"discount code\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"others\"]",
+      "name": "Others",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"delivery locations\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"purchase inquiry\"]",
+      "name": "Purchase inquiry",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"product price\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"requesting lab report\"]",
+      "name": "Requesting Lab report",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"filter system / cartridges\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"product improvement\"]",
+      "name": "Product improvement",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"suggestion\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"affiliate program\"]",
+      "name": "Affiliate Program",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"affiliate\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"filter unit\"]",
+      "name": "Filter Unit",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"product inquiry\"]",
+        "[\"inquiry\",\"subcategory\",\"product pricing\"]",
+        "[\"inquiry\",\"subcategory\",\"product maintenance\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"postreat\"]",
+      "name": "POSTreat",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"product inquiry\"]",
+        "[\"inquiry\",\"subcategory\",\"product pricing\"]",
+        "[\"inquiry\",\"subcategory\",\"product maintenance\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"cartridge\"]",
+      "name": "Cartridge",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"product inquiry\"]",
+        "[\"inquiry\",\"subcategory\",\"product pricing\"]",
+        "[\"inquiry\",\"subcategory\",\"product maintenance\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"accessories\"]",
+      "name": "Accessories",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"product inquiry\"]",
+        "[\"inquiry\",\"subcategory\",\"product pricing\"]",
+        "[\"inquiry\",\"subcategory\",\"installation guidance\"]",
+        "[\"inquiry\",\"subcategory\",\"product maintenance\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"product warranty\"]",
+      "name": "Product Warranty",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"product inquiry\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"filter unit/postreat/cartridge/accessories\"]",
+      "name": "Filter Unit/POSTreat/Cartridge/Accessories",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"product dimensions and size variant\"]",
+        "[\"inquiry\",\"subcategory\",\"vision tap\"]",
+        "[\"inquiry\",\"subcategory\",\"filtration speed fast / slow\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"filter system unit / accessories\"]",
+      "name": "Filter System Unit / Accessories",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"upgrade/downgrade\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"turmeric test\"]",
+      "name": "Turmeric Test",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"cartridges\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"requesting invoice\"]",
+      "name": "Requesting Invoice",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"invoice copy\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"invoice shared\"]",
+      "name": "Invoice shared",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"invoice copy\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"requestiong instruction manual\"]",
+      "name": "Requestiong instruction manual",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"french instruction manual\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"instruction manual shared\"]",
+      "name": "Instruction manual shared",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"french instruction manual\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"washers and wignut\"]",
+      "name": "Washers and Wignut",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"accessories\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"tap washers\"]",
+      "name": "TAP Washers",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"accessories\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"air lock\"]",
+      "name": "Air lock",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"accessories\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"knob screw\"]",
+      "name": "Knob screw",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"accessories\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"hole blockers\"]",
+      "name": "Hole blockers",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"accessories\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"cleaning instruction\"]",
+      "name": "Cleaning Instruction",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"cleaning spirit candles\"]"
+      ]
+    },
+    {
+      "key": "[\"inquiry\",\"child\",\"priming instruction\"]",
+      "name": "Priming Instruction",
+      "type": "child",
+      "queryType": "Inquiry",
+      "parentKeys": [
+        "[\"inquiry\",\"subcategory\",\"priming carbon filters\"]",
+        "[\"inquiry\",\"subcategory\",\"postreat filters or catridges\"]"
+      ]
+    }
+  ],
+  "journal": [],
+  "results": [],
+  "createdTypes": [],
+  "index": 0
+}

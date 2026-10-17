@@ -1,0 +1,125 @@
+Type of Query,Query Category,Sub Category,Child Category
+Communication,Follow Up,Adress confirmation,Follow up through call
+Communication,Follow Up,Adress confirmation,Follow up through email
+Communication,Follow Up,Purchase inquiry,Follow up through call
+Communication,Follow Up,Purchase inquiry,Follow up through email
+Communication,Follow Up,Return status,Follow up through call
+Communication,Follow Up,Return status,Follow up through email
+Communication,Customer Info,Address,Address change
+Communication,Customer Info,Address,confirmation
+Communication,Customer Info,Address,email phone number change
+Communication,Payment,Customer Payment,Payment Method
+Communication,Review,Positive,Thanking Note
+Communication,Review,Negative Review,Thanking Note
+Communication,Review,Email Feedback,Thanking Note
+Communication,Tracking info,Shipping Status,Replacement Tracking Details
+Communication,Brand Store,Return & Refunds status,Refund confirmation
+Communication,Brand Store,Return & Refunds status,Return tracking confirmation
+Communication,Call Status,Call Status,ABC calling
+Communication,Customer Request,Call back,Call Back Request
+Communication,Customer Request,Call back,Talk to expert
+Complaint,MFGD Defect,Spirit Candles,Black Particles
+Complaint,MFGD Defect,Spirit Candles,Loose WingNut
+Complaint,MFGD Defect,Spirit Candles,Slow Filtration
+Complaint,MFGD Defect,Spirit Candles,Fast Filtration
+Complaint,MFGD Defect,Spirit Candles,Limesacling
+Complaint,MFGD Defect,Carbon Candles,Slow Filtration
+Complaint,MFGD Defect,Carbon Candles,Fast Filtration
+Complaint,MFGD Defect,Tap,Leakage
+Complaint,Shipping,Delivery issues,Delay in Delivery / Lost package / Lost in transit / Wrong delivery / Delivery Partner Issue / Incorrect address delivery
+Complaint,Shipping & Logistics,Logistics issues,Delay in Delivery
+Complaint,Shipping & Logistics,Logistics issues,Lost package
+Complaint,Shipping & Logistics,Logistics issues,Lost in transit
+Complaint,Shipping & Logistics,Logistics issues,Delivery Partner Issue
+Complaint,Shipping & Logistics,Logistics issues,Incorrect Product delivery
+Complaint,Return,Return reason,Not satisfied
+Complaint,Return,Return reason,Bad Taste
+Complaint,Return,Return reason,Bad odor
+Complaint,Return,Return reason,Black particles
+Complaint,Return,Return reason,limescale
+Complaint,Return,Return reason,size issues
+Complaint,Return,Return reason,Others
+Complaint,Return,Return Instruction,Return instruction request
+Complaint,Return,Return Instruction,Return address shared
+Complaint,Return,Return status,Awaiting logistics confirmation
+Complaint,MFGD Defect,"Filter unit , Refill media , Cartridges or filter elements , Vision tap , Stand , Lid ,Knob , wingnuts and Washers , Water bottle","Broken, Rusting , Torrn packages , Dent , Scratches , Wobble , Cap Issues"
+Complaint,Brand Store,Email Flow Issue,Communication Not Received
+Complaint,Functionality,Carbon Candles/Spirit Candles,Bad Taste
+Complaint,Functionality,Carbon Candles/Spirit Candles,Ultra Fast Filtration
+Complaint,Functionality,Carbon Candles/Spirit Candles,Slow Filtration
+Complaint,Functionality,Carbon Candles/Spirit Candles,Black Particles
+Complaint,Functionality,Carbon Candles/Spirit Candles,Smell issues
+Complaint,Functionality,POSTreat,Black Particles
+Complaint,Functionality,POSTreat,White Particales
+Complaint,Missing Parts,Tap,Vision Tap
+Complaint,Missing Parts,Tap,SS Tap
+Complaint,Missing Parts,carbon filter elements or cartridges,Washers and wingnuts
+Complaint,Missing Parts,carbon filter elements or cartridges,Prime easy tool
+Complaint,Missing Parts,Filter system,Washers and wingnuts
+Complaint,Missing Parts,Filter system,Knob
+Complaint,Missing Parts,Filter system,Air lock vent clips
+Complaint,Missing Parts,Filter system,hole blockers plugs
+Complaint,Missing Parts,Stand,SS stand
+Complaint,Functionality,Leakage,Tap
+Complaint,Functionality,Leakage,Vision Tap
+Complaint,Functionality,Leakage,between chambers
+Complaint,Packaging Defect,Smell Issue,Carton Box
+Complaint,Packaging Defect,Ripped package,Damaged Box
+Complaint,Technical Issues,Payment Issue,Double Charge
+Complaint,Technical Issues,Payment Issue,Payment not validated
+Complaint,Technical Issues,Web Site Issue,Checkout Issue
+Complaint,Technical Issues,Web Site Issue,Discount Code Not Working
+Complaint,Functionality,Limescale in filter unit,Limescale sediment
+Complaint,Replacement,"Broken / Missing / Rusting / Dye test Failed / Cloged filters or cartridges / Dent / Adhesive issues / Cap Threading issues , Request","Carbon Filter elements or cartridges / refill media / lid / Filter unit , Accessories / POSTreat ,"
+Complaint,Availability,Out of Stock issues,Product list - cart
+Complaint,Availability,Out of Stock issues,accessories
+Inquiry,Functionality,Carbon Filters /Limescale in filter unit,Bad Taste / Limescale sediment
+Inquiry,Product Discription,Filter Unit,Product Question
+Inquiry,Product Discription,POSTreat,Product Question
+Inquiry,Product Discription,Cartridge,Product Question
+Inquiry,Product Discription,Accessories,Product Question
+Inquiry,Compatability,Compatability Inquiry,Compatable with Others
+Inquiry,Order Enquiry,Shipping Status,Tracking Details
+Inquiry,Order Enquiry,Order status,Tracking Details
+Inquiry,Payment,Payment Method,Subscription Payment Method
+Inquiry,Certification,Filters,Lab Test Reports
+Inquiry,Certification,Cartridges,Lab Test Reports
+Inquiry,Product Availability,"Stock Availability / Refill media, Catridges, Filter system, POSTreat filter cartridges",In-stock/ Out of stock
+Inquiry,Customer Discount,Discount Code,Discount
+Inquiry,Shipping Info,Delivery Locations,Others
+Inquiry,Product Purchase,Product Price,Purchase inquiry
+Inquiry,Lab report,Filter System / Cartridges,Requesting Lab report
+Inquiry,Feedback,Suggestion,Product improvement
+Inquiry,Referal,Affiliate,Affiliate Program
+Inquiry,Product Discription,Product Inquiry,Filter Unit
+Inquiry,Product Discription,Product Inquiry,POSTreat
+Inquiry,Product Discription,Product Inquiry,Cartridge
+Inquiry,Product Discription,Product Inquiry,Accessories
+Inquiry,Product Discription,Product Inquiry,Product Warranty
+Inquiry,Product Discription,Product Dimensions and size Variant,Filter Unit/POSTreat/Cartridge/Accessories
+Inquiry,Product Discription,Vision Tap,Filter Unit/POSTreat/Cartridge/Accessories
+Inquiry,Product Exchange,Upgrade/Downgrade,Filter System Unit / Accessories
+Inquiry,Testing Inquiry,Cartridges,Turmeric Test
+Inquiry,Product Discription,Product Pricing,Filter Unit
+Inquiry,Product Discription,Product Pricing,POSTreat
+Inquiry,Product Discription,Product Pricing,Cartridge
+Inquiry,Product Discription,Product Pricing,Accessories
+Inquiry,Customer Invoice,Invoice Copy,Requesting Invoice
+Inquiry,Customer Invoice,Invoice Copy,Invoice shared
+Inquiry,Instruction manual,French instruction manual,Requestiong instruction manual
+Inquiry,Instruction manual,French instruction manual,Instruction manual shared
+Inquiry,Missing Parts,Accessories,Washers and Wignut
+Inquiry,Missing Parts,Accessories,TAP Washers
+Inquiry,Missing Parts,Accessories,Air lock
+Inquiry,Missing Parts,Accessories,Knob screw
+Inquiry,Missing Parts,Accessories,Hole blockers
+Inquiry,Assembly,Installation Guidance,Accessories
+Inquiry,Assembly,Installation Guidance,Accessories
+Inquiry,Product Discription,Filtration speed Fast / slow,Filter Unit/POSTreat/Cartridge/Accessories
+Inquiry,Product Discription,Product Maintenance,Filter Unit
+Inquiry,Product Discription,Product Maintenance,POSTreat
+Inquiry,Product Discription,Product Maintenance,Cartridge
+Inquiry,Product Discription,Product Maintenance,Accessories
+Inquiry,Filters/Cartridges,Cleaning Spirit Candles,Cleaning Instruction
+Inquiry,Filters/Cartridges,Priming Carbon filters,Priming Instruction
+Inquiry,Filters/Cartridges,POSTreat filters or catridges,Priming Instruction

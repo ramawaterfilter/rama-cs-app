@@ -1,0 +1,10 @@
+Type of Query,Query Category,Sub Category,Child Category
+"Communication","Follow Up","Adress confirmation","Follow up through email"
+"Communication","Follow Up","Purchase inquiry","Follow up through email"
+"Communication","Follow Up","Return status","Follow up through email"
+"Inquiry","Certification","Cartridges","Lab Test Reports"
+"Inquiry","Testing Inquiry","Cartridges","Turmeric Test"
+"Inquiry","Product Discription","Product Pricing","Filter Unit"
+"Inquiry","Product Discription","Product Pricing","POSTreat"
+"Inquiry","Product Discription","Product Pricing","Cartridge"
+"Inquiry","Product Discription","Product Pricing","Accessories"
