@@ -8,9 +8,14 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Product::with('categories.parents')->orderBy('id', 'desc')->get());
+        $query = Product::with('categories.parents')->orderBy('id', 'desc');
+        if ($request->has('page')) {
+            $perPage = $request->input('per_page', 10);
+            return response()->json($query->paginate($perPage));
+        }
+        return response()->json($query->get());
     }
 
     public function store(Request $request)

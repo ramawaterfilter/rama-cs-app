@@ -9,6 +9,13 @@
   </div>
 
   <div class="card">
+    
+    <!-- Top Pagination Controls -->
+    <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-bottom: 1px solid var(--border-color);" *ngIf="statuses.length > 0">
+      <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+      <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(statuses.length / pageSize) || 1 }}</span>
+      <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= statuses.length" (click)="currentPage = currentPage + 1">Next</button>
+    </div>
     <div class="table-wrapper">
       <table class="data-table">
         <thead>
@@ -42,15 +49,15 @@
             </td>
             <td>
               <div style="display:flex; gap:0.5rem;">
-                <button class="btn btn-sm btn-outline" (click)="openEdit(s)">✏️ Edit</button>
-                <button class="btn btn-sm btn-danger" (click)="delete(s.id)">🗑️</button>
+                <button class="btn btn-sm btn-outline" (click)="openEdit(s)"><lucide-icon name="edit-2" [size]="16" [strokeWidth]="2"></lucide-icon> Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="delete(s.id)"><lucide-icon name="trash" [size]="16" [strokeWidth]="2"></lucide-icon></button>
               </div>
             </td>
           </tr>
           <tr *ngIf="statuses.length === 0">
             <td colspan="5">
               <div class="empty-state">
-                <div class="empty-icon">🔖</div>
+                <div class="empty-icon"><lucide-icon name="bookmark" [size]="20" [strokeWidth]="2"></lucide-icon></div>
                 <p>No statuses yet.</p>
               </div>
             </td>
@@ -71,8 +78,8 @@
   <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
     <div class="modal-box" style="max-width:440px;" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3>{{ editMode ? '✏️ Edit Status' : '+ New Status' }}</h3>
-        <button class="modal-close" (click)="closeModal()">✕</button>
+        <h3><lucide-icon name='edit-2' [size]='20' *ngIf='editMode'></lucide-icon> {{ editMode ? 'Edit Status' : '+ New Status' }}</h3>
+        <button class="modal-close" (click)="closeModal()"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-success" *ngIf="saveMsg && !saveMsg.includes('Error')">{{ saveMsg }}</div>
@@ -113,7 +120,7 @@
       <div class="modal-footer">
         <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
         <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name">
-          {{ saving ? 'Saving...' : '💾 Save' }}
+          <lucide-icon name='save' [size]='16' *ngIf='!saving'></lucide-icon> {{ saving ? 'Saving...' : 'Save' }}
         </button>
       </div>
     </div>

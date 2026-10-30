@@ -24,26 +24,13 @@ Route::get('/purchase-stores/public', [\App\Http\Controllers\PurchaseStoreContro
 Route::get('/countries/public', [\App\Http\Controllers\CountryController::class, 'index']);
 Route::get('/statuses/public', [QueryStatusController::class, 'index']); // Make statuses public too for the form
 
-Route::get('/run-migration', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-        return "Migration & Seeding successful: " . \Illuminate\Support\Facades\Artisan::output();
-    } catch (\Exception $e) {
-        return "Error: " . $e->getMessage();
-    }
-});
-
-Route::get('/clear-cache', function() {
-    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
-    return 'Cache cleared';
-});
-
 // ─── Protected (Sanctum) ───────────────────────────────
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/reports/admin-stats', [ReportController::class, 'adminStats']);
     Route::get('/reports/le-stats', [ReportController::class, 'leStats']);
+
+    Route::get('/notifications/summary', [\App\Http\Controllers\NotificationController::class, 'getSummary']);
 
     // Auth / Profile
     Route::get('/user', [AuthController::class, 'profile']);
@@ -61,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('password-reset-requests', \App\Http\Controllers\UserProfileRequestController::class)->only(['index', 'update']);
 
     // Categories
+    Route::get('/categories/bulk-template', [\App\Http\Controllers\CategoryBulkController::class, 'template']);
+    Route::post('/categories/bulk', [\App\Http\Controllers\CategoryBulkController::class, 'upload']);
     Route::apiResource('categories', QueryCategoryController::class);
 
     // Statuses
@@ -96,6 +85,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('purchase-stores', \App\Http\Controllers\PurchaseStoreController::class);
     Route::apiResource('countries', \App\Http\Controllers\CountryController::class);
+    Route::apiResource('logistics-reasons', \App\Http\Controllers\LogisticsReasonController::class)
+        ->parameters(['logistics-reasons' => 'logisticsReason']);
 
     // User Activities & Analytics
     Route::get('/user-activities', [\App\Http\Controllers\UserActivityController::class, 'index']);

@@ -1,0 +1,172 @@
+name: CI and Hostinger deployment
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Test, audit, and build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      APP_ENV: testing
+      APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ':memory:'
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite, sqlite3, fileinfo, dom, xml, curl, zip
+          tools: composer:v2
+          coverage: none
+      - name: Check deployment scripts
+        run: |
+          bash -n deploy/hostinger.sh
+          bash deploy/test-hostinger.sh
+          php deploy/test-sqlite.php
+      - name: Install PHP dependencies from lockfile
+        working-directory: backend
+        run: |
+          composer validate --strict --no-check-publish
+          composer install --prefer-dist --no-interaction --no-progress
+      - name: Laravel tests (isolated SQLite)
+        working-directory: backend
+        run: php artisan test
+      - name: Install frontend dependencies from lockfile
+        working-directory: frontend
+        run: npm ci
+      - name: Frontend tests
+        working-directory: frontend
+        run: npm test -- --watch=false --browsers=ChromeHeadless
+      - name: Audit PHP production dependencies
+        working-directory: backend
+        run: composer audit --no-dev
+      - name: Audit frontend production dependencies
+        working-directory: frontend
+        run: npm audit --omit=dev --audit-level=high
+      - name: Build production frontend
+        working-directory: frontend
+        run: npm run build -- --configuration production
+      - name: Package production dependencies and application
+        if: github.event_name != 'pull_request'
+        run: |
+          (cd backend && composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader)
+          mkdir -p .deploy/release/public .deploy/release/bootstrap/cache .deploy/release/deploy
+          cp -a backend/{app,bootstrap,config,database,resources,routes,vendor,artisan,composer.json,composer.lock} .deploy/release/
+          rm -f .deploy/release/bootstrap/cache/*.php
+          # Source whitelist excludes .env, local databases, uploads, and helper scripts.
+          find .deploy/release/database -maxdepth 1 -type f -name '*.sqlite*' -delete
+          cp -a frontend/dist/frontend/browser/. .deploy/release/public/
+          cp deploy/public/{index.php,.htaccess} .deploy/release/public/
+          cp deploy/sqlite.php .deploy/release/deploy/
+          printf '{"commit":"%s"}\n' "$GITHUB_SHA" > .deploy/release/public/release.json
+          tar -czf .deploy/release.tar.gz -C .deploy/release .
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: github.event_name != 'pull_request'
+        with:
+          name: production-release
+          path: .deploy/release.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy production
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.HOSTINGER_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: ${{ vars.PRODUCTION_URL }}
+    concurrency:
+      group: hostinger-production
+      cancel-in-progress: false
+    env:
+      DEPLOY_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+      DEPLOY_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      DEPLOY_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+      DEPLOY_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+      DEPLOY_ROOT: ${{ vars.HOSTINGER_DEPLOY_ROOT }}
+      SITE_URL: ${{ vars.PRODUCTION_URL }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: production-release
+          path: .deploy
+      - name: Skip superseded commits
+        id: latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          HEAD_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)
+          if [[ "$HEAD_SHA" == "$GITHUB_SHA" ]]; then
+            echo 'deploy=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'A newer commit exists on main; skipping this deployment.'
+          fi
+      - name: Configure SSH and validate deployment settings
+        if: steps.latest.outputs.deploy == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$DEPLOY_HOST" =~ ^[a-zA-Z0-9][a-zA-Z0-9.-]*$ ]]
+          [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9_][a-zA-Z0-9_-]*$ ]]
+          [[ "$DEPLOY_PORT" =~ ^[0-9]{1,5}$ ]]
+          [[ "$DEPLOY_ROOT" =~ ^/home/[a-zA-Z0-9_./-]+$ ]]
+          [[ "/$DEPLOY_ROOT/" != *'/../'* && "/$DEPLOY_ROOT/" != *'/./'* ]]
+          [[ "$SITE_URL" =~ ^https://[a-zA-Z0-9][a-zA-Z0-9.-]*$ ]]
+          test -n "$DEPLOY_KEY" && test -n "$KNOWN_HOSTS"
+          umask 077
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/hostinger
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host hostinger-deploy
+            HostName $DEPLOY_HOST
+            User $DEPLOY_USER
+            Port $DEPLOY_PORT
+            IdentityFile ~/.ssh/hostinger
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            BatchMode yes
+            ConnectTimeout 20
+            ServerAliveInterval 15
+            ServerAliveCountMax 3
+          EOF
+      - name: Upload and activate the tested release
+        if: steps.latest.outputs.deploy == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          RELEASE_ID="${GITHUB_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          SHA256=$(sha256sum .deploy/release.tar.gz | cut -d ' ' -f 1)
+          # DEPLOY_ROOT and SITE_URL are restricted to shell-safe characters above.
+          ssh hostinger-deploy "test -d '$DEPLOY_ROOT/incoming'"
+          scp .deploy/release.tar.gz "hostinger-deploy:$DEPLOY_ROOT/incoming/$RELEASE_ID.tar.gz"
+          ssh hostinger-deploy "bash -s -- '$DEPLOY_ROOT' '$RELEASE_ID' '$SITE_URL' '$SHA256'" < deploy/hostinger.sh
+      - name: Remove runner SSH credentials
+        if: always()
+        run: rm -f ~/.ssh/hostinger ~/.ssh/config ~/.ssh/known_hosts

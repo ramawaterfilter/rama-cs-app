@@ -1,3 +1,4 @@
+import { LucideAngularModule } from 'lucide-angular';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-logistics-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './logistics-dashboard.component.html',
   styleUrls: ['./logistics-dashboard.component.scss']
 })
@@ -36,8 +37,7 @@ export class LogisticsDashboardComponent implements OnInit {
   saving = false;
   updateForm = {
     status_id: '',
-    remarks: '',
-    tracking_id: ''
+    remarks: ''
   };
 
   private http = inject(HttpClient);
@@ -50,12 +50,28 @@ export class LogisticsDashboardComponent implements OnInit {
     this.loadData();
   }
 
+  totalItems = 0;
+
   loadData() {
     this.loading = true;
-    this.http.get<any[]>(`${this.apiUrl}/logistics`).subscribe({
-      next: (data) => {
-        this.tickets = data;
-        this.applyFilter();
+    
+    let params: any = {
+      page: this.currentPage,
+      per_page: this.pageSize,
+      sort_date: this.sortDate
+    };
+
+    if (this.searchTerm) params.search = this.searchTerm;
+    if (this.filterOrderId) params.order_id = this.filterOrderId;
+    if (this.filterLogisticsStatus) params.logistics_status = this.filterLogisticsStatus;
+    if (this.fromDate) params.from_date = this.fromDate;
+    if (this.toDate) params.to_date = this.toDate;
+
+    this.http.get<any>(`${this.apiUrl}/logistics`, { params }).subscribe({
+      next: (res) => {
+        this.tickets = res.data;
+        this.filteredTickets = res.data;
+        this.totalItems = res.total;
         this.loading = false;
       },
       error: (err) => {
@@ -64,9 +80,11 @@ export class LogisticsDashboardComponent implements OnInit {
       }
     });
 
-    this.http.get<any[]>(`${this.apiUrl}/statuses?type=logistics`).subscribe({
-      next: (s) => this.statuses = s
-    });
+    if (this.statuses.length === 0) {
+      this.http.get<any[]>(`${this.apiUrl}/statuses?type=logistics`).subscribe({
+        next: (s) => this.statuses = s
+      });
+    }
   }
 
   showRejectInput = false;
@@ -76,52 +94,16 @@ export class LogisticsDashboardComponent implements OnInit {
     this.selectedTicket = ticket;
     this.updateForm.status_id = ticket.replacement ? ticket.replacement.status : (ticket.ticket_return ? ticket.ticket_return.status : '');
     this.updateForm.remarks = ticket.replacement ? ticket.replacement.remarks : (ticket.ticket_return ? ticket.ticket_return.remarks : '');
-    this.updateForm.tracking_id = ticket.ticket_return ? (ticket.ticket_return.tracking_id || '') : '';
     this.showRejectInput = false;
     this.rejectionReason = '';
     this.showModal = true;
   }
 
-  applyFilter() {
-    let list = [...this.tickets];
-    
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      list = list.filter(t =>
-        t.customer_name?.toLowerCase().includes(term) ||
-        t.customer_email?.toLowerCase().includes(term) ||
-        t.order_id?.toLowerCase().includes(term)
-      );
+  applyFilter(resetPage: boolean = true) {
+    if (resetPage) {
+      this.currentPage = 1;
     }
-    
-    if (this.filterOrderId) {
-      list = list.filter(t => t.order_id?.toLowerCase().includes(this.filterOrderId.toLowerCase()));
-    }
-    
-    if (this.filterLogisticsStatus) {
-      list = list.filter(t => {
-        const ls = t.replacement ? t.replacement.status : (t.ticket_return ? t.ticket_return.status : '');
-        return ls === this.filterLogisticsStatus;
-      });
-    }
-
-    if (this.fromDate) {
-      const fd = new Date(this.fromDate).setHours(0, 0, 0, 0);
-      list = list.filter(t => new Date(t.created_at).getTime() >= fd);
-    }
-    
-    if (this.toDate) {
-      const td = new Date(this.toDate).setHours(23, 59, 59, 999);
-      list = list.filter(t => new Date(t.created_at).getTime() <= td);
-    }
-
-    list.sort((a, b) => {
-      const d1 = new Date(a.created_at).getTime();
-      const d2 = new Date(b.created_at).getTime();
-      return this.sortDate === 'desc' ? d2 - d1 : d1 - d2;
-    });
-
-    this.filteredTickets = list;
+    this.loadData();
   }
 
   toggleSortDate() {
@@ -188,8 +170,7 @@ export class LogisticsDashboardComponent implements OnInit {
 
     const payload = {
       status: this.updateForm.status_id,
-      remarks: this.updateForm.remarks,
-      tracking_id: this.updateForm.tracking_id
+      remarks: this.updateForm.remarks
     };
 
     let updateSub;
@@ -214,7 +195,6 @@ export class LogisticsDashboardComponent implements OnInit {
       });
     } else {
       this.saving = false;
-      this.notifService.showToast({ title: 'Error', message: 'This request is not assigned to you.', type: 'danger' });
     }
   }
 

@@ -9,6 +9,13 @@
   </div>
 
   <div class="card">
+    
+    <!-- Top Pagination Controls -->
+    <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-bottom: 1px solid var(--border-color);" *ngIf="channels.length > 0">
+      <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+      <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(channels.length / pageSize) || 1 }}</span>
+      <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= channels.length" (click)="currentPage = currentPage + 1">Next</button>
+    </div>
     <div class="table-wrapper">
       <table class="data-table">
         <thead>
@@ -30,8 +37,8 @@
             </td>
             <td>
               <div style="display:flex; gap:0.5rem;">
-                <button class="btn btn-sm btn-outline" (click)="openEdit(c)">✏️ Edit</button>
-                <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger);" (click)="delete(c.id)">🗑️</button>
+                <button class="btn btn-sm btn-outline" (click)="openEdit(c)"><lucide-icon name="edit-2" [size]="16" [strokeWidth]="2"></lucide-icon> Edit</button>
+                <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger);" (click)="delete(c.id)"><lucide-icon name="trash" [size]="16" [strokeWidth]="2"></lucide-icon></button>
               </div>
             </td>
           </tr>
@@ -53,8 +60,8 @@
   <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
     <div class="modal-box" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3>{{ editMode ? '✏️ Edit Channel' : '+ New Channel' }}</h3>
-        <button class="modal-close" (click)="closeModal()">✕</button>
+        <h3><lucide-icon name='edit-2' [size]='20' *ngIf='editMode'></lucide-icon> {{ editMode ? 'Edit Channel' : '+ New Channel' }}</h3>
+        <button class="modal-close" (click)="closeModal()"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-success" *ngIf="saveMsg && !saveMsg.includes('Error')">{{ saveMsg }}</div>
@@ -72,7 +79,7 @@
       <div class="modal-footer">
         <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
         <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name">
-          {{ saving ? 'Saving...' : '💾 Save' }}
+          <lucide-icon name='save' [size]='16' *ngIf='!saving'></lucide-icon> {{ saving ? 'Saving...' : 'Save' }}
         </button>
       </div>
     </div>

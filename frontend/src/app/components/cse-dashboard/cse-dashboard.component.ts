@@ -1,3 +1,4 @@
+import { LucideAngularModule } from 'lucide-angular';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +9,7 @@ import { RouterLink, Router } from '@angular/router';
 @Component({
   selector: 'app-cse-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
   templateUrl: './cse-dashboard.component.html',
 })
 export class CseDashboardComponent implements OnInit {
@@ -36,10 +37,9 @@ export class CseDashboardComponent implements OnInit {
 
   loadAll() {
     this.loading = true;
-    this.http.get<any[]>(`${this.apiUrl}/tickets`).subscribe({
+    this.http.get<any[]>(`${this.apiUrl}/tickets?export=true`).subscribe({
       next: (data) => {
-        // ponytail: /tickets now returns everything; this dashboard stays personal to the logged-in CSE
-        this.tickets = data.filter((t: any) => String(t.executive_id) === String(this.user?.id));
+        this.tickets = data;
         this.computeStats();
         this.applyFilter();
         this.loading = false;

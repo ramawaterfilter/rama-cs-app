@@ -1,3 +1,4 @@
+import { LucideAngularModule, Sun, Moon, Eye, EyeOff, Lock } from 'lucide-angular';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +11,7 @@ import { ThemeService } from '../../services/theme.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
   templateUrl: './login.component.html',
 })
 export class LoginComponent implements OnInit, OnDestroy {
@@ -115,6 +116,10 @@ export class LoginComponent implements OnInit, OnDestroy {
         console.log('Login successful. User:', res.user);
         if (res.user.role === 'admin') {
           this.router.navigate(['/dashboard/overview']);
+        } else if (res.user.role === 'le') {
+          this.router.navigate(['/dashboard/logistics']);
+        } else if (res.user.role === 'cse') {
+          this.router.navigate(['/dashboard/cse']);
         } else {
           this.router.navigate(['/dashboard/tickets']);
         }

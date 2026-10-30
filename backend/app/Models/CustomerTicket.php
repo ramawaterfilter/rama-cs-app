@@ -52,21 +52,15 @@ class CustomerTicket extends Model
         return $this->belongsTo(User::class, 'executive_id');
     }
 
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function updater()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
-
     public function queryFilter()
     {
         return $this->belongsTo(QueryFilter::class, 'query_filter_id');
     }
- 
+    public function lastUpdater()
+    {
+        return $this->belongsTo(User::class, 'last_updated_by');
+    }
+
     public function outreach()
     {
         return $this->belongsTo(CustomerOutreach::class, 'customer_outreach_id');

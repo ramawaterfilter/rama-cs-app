@@ -1,15 +1,15 @@
+import { LucideAngularModule } from 'lucide-angular';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NotificationService } from '../../services/notification.service';
 import { AuthService } from '../../services/auth.service';
-import { productNameOptions, productSkuOptions, pickCatalogProduct, ORDERED_PRODUCT_KEYS, REPLACEMENT_PRODUCT_KEYS } from '../../product-options';
 
 @Component({
   selector: 'app-rejected-approvals',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './rejected-approvals.component.html',
   styleUrls: ['./rejected-approvals.component.scss']
 })
@@ -20,13 +20,6 @@ export class RejectedApprovalsComponent implements OnInit {
   user: any;
   statuses: any[] = [];
   executives: any[] = [];
-  products: any[] = [];
-
-  // product dropdowns — shared helpers from product-options.ts
-  nameOptions = (current: string) => productNameOptions(this.products, current);
-  skuOptions = (current: string) => productSkuOptions(this.products, current);
-  pickOrdered = (form: any, by: 'name' | 'sku', value: string) => pickCatalogProduct(this.products, form, ORDERED_PRODUCT_KEYS, by, value);
-  pickReplacement = (form: any, by: 'name' | 'sku', value: string) => pickCatalogProduct(this.products, form, REPLACEMENT_PRODUCT_KEYS, by, value);
   
   // Filter states
   searchTerm = '';
@@ -54,7 +47,6 @@ export class RejectedApprovalsComponent implements OnInit {
     this.user = this.authService.getUserData();
     this.loadData();
     this.http.get<any[]>(`${this.apiUrl}/le-list`).subscribe(d => this.executives = d);
-    this.http.get<any[]>(`${this.apiUrl}/products`).subscribe(d => this.products = d);
   }
 
   loadData() {
@@ -77,15 +69,9 @@ export class RejectedApprovalsComponent implements OnInit {
     this.selectedTicket = ticket;
     this.updateForm.logistics_type = ticket.replacement ? 'replacement' : (ticket.ticket_return ? 'return' : 'nil');
     this.updateForm.replacement_form = ticket.replacement ? { ...ticket.replacement } : { le_id: '', ordered_product_name: '', ordered_product_sku: '', replacement_product_name: '', replacement_product_sku: '', replacement_qty: 1, replacement_reason: '', others: '' };
-    this.updateForm.return_form = ticket.ticket_return ? { ...ticket.ticket_return } : { le_id: '', ordered_product_name: '', ordered_product_sku: '', marketplace_channel: '', return_reasons: '', return_date: this.today(), courier_name: '', tracking_id: '', no_of_boxes: 1, inbound_ref_no: '', inbound_ref_date: this.today() };
-
+    this.updateForm.return_form = ticket.ticket_return ? { ...ticket.ticket_return } : { le_id: '', ordered_product_name: '', ordered_product_sku: '', marketplace_channel: '', return_reasons: '', return_date: '', courier_name: '', tracking_id: '', no_of_boxes: 1, inbound_ref_no: '', inbound_ref_date: '' };
+    
     this.showModal = true;
-  }
-
-  private today() {
-    const d = new Date();
-    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-    return d.toISOString().slice(0, 10);
   }
 
   applyFilter() {

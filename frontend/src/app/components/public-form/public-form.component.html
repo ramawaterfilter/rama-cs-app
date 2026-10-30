@@ -4,13 +4,13 @@
  
     <div class="card public-card">
       <div class="card-header">
-        <h3>📋 Service Entry Form</h3>
+        <h3><lucide-icon name="clipboard-list" [size]="20" [strokeWidth]="2"></lucide-icon> Service Entry Form</h3>
       </div>
       <div class="card-body">
         
         <!-- Success State -->
         <div class="empty-state" *ngIf="successMsg">
-          <div class="empty-icon">✅</div>
+          <div class="empty-icon"><lucide-icon name="check-circle" [size]="20" [strokeWidth]="2"></lucide-icon></div>
           <h2>Submission Successful!</h2>
           <p>{{ successMsg }}</p>
           <button class="btn btn-primary" (click)="successMsg = '';" style="margin-top:1.5rem">
@@ -24,7 +24,7 @@
         <form *ngIf="!successMsg" #queryForm="ngForm" (ngSubmit)="onSubmit(queryForm)">
           
           <!-- Agent & Order Info -->
-          <div class="form-section-title">👤 Agent & Order Details</div>
+          <div class="form-section-title"><lucide-icon name="user" [size]="20" [strokeWidth]="2" class="mr-2"></lucide-icon> Agent & Order Details</div>
           <div class="form-grid-2">
             <div class="form-group">
               <label class="form-label">Agent Name <span class="text-danger">*</span></label>
@@ -52,7 +52,7 @@
           </div>
  
           <!-- Customer Info -->
-          <div class="form-section-title">👥 Customer Information</div>
+          <div class="form-section-title"><lucide-icon name="users" [size]="20" [strokeWidth]="2"></lucide-icon> Customer Information</div>
           <div class="form-grid-2">
             <div class="form-group">
               <label class="form-label">Customer Name <span class="text-danger">*</span></label>
@@ -88,7 +88,7 @@
           </div>
  
           <!-- Query Details -->
-          <div class="form-section-title">❓ Query Classification</div>
+          <div class="form-section-title"><lucide-icon name="help-circle" [size]="20" [strokeWidth]="2" class="mr-2"></lucide-icon> Query Classification</div>
           <div class="form-grid-2">
             <div class="form-group">
               <label class="form-label">Query Channel <span class="text-danger">*</span></label>
@@ -162,16 +162,13 @@
           </div>
  
           <!-- Timestamps & Actions -->
-          <div class="form-section-title">⏱️ Timestamps & Action</div>
+          <div class="form-section-title"><lucide-icon name="clock" [size]="20" [strokeWidth]="2"></lucide-icon> Timestamps & Action</div>
           <div class="form-grid-2">
             <div class="form-group">
               <label class="form-label">Query Received Date\Time <span class="text-danger">*</span></label>
               <input type="datetime-local" class="form-control" [(ngModel)]="formData.received_at" name="received_at" required>
             </div>
-            <div class="form-group">
-              <label class="form-label">Query Resolved Date\Time</label>
-              <input type="datetime-local" class="form-control" [(ngModel)]="formData.resolved_at" name="resolved_at" placeholder="Auto-captured when status is Closed">
-            </div>
+
             <div class="form-group span-2">
               <label class="form-label">Query Description <span class="text-danger">*</span></label>
               <textarea class="form-control" [(ngModel)]="formData.description" name="description" required rows="3" placeholder="Full description of the query..."></textarea>
@@ -183,7 +180,7 @@
           </div>
  
           <!-- Optional Fields -->
-          <div class="form-section-title">✨ Optional Information</div>
+          <div class="form-section-title"><lucide-icon name="sparkles" [size]="20" [strokeWidth]="2" class="mr-2"></lucide-icon> Optional Information</div>
           <div class="form-grid-2">
             <div class="form-group">
               <label class="form-label">Filters (Capacity)</label>
@@ -211,7 +208,7 @@
           <div class="form-footer">
             <button type="submit" class="btn btn-primary btn-lg" [disabled]="loading || queryForm.invalid" 
               style="width: 100%; justify-content: center; font-size: 1rem; padding: 1rem; border-radius: 10px;">
-              {{ loading ? '⏳ Submitting...' : '🚀 Submit Entry' }}
+              <lucide-icon [name]="loading ? 'hourglass' : 'arrow-right'" [size]='16'></lucide-icon> {{ loading ? 'Submitting...' : 'Submit Entry' }}
             </button>
             <p class="form-note">Fields marked with <span class="text-danger">*</span> are mandatory.</p>
           </div>

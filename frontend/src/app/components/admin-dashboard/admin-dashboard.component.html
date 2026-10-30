@@ -8,7 +8,7 @@
   <!-- Stats Grid -->
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-icon blue">🎫</div>
+      <div class="stat-icon blue"><lucide-icon name="ticket" [size]="24" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Total Queries</div>
         <div class="value">{{ stats.total }}</div>
@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon orange">⏳</div>
+      <div class="stat-icon orange"><lucide-icon name="hourglass" [size]="24" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Pending</div>
         <div class="value">{{ stats.pending }}</div>
@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon green">✅</div>
+      <div class="stat-icon green"><lucide-icon name="check-circle" [size]="24" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Resolved</div>
         <div class="value">{{ stats.resolved }}</div>
@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon red">🚨</div>
+      <div class="stat-icon red"><lucide-icon name="alert-triangle" [size]="24" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Unallocated</div>
         <div class="value">{{ stats.unallocated }}</div>
@@ -47,7 +47,7 @@
   </div>
   <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
     <div class="stat-card">
-      <div class="stat-icon blue">📦</div>
+      <div class="stat-icon blue"><lucide-icon name="package" [size]="24" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Total Logistics</div>
         <div class="value">{{ logisticsStats.total }}</div>
@@ -55,7 +55,7 @@
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon orange">⏳</div>
+      <div class="stat-icon orange"><lucide-icon name="hourglass" [size]="24" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Pending Logistics</div>
         <div class="value">{{ logisticsStats.pending }}</div>
@@ -63,7 +63,7 @@
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon green">✅</div>
+      <div class="stat-icon green"><lucide-icon name="check-circle" [size]="24" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Resolved Logistics</div>
         <div class="value">{{ logisticsStats.resolved }}</div>
@@ -79,7 +79,7 @@
     <div class="card">
       <div class="card-header">
         <h3>Recent Tickets</h3>
-        <a routerLink="/dashboard/tickets" class="btn btn-outline btn-sm">View All →</a>
+        <a routerLink="/dashboard/tickets" class="btn btn-outline btn-sm">View All <lucide-icon name="arrow-right" [size]="16" [strokeWidth]="2"></lucide-icon></a>
       </div>
       <div class="table-wrapper">
         <table class="data-table" *ngIf="!loading">
@@ -120,7 +120,7 @@
             <tr *ngIf="recentTickets.length === 0">
               <td colspan="6">
                 <div class="empty-state">
-                  <div class="empty-icon">📭</div>
+                  <div class="empty-icon"><lucide-icon name="inbox" [size]="24" [strokeWidth]="2" style="color: var(--text-muted);"></lucide-icon></div>
                   <p>No tickets submitted yet.</p>
                 </div>
               </td>
@@ -128,7 +128,7 @@
           </tbody>
         </table>
         <div class="empty-state" *ngIf="loading">
-          <div class="empty-icon">⏳</div>
+          <div class="empty-icon"><lucide-icon name="hourglass" [size]="24" [strokeWidth]="2"></lucide-icon></div>
           <p>Loading data...</p>
         </div>
       </div>
@@ -139,19 +139,19 @@
       <div class="card-header"><h3>Quick Actions</h3></div>
       <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
         <a routerLink="/dashboard/tickets" class="btn btn-primary" style="justify-content:center;">
-          🎫 Manage Tickets
+          <lucide-icon name="ticket" [size]="18" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> Manage Tickets
         </a>
         <a routerLink="/dashboard/users" class="btn btn-outline" style="justify-content:center;">
-          👥 Manage Users
+          <lucide-icon name="users" [size]="18" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> Manage Users
         </a>
         <a routerLink="/dashboard/categories" class="btn btn-outline" style="justify-content:center;">
-          🗂️ Manage Categories
+          <lucide-icon name="folder-tree" [size]="18" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> Manage Categories
         </a>
         <a routerLink="/dashboard/products" class="btn btn-outline" style="justify-content:center;">
-          📦 Manage Products
+          <lucide-icon name="package" [size]="18" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> Manage Products
         </a>
         <a routerLink="/dashboard/statuses" class="btn btn-outline" style="justify-content:center;">
-          🔖 Manage Statuses
+          <lucide-icon name="tag" [size]="18" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> Manage Statuses
         </a>
       </div>
     </div>
@@ -164,17 +164,17 @@
     <!-- Status Breakdown -->
     <div class="card">
       <div class="card-header">
-        <h3>📊 Status Breakdown</h3>
+        <h3><span style="display:flex; align-items:center;"><lucide-icon name="pie-chart" [size]="20" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> Status Breakdown</span></h3>
         <span class="badge badge-secondary">{{ statusBreakdown.length }} statuses</span>
       </div>
       <div class="card-body">
 
         <div *ngIf="loading" class="empty-state" style="padding:2rem;">
-          <div class="empty-icon">⏳</div><p>Loading...</p>
+          <div class="empty-icon"><lucide-icon name="hourglass" [size]="24" [strokeWidth]="2"></lucide-icon></div><p>Loading...</p>
         </div>
 
         <div *ngIf="statusBreakdown.length === 0 && !loading" class="empty-state" style="padding:2rem;">
-          <div class="empty-icon">📋</div><p>No status data yet.</p>
+          <div class="empty-icon"><lucide-icon name="clipboard-list" [size]="24" [strokeWidth]="2" style="color: var(--text-muted);"></lucide-icon></div><p>No status data yet.</p>
         </div>
 
         <div *ngFor="let s of statusBreakdown" style="margin-bottom:1rem;">
@@ -194,7 +194,7 @@
 
         <div *ngIf="logisticBreakdown.length > 0">
           <div class="separator"></div>
-          <h4 style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 1rem;">🚚 Logistics Statuses</h4>
+          <h4 style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 1rem;"><span style="display:flex; align-items:center;"><lucide-icon name="truck" [size]="16" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> Logistics Statuses</span></h4>
           <div *ngFor="let ls of logisticBreakdown" style="margin-bottom:1rem;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
               <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.83rem; font-weight:600;">
@@ -217,17 +217,17 @@
     <!-- CSE Performance -->
     <div class="card">
       <div class="card-header">
-        <h3>👥 CSE Performance</h3>
+        <h3><span style="display:flex; align-items:center;"><lucide-icon name="users" [size]="20" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> CSE Performance</span></h3>
         <a routerLink="/dashboard/users" class="btn btn-outline btn-sm">Manage →</a>
       </div>
       <div class="card-body">
 
         <div *ngIf="loading" class="empty-state" style="padding:2rem;">
-          <div class="empty-icon">⏳</div><p>Loading...</p>
+          <div class="empty-icon"><lucide-icon name="hourglass" [size]="24" [strokeWidth]="2"></lucide-icon></div><p>Loading...</p>
         </div>
 
         <div *ngIf="csePerformance.length === 0 && !loading" class="empty-state" style="padding:2rem;">
-          <div class="empty-icon">👤</div><p>No executive data yet.</p>
+          <div class="empty-icon"><lucide-icon name="user" [size]="24" [strokeWidth]="2" style="color: var(--text-muted);"></lucide-icon></div><p>No executive data yet.</p>
         </div>
 
         <div *ngFor="let cse of csePerformance" class="cse-perf-row" style="display: flex; align-items: center; gap: 1.25rem; padding: 1rem; background: var(--bg-body); border-radius: var(--radius-md); margin-bottom: 0.75rem; border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-sm)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
@@ -276,17 +276,17 @@
     <!-- Logistics (LE) Performance -->
     <div class="card">
       <div class="card-header">
-        <h3>🚚 Logistics Performance</h3>
+        <h3><span style="display:flex; align-items:center;"><lucide-icon name="truck" [size]="20" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> Logistics Performance</span></h3>
         <a routerLink="/dashboard/users" class="btn btn-outline btn-sm">Manage →</a>
       </div>
       <div class="card-body">
 
         <div *ngIf="loading" class="empty-state" style="padding:2rem;">
-          <div class="empty-icon">⏳</div><p>Loading...</p>
+          <div class="empty-icon"><lucide-icon name="hourglass" [size]="24" [strokeWidth]="2"></lucide-icon></div><p>Loading...</p>
         </div>
 
         <div *ngIf="lePerformance.length === 0 && !loading" class="empty-state" style="padding:2rem;">
-          <div class="empty-icon">🚚</div><p>No logistics data yet.</p>
+          <div class="empty-icon"><lucide-icon name="truck" [size]="24" [strokeWidth]="2" style="color: var(--text-muted);"></lucide-icon></div><p>No logistics data yet.</p>
         </div>
 
         <div *ngFor="let le of lePerformance" class="cse-perf-row" style="display: flex; align-items: center; gap: 1.25rem; padding: 1rem; background: var(--bg-body); border-radius: var(--radius-md); margin-bottom: 0.75rem; border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-sm)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
@@ -339,11 +339,11 @@
     <!-- CSE Analytics -->
     <div class="card">
       <div class="card-header">
-        <h3>📈 CSE Analytics</h3>
+        <h3><span style="display:flex; align-items:center;"><lucide-icon name="trending-up" [size]="20" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> CSE Analytics</span></h3>
       </div>
       <div class="card-body" style="max-height: 400px; overflow-y: auto;">
         <div *ngIf="loading || !analytics" class="empty-state" style="padding:2rem;">
-          <div class="empty-icon">⏳</div><p>Loading analytics...</p>
+          <div class="empty-icon"><lucide-icon name="hourglass" [size]="24" [strokeWidth]="2"></lucide-icon></div><p>Loading analytics...</p>
         </div>
         <div *ngIf="analytics" style="display:flex; flex-direction:column; gap:1.25rem;">
           
@@ -418,11 +418,11 @@
     <!-- Logistics Analytics -->
     <div class="card">
       <div class="card-header">
-        <h3>🚚 Logistics Analytics</h3>
+        <h3><span style="display:flex; align-items:center;"><lucide-icon name="truck" [size]="20" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> Logistics Analytics</span></h3>
       </div>
       <div class="card-body" style="max-height: 400px; overflow-y: auto;">
         <div *ngIf="loading || !analytics" class="empty-state" style="padding:2rem;">
-          <div class="empty-icon">⏳</div><p>Loading analytics...</p>
+          <div class="empty-icon"><lucide-icon name="hourglass" [size]="24" [strokeWidth]="2"></lucide-icon></div><p>Loading analytics...</p>
         </div>
         <div *ngIf="analytics" style="display:flex; flex-direction:column; gap:1.25rem;">
           
@@ -468,11 +468,11 @@
     <!-- User Activities -->
     <div class="card">
       <div class="card-header">
-        <h3>🕰️ User Activity History</h3>
+        <h3><span style="display:flex; align-items:center;"><lucide-icon name="clock" [size]="20" [strokeWidth]="2" style="margin-right:0.5rem;"></lucide-icon> User Activity History</span></h3>
       </div>
       <div class="card-body" style="max-height: 400px; overflow-y: auto;">
         <div *ngIf="loading || activities.length === 0" class="empty-state" style="padding:2rem;">
-          <div class="empty-icon">⏳</div><p>No activity logs found.</p>
+          <div class="empty-icon"><lucide-icon name="hourglass" [size]="24" [strokeWidth]="2"></lucide-icon></div><p>No activity logs found.</p>
         </div>
         <div *ngIf="activities.length > 0">
           <div *ngFor="let act of activities" style="padding:0.75rem; border-bottom:1px solid var(--border-color); display:flex; gap:1rem; align-items:flex-start;">

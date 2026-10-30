@@ -15,7 +15,35 @@ class UserController extends Controller
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-        return response()->json(User::orderBy('id', 'desc')->get());
+        
+        $query = User::orderBy('id', 'desc');
+        
+        if ($request->search) {
+            $term = '%' . $request->search . '%';
+            $query->where(function($q) use ($term) {
+                $q->where('name', 'like', $term)
+                  ->orWhere('email', 'like', $term);
+            });
+        }
+        
+        $perPage = $request->per_page ?: 10;
+        $paginator = $query->paginate($perPage);
+        
+        // Include summary stats for the dashboard
+        $stats = [
+            'total' => User::count(),
+            'active' => User::where('is_active', true)->count(),
+            'cse' => User::where('role', 'cse')->count(),
+            'le' => User::where('role', 'le')->count()
+        ];
+        
+        return response()->json([
+            'data' => $paginator->items(),
+            'total' => $paginator->total(),
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
+            'stats' => $stats
+        ]);
     }
 
     public function cseList()

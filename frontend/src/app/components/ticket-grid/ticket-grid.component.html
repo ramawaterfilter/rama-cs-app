@@ -1,7 +1,7 @@
 <div>
   <div class="page-header">
     <div class="breadcrumb"><span>Home</span> / Ticket Management</div>
-    <h2>{{ isRequestsView ? 'Ticket Requests' : 'All Tickets' }}</h2>
+    <h2>{{ isAllTicketsView ? 'All Tickets View' : (isAdmin ? (isRequestsView ? 'Ticket Requests' : 'All Tickets') : 'My Ticket Pool') }}</h2>
     <p>View, manage and update all customer query tickets.</p>
   </div>
 
@@ -10,17 +10,11 @@
     <div class="card-body toolbar">
       <div style="position: relative; display: inline-block;">
         <span style="position: absolute; top: -16px; left: 4px; font-size: 0.65rem; color: var(--text-muted); white-space: nowrap;">Search (Name, Type, Cat...)</span>
-        <input type="text" class="form-control" placeholder="🔍 Search..." title="Search Name, Email, Query Type, Category, etc."
+        <input type="text" class="form-control" placeholder="Search..." title="Search Name, Email, Query Type, Category, etc."
           [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()">
       </div>
 
-      <div style="position: relative; display: inline-block;">
-        <span style="position: absolute; top: -16px; left: 4px; font-size: 0.65rem; color: var(--text-muted); white-space: nowrap;">Customer Email</span>
-        <input type="text" class="form-control" style="max-width:180px;" placeholder="customer@example.com"
-          [(ngModel)]="filterCustomerEmail" (ngModelChange)="applyFilter()">
-      </div>
-
-      <input type="text" class="form-control" style="max-width:140px;" placeholder="Order ID..."
+      <input type="text" class="form-control" placeholder="Order ID..."
         [(ngModel)]="filterOrderId" (ngModelChange)="applyFilter()">
 
       <select class="form-control" [(ngModel)]="filterCategory" (ngModelChange)="applyFilter()">
@@ -28,7 +22,7 @@
         <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
       </select>
 
-      <select class="form-control" [(ngModel)]="filterAssignee" (ngModelChange)="applyFilter()">
+      <select class="form-control" *ngIf="isAdmin" [(ngModel)]="filterAssignee" (ngModelChange)="applyFilter()">
         <option value="">All Assignees</option>
         <option value="unassigned">Unassigned</option>
         <option *ngFor="let cse of cses" [value]="cse.id">{{ cse.name }}</option>
@@ -45,10 +39,10 @@
         <input type="date" style="border:none; background:transparent; font-size:0.85rem; outline:none;" [(ngModel)]="toDate" (ngModelChange)="applyFilter()">
       </div>
 
-      <button class="btn btn-outline btn-sm" (click)="toggleSortDate()" title="Sort by Date">↕</button>
-      <button class="btn btn-outline btn-sm" (click)="exportXLSX()">📊 Excel</button>
-      <button class="btn btn-outline btn-sm" (click)="loadAll()" title="Reload Data">↻</button>
-      <button class="btn btn-outline btn-sm" (click)="resetFilters()" title="Reset Filters" style="color: var(--danger); border-color: var(--danger);">✕ Reset</button>
+      <button class="btn btn-outline btn-sm" (click)="toggleSortDate()" title="Sort by Date"><lucide-icon name="arrow-up-down" [size]="16" [strokeWidth]="2"></lucide-icon></button>
+      <button class="btn btn-outline btn-sm" (click)="exportXLSX()"><lucide-icon name="bar-chart-2" [size]="16" [strokeWidth]="2"></lucide-icon> Excel</button>
+      <button class="btn btn-outline btn-sm" (click)="loadAll()" title="Reload Data"><lucide-icon name="refresh-cw" [size]="16" [strokeWidth]="2"></lucide-icon></button>
+      <button class="btn btn-outline btn-sm" (click)="resetFilters()" title="Reset Filters" style="color: var(--danger); border-color: var(--danger);"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon> Reset</button>
       <span class="toolbar-info">
         Showing {{ filteredTickets.length }} of {{ tickets.length }} tickets
       </span>
@@ -57,9 +51,16 @@
 
   <!-- Table -->
   <div class="card">
+    <!-- Top Pagination Controls -->
+    <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-bottom: 1px solid var(--border-color);" *ngIf="totalItems > 0">
+      <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1; loadTickets()">Previous</button>
+      <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(totalItems / pageSize) || 1 }}</span>
+      <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= totalItems" (click)="currentPage = currentPage + 1; loadTickets()">Next</button>
+    </div>
+
     <div class="table-wrapper">
       <div class="empty-state" *ngIf="loading">
-        <div class="empty-icon">⏳</div><p>Loading tickets...</p>
+        <div class="empty-icon"><lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon></div><p>Loading tickets...</p>
       </div>
 
       <table class="data-table" *ngIf="!loading">
@@ -75,12 +76,11 @@
             <th>Submitted</th>
             <th>Assigned To</th>
             <th>Status</th>
-            <th>Last Updated By</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let ticket of filteredTickets | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
+          <tr *ngFor="let ticket of filteredTickets; let i = index">
             <td>
               <span class="chip" style="background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-color);">{{ (currentPage - 1) * pageSize + i + 1 }}</span>
             </td>
@@ -120,31 +120,27 @@
                 </span>
                 
                 <span class="badge" *ngIf="ticket.replacement" [ngStyle]="getLogisticsStatusStyle(ticket.replacement.status)" style="font-size:0.65rem;" title="Replacement Status">
-                  📦 {{ ticket.replacement.status || 'Pending' }}
+                  <lucide-icon name='package' [size]='16'></lucide-icon> {{ ticket.replacement.status || 'Pending' }}
                 </span>
                 
                 <span class="badge" *ngIf="ticket.ticket_return" [ngStyle]="getLogisticsStatusStyle(ticket.ticket_return.status)" style="font-size:0.65rem;" title="Return Status">
-                  ↩️ {{ ticket.ticket_return.status || 'Pending' }}
+                  <lucide-icon name='corner-down-left' [size]='16'></lucide-icon> {{ ticket.ticket_return.status || 'Pending' }}
                 </span>
               </div>
             </td>
-            <td style="font-size:0.75rem; color:var(--text-muted);">
-              <div style="font-weight:600; color:var(--text);">{{ ticket.updater?.name || ticket.creator?.name || '—' }}</div>
-              <div>{{ ticket.updated_at | date:'d MMM y, h:mm a' }}</div>
-            </td>
             <td>
               <div style="display:flex; gap:0.4rem;">
-                <button class="btn btn-sm btn-outline" (click)="viewTicket(ticket)" title="View Details">👁️</button>
-                <button class="btn btn-sm btn-primary" (click)="openTicket(ticket)">✏️ Update</button>
-                <button class="btn btn-sm btn-outline" *ngIf="isAdmin" (click)="openTicket(ticket, true)">📋 Assign</button>
-                <button class="btn btn-sm btn-outline" *ngIf="isAdmin" (click)="deleteTicket(ticket.id)" style="color: var(--danger); border-color: var(--danger);">🗑️</button>
+                <button class="btn btn-sm btn-outline" (click)="viewTicket(ticket)" title="View Details"><lucide-icon name="eye" [size]="16" [strokeWidth]="2"></lucide-icon></button>
+                <button class="btn btn-sm btn-primary" (click)="openTicket(ticket)"><lucide-icon name="edit-2" [size]="16" [strokeWidth]="2"></lucide-icon> Update</button>
+                <button class="btn btn-sm btn-outline" *ngIf="isAdmin" (click)="openTicket(ticket, true)"><lucide-icon name="clipboard-list" [size]="20" [strokeWidth]="2"></lucide-icon> Assign</button>
+                <button class="btn btn-sm btn-outline" *ngIf="isAdmin" (click)="deleteTicket(ticket.id)" style="color: var(--danger); border-color: var(--danger);"><lucide-icon name="trash" [size]="16" [strokeWidth]="2"></lucide-icon></button>
               </div>
             </td>
           </tr>
           <tr *ngIf="filteredTickets.length === 0 && !loading">
-            <td colspan="12">
+            <td colspan="10">
               <div class="empty-state">
-                <div class="empty-icon">📭</div>
+                <div class="empty-icon"><lucide-icon name="inbox" [size]="48" [strokeWidth]="1.5"></lucide-icon></div>
                 <p>No tickets match your filter.</p>
               </div>
             </td>
@@ -153,10 +149,10 @@
       </table>
 
       <!-- Pagination Controls -->
-      <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="filteredTickets.length > 0">
-        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
-        <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(filteredTickets.length / pageSize) || 1 }}</span>
-        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filteredTickets.length" (click)="currentPage = currentPage + 1">Next</button>
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="totalItems > 0">
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1; loadTickets()">Previous</button>
+        <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(totalItems / pageSize) || 1 }}</span>
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= totalItems" (click)="currentPage = currentPage + 1; loadTickets()">Next</button>
       </div>
     </div>
   </div>
@@ -165,8 +161,8 @@
   <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
     <div class="modal-box modal-lg" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3>{{ allocateMode ? '📋 Allocate Ticket' : '✏️ Update Ticket' }} PTMS{{ selectedTicket?.id }}</h3>
-        <button class="modal-close" (click)="closeModal()">✕</button>
+        <h3><lucide-icon [name]="allocateMode ? 'clipboard-list' : 'edit-2'" [size]='20'></lucide-icon> {{ allocateMode ? 'Allocate Ticket' : 'Update Ticket' }} PTMS{{ selectedTicket?.id }}</h3>
+        <button class="modal-close" (click)="closeModal()"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon></button>
       </div>
       <div class="modal-body">
 
@@ -177,6 +173,10 @@
           <ng-container *ngIf="!isAdmin && !selectedTicket?.profile_edit_approved">
             <div class="form-grid-modal">
               <div class="detail-row"><div class="detail-label">Agent Info</div><div>{{ selectedTicket?.agent_name }} ({{ selectedTicket?.agent_email }})</div></div>
+              <div class="detail-row"><div class="detail-label">Last Updated</div><div>
+                {{ selectedTicket?.updated_at | date:'d MMM y, h:mm a' || '—' }}
+                <span *ngIf="selectedTicket?.last_updater" style="color:var(--text-muted); font-size: 0.85rem;">(by {{ selectedTicket.last_updater.name }})</span>
+              </div></div>
               <div class="detail-row"><div class="detail-label">Customer Name</div><div>{{ selectedTicket?.customer_name }}</div></div>
               <div class="detail-row"><div class="detail-label">Customer Phone</div><div>{{ selectedTicket?.customer_phone }}</div></div>
               <div class="detail-row"><div class="detail-label">Customer Email</div><div>{{ selectedTicket?.customer_email }}</div></div>
@@ -185,16 +185,16 @@
             </div>
             <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); text-align: center;">
               <button class="btn btn-sm btn-outline" (click)="requestProfileEdit()" *ngIf="!selectedTicket?.profile_edit_requested" [disabled]="saving">
-                🔓 Request Profile Update
+                <lucide-icon name="unlock" [size]="16" [strokeWidth]="2"></lucide-icon> Request Profile Update
               </button>
-              <span class="badge badge-warning" *ngIf="selectedTicket?.profile_edit_requested">⏳ Profile Update Requested</span>
+              <span class="badge badge-warning" *ngIf="selectedTicket?.profile_edit_requested"><lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon> Profile Update Requested</span>
             </div>
           </ng-container>
 
           <ng-container *ngIf="isAdmin || selectedTicket?.profile_edit_approved">
             <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); text-align: center;" *ngIf="isAdmin && selectedTicket?.profile_edit_requested && !selectedTicket?.profile_edit_approved">
               <button class="btn btn-sm btn-success" (click)="approveProfileEdit()" [disabled]="saving">
-                ✅ Approve Profile Edit Request
+                <lucide-icon name="check-circle" [size]="20" [strokeWidth]="2"></lucide-icon> Approve Profile Edit Request
               </button>
             </div>
             <fieldset style="border:none; padding:0; margin:0;">
@@ -248,14 +248,13 @@
             <div class="detail-row"><div class="detail-label">Status</div><div>{{ selectedTicket?.status?.name || '—' }}</div></div>
             <div class="detail-row"><div class="detail-label">Received Date</div><div>{{ selectedTicket?.received_at ? (selectedTicket.received_at | date:'medium') : '—' }}</div></div>
             <div class="detail-row"><div class="detail-label">Resolved Date</div><div>{{ selectedTicket?.resolved_at ? (selectedTicket.resolved_at | date:'medium') : '—' }}</div></div>
-            <div class="detail-row"><div class="detail-label">Last Updated By</div><div>{{ selectedTicket?.updater?.name || selectedTicket?.creator?.name || '—' }} ({{ selectedTicket?.updated_at | date:'medium' }})</div></div>
             <div class="detail-row"><div class="detail-label">Action Taken / Remarks</div><div>{{ selectedTicket?.remarks || '—' }}</div></div>
             
             <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); text-align: center;">
               <button class="btn btn-sm btn-outline" (click)="requestEdit()" *ngIf="!selectedTicket?.edit_requested" [disabled]="saving">
-                🔓 Request General Update
+                <lucide-icon name="unlock" [size]="16" [strokeWidth]="2"></lucide-icon> Request General Update
               </button>
-              <span class="badge badge-warning" *ngIf="selectedTicket?.edit_requested">⏳ General Update Requested</span>
+              <span class="badge badge-warning" *ngIf="selectedTicket?.edit_requested"><lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon> General Update Requested</span>
             </div>
           </ng-container>
 
@@ -350,12 +349,12 @@
                 <h5 style="margin-top:0; margin-bottom:1rem;">Replacement Request Details</h5>
                 <div class="form-grid-modal">
                   <div class="form-group"><label class="form-label">Order ID</label><input type="text" class="form-control" [value]="updateForm.order_id" disabled></div>
-                  <div class="form-group"><label class="form-label">Customer Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.customer_name"></div>
-                  <div class="form-group"><label class="form-label">Customer Contact</label><input type="text" class="form-control" [(ngModel)]="updateForm.customer_phone"></div>
-                  <div class="form-group"><label class="form-label">Customer Email</label><input type="text" class="form-control" [(ngModel)]="updateForm.customer_email"></div>
-                  <div class="form-group" style="grid-column: span 2;"><label class="form-label">Customer Address</label><textarea class="form-control" [(ngModel)]="updateForm.address" rows="1"></textarea></div>
+                  <div class="form-group"><label class="form-label">Customer Name</label><input type="text" class="form-control" [value]="updateForm.customer_name" disabled></div>
+                  <div class="form-group"><label class="form-label">Customer Contact</label><input type="text" class="form-control" [value]="updateForm.customer_phone" disabled></div>
+                  <div class="form-group"><label class="form-label">Customer Email</label><input type="text" class="form-control" [value]="updateForm.customer_email" disabled></div>
+                  <div class="form-group" style="grid-column: span 2;"><label class="form-label">Customer Address</label><textarea class="form-control" [value]="updateForm.address" disabled rows="1"></textarea></div>
                   <div class="form-group"><label class="form-label">CSE Name</label><input type="text" class="form-control" [value]="selectedTicket?.executive?.name || selectedTicket?.agent_name || ''" disabled></div>
-
+                  
                   <div class="form-group"><label class="form-label">Assign Logistics Exec.</label>
                     <select class="form-control" [(ngModel)]="updateForm.replacement_form.le_id">
                       <option value="">— Select LE —</option>
@@ -363,33 +362,13 @@
                     </select>
                   </div>
 
-                  <div class="form-group"><label class="form-label">Ordered Product Name</label>
-                    <select class="form-control" [ngModel]="updateForm.replacement_form.ordered_product_name" (ngModelChange)="pickOrdered(updateForm.replacement_form, 'name', $event)">
-                      <option value="">— Select Product —</option>
-                      <option *ngFor="let o of nameOptions(updateForm.replacement_form.ordered_product_name)" [value]="o.value">{{ o.label }}</option>
-                    </select>
-                  </div>
-                  <div class="form-group"><label class="form-label">Ordered Product SKU</label>
-                    <select class="form-control" [ngModel]="updateForm.replacement_form.ordered_product_sku" (ngModelChange)="pickOrdered(updateForm.replacement_form, 'sku', $event)">
-                      <option value="">— Select SKU —</option>
-                      <option *ngFor="let o of skuOptions(updateForm.replacement_form.ordered_product_sku)" [value]="o.value">{{ o.label }}</option>
-                    </select>
-                  </div>
-                  <div class="form-group"><label class="form-label">Replacement Product Name</label>
-                    <select class="form-control" [ngModel]="updateForm.replacement_form.replacement_product_name" (ngModelChange)="pickReplacement(updateForm.replacement_form, 'name', $event)">
-                      <option value="">— Select Product —</option>
-                      <option *ngFor="let o of nameOptions(updateForm.replacement_form.replacement_product_name)" [value]="o.value">{{ o.label }}</option>
-                    </select>
-                  </div>
-                  <div class="form-group"><label class="form-label">Replacement Product SKU</label>
-                    <select class="form-control" [ngModel]="updateForm.replacement_form.replacement_product_sku" (ngModelChange)="pickReplacement(updateForm.replacement_form, 'sku', $event)">
-                      <option value="">— Select SKU —</option>
-                      <option *ngFor="let o of skuOptions(updateForm.replacement_form.replacement_product_sku)" [value]="o.value">{{ o.label }}</option>
-                    </select>
-                  </div>
+                  <div class="form-group"><label class="form-label">Ordered Product Name</label><select class="form-control" [(ngModel)]="updateForm.replacement_form.ordered_product_name" (ngModelChange)="onProductSelect(updateForm.replacement_form, 'ordered_product_name', 'ordered_product_sku')"><option value="">— Select Product —</option><option *ngIf="isLegacyValue(products, 'name', updateForm.replacement_form.ordered_product_name)" [value]="updateForm.replacement_form.ordered_product_name">{{ updateForm.replacement_form.ordered_product_name }}</option><option *ngFor="let p of products" [value]="p.name">{{ p.name }}{{ p.sku ? ' (' + p.sku + ')' : '' }}</option></select></div>
+                  <div class="form-group"><label class="form-label">Ordered Product SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.ordered_product_sku" readonly placeholder="Auto-filled from product"></div>
+                  <div class="form-group"><label class="form-label">Replacement Product Name</label><select class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_product_name" (ngModelChange)="onProductSelect(updateForm.replacement_form, 'replacement_product_name', 'replacement_product_sku')"><option value="">— Select Product —</option><option *ngIf="isLegacyValue(products, 'name', updateForm.replacement_form.replacement_product_name)" [value]="updateForm.replacement_form.replacement_product_name">{{ updateForm.replacement_form.replacement_product_name }}</option><option *ngFor="let p of products" [value]="p.name">{{ p.name }}{{ p.sku ? ' (' + p.sku + ')' : '' }}</option></select></div>
+                  <div class="form-group"><label class="form-label">Replacement Product SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_product_sku" readonly placeholder="Auto-filled from product"></div>
                   <div class="form-group"><label class="form-label">Replacement Qty</label><input type="number" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_qty"></div>
-                  <div class="form-group"><label class="form-label">Replacement Reason</label><input type="text" class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_reason"></div>
-                  <div class="form-group" style="grid-column: span 2;"><label class="form-label">Others</label><textarea class="form-control" [(ngModel)]="updateForm.replacement_form.others"></textarea></div>
+                  <div class="form-group"><label class="form-label">Replacement Reason</label><select class="form-control" [(ngModel)]="updateForm.replacement_form.replacement_reason"><option value="">— Select Reason —</option><option *ngIf="isLegacyValue(replacementReasons, 'reason', updateForm.replacement_form.replacement_reason)" [value]="updateForm.replacement_form.replacement_reason">{{ updateForm.replacement_form.replacement_reason }}</option><option *ngFor="let r of replacementReasons" [value]="r.reason">{{ r.reason }}</option></select></div>
+                  <div class="form-group" style="grid-column: span 2;"><label class="form-label">Others</label><textarea class="form-control" [(ngModel)]="updateForm.replacement_form.others" rows="3"></textarea></div>
                 </div>
               </div>
 
@@ -418,19 +397,9 @@
                       <option *ngFor="let c of countries" [value]="c.id">{{ c.name }}</option>
                     </select>
                   </div>
-                  <div class="form-group"><label class="form-label">Ordered Product Name</label>
-                    <select class="form-control" [ngModel]="updateForm.return_form.ordered_product_name" (ngModelChange)="pickOrdered(updateForm.return_form, 'name', $event)">
-                      <option value="">— Select Product —</option>
-                      <option *ngFor="let o of nameOptions(updateForm.return_form.ordered_product_name)" [value]="o.value">{{ o.label }}</option>
-                    </select>
-                  </div>
-                  <div class="form-group"><label class="form-label">Ordered Product SKU</label>
-                    <select class="form-control" [ngModel]="updateForm.return_form.ordered_product_sku" (ngModelChange)="pickOrdered(updateForm.return_form, 'sku', $event)">
-                      <option value="">— Select SKU —</option>
-                      <option *ngFor="let o of skuOptions(updateForm.return_form.ordered_product_sku)" [value]="o.value">{{ o.label }}</option>
-                    </select>
-                  </div>
-                  <div class="form-group"><label class="form-label">Return Reasons</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.return_reasons"></div>
+                  <div class="form-group"><label class="form-label">Ordered Product Name</label><select class="form-control" [(ngModel)]="updateForm.return_form.ordered_product_name" (ngModelChange)="onProductSelect(updateForm.return_form, 'ordered_product_name', 'ordered_product_sku')"><option value="">— Select Product —</option><option *ngIf="isLegacyValue(products, 'name', updateForm.return_form.ordered_product_name)" [value]="updateForm.return_form.ordered_product_name">{{ updateForm.return_form.ordered_product_name }}</option><option *ngFor="let p of products" [value]="p.name">{{ p.name }}{{ p.sku ? ' (' + p.sku + ')' : '' }}</option></select></div>
+                  <div class="form-group"><label class="form-label">Ordered Product SKU</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.ordered_product_sku" readonly placeholder="Auto-filled from product"></div>
+                  <div class="form-group"><label class="form-label">Return Reasons</label><select class="form-control" [(ngModel)]="updateForm.return_form.return_reasons"><option value="">— Select Reason —</option><option *ngIf="isLegacyValue(returnReasons, 'reason', updateForm.return_form.return_reasons)" [value]="updateForm.return_form.return_reasons">{{ updateForm.return_form.return_reasons }}</option><option *ngFor="let r of returnReasons" [value]="r.reason">{{ r.reason }}</option></select></div>
                   <div class="form-group"><label class="form-label">Return Date</label><input type="date" class="form-control" [(ngModel)]="updateForm.return_form.return_date"></div>
                   <div class="form-group"><label class="form-label">Courier Name</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.courier_name"></div>
                   <div class="form-group"><label class="form-label">Tracking ID</label><input type="text" class="form-control" [(ngModel)]="updateForm.return_form.tracking_id"></div>
@@ -440,14 +409,10 @@
                 </div>
               </div>
             </div>
-              <div style="margin-top:1rem; font-size:0.8rem; color:var(--text-muted);">
-                Last updated by <strong style="color:var(--text);">{{ selectedTicket?.updater?.name || selectedTicket?.creator?.name || '—' }}</strong>
-                on {{ selectedTicket?.updated_at | date:'medium' }}
-              </div>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--border-color);">
                 <div class="form-group">
                   <label class="form-label">Update Status</label>
-                  <select class="form-control" [(ngModel)]="updateForm.status_id" (ngModelChange)="onUpdateStatusChange($event)">
+                  <select class="form-control" [(ngModel)]="updateForm.status_id">
                     <option value="">— Select Status —</option>
                     <option *ngFor="let s of statuses" [value]="s.id">{{ s.name }}</option>
                   </select>
@@ -455,10 +420,6 @@
                 <div class="form-group">
                   <label class="form-label">Received Date\Time</label>
                   <input type="datetime-local" class="form-control" [(ngModel)]="updateForm.received_at">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Resolved Date\Time</label>
-                  <input type="datetime-local" class="form-control" [(ngModel)]="updateForm.resolved_at" placeholder="Auto-captured when status is Closed">
                 </div>
               </div>
 
@@ -470,7 +431,7 @@
             
             <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); text-align: center;" *ngIf="isAdmin && selectedTicket?.edit_requested && !selectedTicket?.edit_approved">
               <button class="btn btn-sm btn-success" (click)="approveEdit()" [disabled]="saving">
-                ✅ Approve Edit Request
+                <lucide-icon name="check-circle" [size]="20" [strokeWidth]="2"></lucide-icon> Approve Edit Request
               </button>
             </div>
           </ng-container>
@@ -494,7 +455,7 @@
       <div class="modal-footer">
         <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
         <button class="btn btn-primary" (click)="saveTicket()" [disabled]="saving || (!isAdmin && selectedTicket?.has_been_updated && !selectedTicket?.edit_approved && !selectedTicket?.profile_edit_approved)">
-          {{ saving ? 'Saving...' : '💾 Save Changes' }}
+          <lucide-icon name='save' [size]='16' *ngIf='!saving'></lucide-icon> {{ saving ? 'Saving...' : 'Save Changes' }}
         </button>
       </div>
     </div>
@@ -505,8 +466,8 @@
   <div class="modal-overlay" *ngIf="showViewModal" (click)="closeViewModal()">
     <div class="modal-box modal-lg" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3>👁️ View Ticket PTMS{{ viewedTicket?.id }}</h3>
-        <button class="modal-close" (click)="closeViewModal()">✕</button>
+        <h3><lucide-icon name='eye' [size]='20'></lucide-icon> View Ticket PTMS{{ viewedTicket?.id }}</h3>
+        <button class="modal-close" (click)="closeViewModal()"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon></button>
       </div>
       <div class="modal-body">
         
@@ -584,7 +545,10 @@
             </div>
             <div class="detail-row"><div class="detail-label">Received</div><div>{{ viewedTicket?.received_at | date:'d MMM y, h:mm a' || '—' }}</div></div>
             <div class="detail-row"><div class="detail-label">Resolved</div><div>{{ viewedTicket?.resolved_at | date:'d MMM y, h:mm a' || '—' }}</div></div>
-            <div class="detail-row"><div class="detail-label">Last Updated By</div><div>{{ viewedTicket?.updater?.name || viewedTicket?.creator?.name || '—' }} <span style="color:var(--text-muted);">({{ viewedTicket?.updated_at | date:'d MMM y, h:mm a' }})</span></div></div>
+          <div class="detail-row"><div class="detail-label">Last Updated</div><div>
+            {{ viewedTicket?.updated_at | date:'d MMM y, h:mm a' || '—' }}
+            <span *ngIf="viewedTicket?.last_updater" style="color:var(--text-muted); font-size: 0.85rem;"><br>(by {{ viewedTicket.last_updater.name }})</span>
+          </div></div>
           </div>
           <div style="margin-top:0.75rem;">
             <div class="detail-label">Action Taken / Remarks</div>

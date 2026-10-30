@@ -1,3 +1,4 @@
+import { LucideAngularModule } from 'lucide-angular';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './user-management.component.html',
 })
 export class UserManagementComponent implements OnInit {
@@ -24,8 +25,22 @@ export class UserManagementComponent implements OnInit {
 
   ngOnInit() { this.load(); }
 
+  currentPage = 1;
+  pageSize = 10;
+  totalItems = 0;
+  stats: any = { total: 0, active: 0, cse: 0, le: 0 };
+  Math = Math;
+
   load() {
-    this.http.get<any[]>(`${this.apiUrl}/users`).subscribe(d => this.users = d);
+    let params: any = {
+      page: this.currentPage,
+      per_page: this.pageSize
+    };
+    this.http.get<any>(`${this.apiUrl}/users`, { params }).subscribe(res => {
+      this.users = res.data;
+      this.totalItems = res.total;
+      this.stats = res.stats;
+    });
   }
 
   openNew() {
@@ -75,8 +90,9 @@ export class UserManagementComponent implements OnInit {
 
   closeModal() { this.showModal = false; }
 
-  get adminCount() { return this.users.filter(u => u.role === 'admin').length; }
-  get cseCount() { return this.users.filter(u => u.role === 'cse').length; }
-  get leCount() { return this.users.filter(u => u.role === 'le').length; }
-  get activeCount() { return this.users.filter(u => u.is_active).length; }
+  get adminCount() { return this.stats.total - this.stats.cse - this.stats.le; }
+  get cseCount() { return this.stats.cse; }
+  get leCount() { return this.stats.le; }
+  get activeCount() { return this.stats.active; }
+  get totalUsersCount() { return this.stats.total; }
 }

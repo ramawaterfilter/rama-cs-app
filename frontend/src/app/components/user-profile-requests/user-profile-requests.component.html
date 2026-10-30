@@ -12,6 +12,13 @@
     <div class="card-header">
       <h3>All Requests</h3>
     </div>
+    
+    <!-- Top Pagination Controls -->
+    <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-bottom: 1px solid var(--border-color);" *ngIf="requests.length > 0">
+      <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+      <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(requests.length / pageSize) || 1 }}</span>
+      <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= requests.length" (click)="currentPage = currentPage + 1">Next</button>
+    </div>
     <div class="table-wrapper">
       <table class="data-table">
         <thead>
@@ -46,15 +53,15 @@
             <td style="color:var(--text-muted);">{{ r.created_at | date:'medium' }}</td>
             <td>
               <div style="display:flex; gap:0.4rem;" *ngIf="r.status === 'Pending'">
-                <button class="btn btn-sm btn-success" (click)="openAcceptModal(r.id)" [disabled]="!r.user">✅ Accept</button>
-                <button class="btn btn-sm btn-danger" (click)="rejectRequest(r.id)">❌ Reject</button>
+                <button class="btn btn-sm btn-success" (click)="openAcceptModal(r.id)" [disabled]="!r.user"><lucide-icon name="check-circle" [size]="20" [strokeWidth]="2"></lucide-icon> Accept</button>
+                <button class="btn btn-sm btn-danger" (click)="rejectRequest(r.id)"><lucide-icon name="x-circle" [size]="20" [strokeWidth]="2"></lucide-icon> Reject</button>
               </div>
             </td>
           </tr>
           <tr *ngIf="requests.length === 0 && !loading">
             <td colspan="6">
               <div class="empty-state">
-                <div class="empty-icon">🔑</div>
+                <div class="empty-icon"><lucide-icon name="key" [size]="20" [strokeWidth]="2"></lucide-icon></div>
                 <p>No password reset requests found.</p>
               </div>
             </td>
@@ -81,7 +88,7 @@
     <div class="modal-box" style="max-width:400px;" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>Reset Password</h3>
-        <button class="modal-close" (click)="closeModal()">✕</button>
+        <button class="modal-close" (click)="closeModal()"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon></button>
       </div>
       <div class="modal-body">
         <p style="margin-bottom: 1rem; color: #6b7280; font-size: 0.9rem;">Enter a new password for the user.</p>

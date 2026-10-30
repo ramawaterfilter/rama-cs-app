@@ -5,9 +5,9 @@
   <!-- ======= SIDEBAR ======= -->
   <aside class="sidebar" [class.sidebar-mini]="sidebarCollapsed" [class.sidebar-open]="mobileSidebarOpen">
     <div class="sidebar-logo" style="justify-content: center; padding: 1rem;">
-      <img src="logo_rama.svg" alt="Rama Forms" *ngIf="!sidebarCollapsed" style="max-width: 100%; max-height: 40px; object-fit: contain;">
-      <img src="logo_rama.svg" alt="Rama Forms" *ngIf="sidebarCollapsed" style="max-width: 36px; max-height: 36px; object-fit: contain;">
-      <button class="mobile-close-btn" (click)="closeMobileSidebar()" *ngIf="mobileSidebarOpen">×</button>
+      <img [src]="themeService.isDark() ? 'logo_rama_white.svg' : 'logo_rama.svg'" alt="Logo" *ngIf="!sidebarCollapsed" style="max-width: 100%; max-height: 40px; object-fit: contain;">
+      <img [src]="themeService.isDark() ? 'logo_rama_white.svg' : 'logo_rama.svg'" alt="Logo" *ngIf="sidebarCollapsed" style="max-width: 100%; height: auto; object-fit: contain;">
+      <button class="mobile-close-btn" (click)="closeMobileSidebar()" *ngIf="mobileSidebarOpen"><lucide-icon name="x" [size]="24" [strokeWidth]="2"></lucide-icon></button>
     </div>
 
     <ul class="nav-list">
@@ -23,7 +23,7 @@
           <a class="nav-link" [routerLink]="item.route" routerLinkActive="active" (click)="closeMobileSidebar()"
             [routerLinkActiveOptions]="{exact: item.route === '/dashboard/overview' || item.route === '/dashboard/cse'}"
             [title]="sidebarCollapsed ? item.label : ''">
-            <span class="nav-icon">{{ item.icon }}</span>
+            <span class="nav-icon" style="display:flex; align-items:center; justify-content:center;"><lucide-icon [name]="item.icon" [size]="20" [strokeWidth]="2"></lucide-icon></span>
             <span class="nav-label" *ngIf="!sidebarCollapsed">{{ item.label }}</span>
           </a>
         </li>
@@ -54,17 +54,17 @@
           <span class="toggle-bar"></span>
         </button>
         <div class="topbar-title-group">
-          <h4>RAMA Forms</h4>
+          <h4>Phoenix Forms</h4>
           <p class="hide-mobile">Water Purifier Distribution & Service</p>
         </div>
       </div>
       <div class="topbar-right">
         <button class="notif-btn" title="Toggle Theme" (click)="themeService.toggleTheme()">
-          {{ themeService.isDark() ? '☀️' : '🌙' }}
+          <lucide-icon [name]="themeService.isDark() ? 'sun' : 'moon'" [size]="20" [strokeWidth]="2"></lucide-icon>
         </button>
         <div style="position: relative;" #notifContainer>
           <button class="notif-btn" title="Notifications" (click)="toggleNotifDropdown()">
-            🔔
+            <lucide-icon name="bell" [size]="20" [strokeWidth]="2"></lucide-icon>
             <span class="notif-dot"
               *ngIf="(notifService.notifications$ | async)?.length || (notifService.requests$ | async)?.length || (notifService.passwordRequests$ | async)?.length"></span>
           </button>
@@ -129,7 +129,7 @@
         <div class="profile-chip" [routerLink]="'/dashboard/profile'">
           <div class="chip-avatar">{{ initials }}</div>
           <span class="hide-mobile">{{ user?.name }}</span>
-          <span style="font-size:0.65rem; color:var(--text-muted)">▾</span>
+          <span style="display:flex; align-items:center; color:var(--text-muted)"><lucide-icon name="chevron-down" [size]="12" [strokeWidth]="2"></lucide-icon></span>
         </div>
         <button class="btn btn-outline btn-sm hide-mobile" (click)="logout()">Logout</button>
       </div>

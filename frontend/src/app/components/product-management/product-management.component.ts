@@ -1,3 +1,4 @@
+import { LucideAngularModule } from 'lucide-angular';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,10 +7,11 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-product-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './product-management.component.html',
 })
 export class ProductManagementComponent implements OnInit {
+  totalItems = 0;
   currentPage = 1;
   pageSize = 10;
   Math = Math;
@@ -22,7 +24,7 @@ export class ProductManagementComponent implements OnInit {
 
   form: any = {
     name: '', sku: '', brand: '', model: '',
-    description: '', category_ids: [], service_type: '', is_active: true
+    is_active: true
   };
 
   serviceTypes = ['Sales', 'Service', 'Parts', 'Installation', 'AMC', 'Other'];
@@ -40,12 +42,18 @@ export class ProductManagementComponent implements OnInit {
   ngOnInit() { this.load(); }
 
   load() {
-    this.http.get<any[]>(`${this.apiUrl}/products`).subscribe(d => this.products = d);
-    this.http.get<any[]>(`${this.apiUrl}/categories`).subscribe(d => this.categories = d);
+    this.http.get<any>(`${this.apiUrl}/products?page=${this.currentPage}&per_page=${this.pageSize}`).subscribe(res => {
+      this.products = res.data ? res.data : res;
+      this.totalItems = res.total || this.products.length;
+    });
+    this.http.get<any>(`${this.apiUrl}/categories`).subscribe(res => {
+      // API might return paginated or flat list for categories based on our backend update, we only pass page when we want pagination
+      this.categories = res.data ? res.data : res;
+    });
   }
 
   openNew() {
-    this.form = { name: '', sku: '', brand: '', model: '', description: '', category_ids: [], service_type: '', is_active: true };
+    this.form = { name: '', sku: '', brand: '', model: '', is_active: true };
     this.editId = null;
     this.editMode = false;
     this.saveMsg = '';
@@ -53,7 +61,7 @@ export class ProductManagementComponent implements OnInit {
   }
 
   openEdit(p: any) {
-    this.form = { name: p.name, sku: p.sku || '', brand: p.brand || '', model: p.model || '', description: p.description || '', category_ids: p.categories ? p.categories.map((c:any)=>c.id) : [], service_type: p.service_type || '', is_active: p.is_active };
+    this.form = { name: p.name, sku: p.sku || '', brand: p.brand || '', model: p.model || '', is_active: p.is_active };
     this.editId = p.id;
     this.editMode = true;
     this.saveMsg = '';

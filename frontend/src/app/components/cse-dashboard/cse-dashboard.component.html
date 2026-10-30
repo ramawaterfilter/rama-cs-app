@@ -8,7 +8,7 @@
   <!-- Stats Grid -->
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-icon blue">🎫</div>
+      <div class="stat-icon blue"><lucide-icon name="ticket" [size]="20" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Total Tickets</div>
         <div class="value">{{ stats.total }}</div>
@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon orange">⏳</div>
+      <div class="stat-icon orange"><lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Pending</div>
         <div class="value">{{ stats.pending }}</div>
@@ -39,7 +39,7 @@
   </div>
   <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
     <div class="stat-card">
-      <div class="stat-icon blue">📦</div>
+      <div class="stat-icon blue"><lucide-icon name="package" [size]="20" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Total Logistics</div>
         <div class="value">{{ logisticsStats.total }}</div>
@@ -47,7 +47,7 @@
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon orange">⏳</div>
+      <div class="stat-icon orange"><lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Pending Logistics</div>
         <div class="value">{{ logisticsStats.pending }}</div>
@@ -55,7 +55,7 @@
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon green">✅</div>
+      <div class="stat-icon green"><lucide-icon name="check-circle" [size]="20" [strokeWidth]="2"></lucide-icon></div>
       <div class="stat-info">
         <div class="label">Resolved Logistics</div>
         <div class="value">{{ logisticsStats.resolved }}</div>
@@ -68,12 +68,12 @@
   <div class="card" style="margin-top: 1.5rem;">
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem;">
       <h3 style="margin: 0; font-size: 1.1rem; color: #333;">Recent Tickets</h3>
-      <a class="btn btn-outline btn-sm" [routerLink]="['/dashboard/tickets']" style="text-decoration: none; font-size: 0.85rem;">View All →</a>
+      <a class="btn btn-outline btn-sm" [routerLink]="['/dashboard/tickets']" style="text-decoration: none; font-size: 0.85rem;">View All <lucide-icon name="arrow-right" [size]="16" [strokeWidth]="2"></lucide-icon></a>
     </div>
     
     <div class="table-wrapper" style="border-top: 1px solid var(--border-color);">
       <div class="empty-state" *ngIf="loading">
-        <div class="empty-icon">⏳</div><p>Loading tickets...</p>
+        <div class="empty-icon"><lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon></div><p>Loading tickets...</p>
       </div>
 
       <table class="data-table" *ngIf="!loading">
@@ -117,7 +117,7 @@
           <tr *ngIf="filteredTickets.length === 0 && !loading">
             <td colspan="5">
               <div class="empty-state" style="padding: 3rem 0;">
-                <div class="empty-icon">📭</div>
+                <div class="empty-icon"><lucide-icon name="inbox" [size]="48" [strokeWidth]="1.5"></lucide-icon></div>
                 <p>No recent tickets found.</p>
               </div>
             </td>

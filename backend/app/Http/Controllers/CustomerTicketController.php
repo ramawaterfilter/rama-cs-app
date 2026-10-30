@@ -12,31 +12,81 @@ class CustomerTicketController extends Controller
 {
     public function index(Request $request)
     {
-        // ponytail: no role scoping here — every CSE sees every ticket; executive_id is informational only
-        $query = CustomerTicket::with(['category', 'subCategory', 'childCategory', 'status', 'executive', 'queryChannel', 'queryType', 'queryFilter', 'outreach', 'countryDynamic', 'replacement.le', 'ticketReturn.le', 'creator', 'updater']);
+        $user = $request->user();
+        $query = CustomerTicket::with(['category', 'subCategory', 'childCategory', 'status', 'executive', 'queryChannel', 'queryType', 'queryFilter', 'outreach', 'countryDynamic', 'replacement.le', 'ticketReturn.le', 'lastUpdater']);
+        
+        if ($user->role === 'cse' && $request->view_all !== 'true') {
+            // CSEs can only see tickets allocated to them, unless explicitly viewing all
+            $query->where('executive_id', $user->id);
+        }
 
         // Add filter support
         if ($request->country_id) $query->where('country_id', $request->country_id);
-        if ($request->executive_id) $query->where('executive_id', $request->executive_id);
+        
+        if ($request->executive_id) {
+            if ($request->executive_id === 'unassigned') {
+                $query->whereNull('executive_id');
+            } else {
+                $query->where('executive_id', $request->executive_id);
+            }
+        }
+        
         if ($request->category_id) $query->where('category_id', $request->category_id);
+        if ($request->status_id) $query->where('status_id', $request->status_id);
         if ($request->order_id) $query->where('order_id', 'like', '%' . $request->order_id . '%');
-        if ($request->customer_email) $query->where('customer_email', 'like', '%' . $request->customer_email . '%');
+        
+        if ($request->from_date) {
+            $query->whereDate('received_at', '>=', $request->from_date);
+        }
+        if ($request->to_date) {
+            $query->whereDate('received_at', '<=', $request->to_date);
+        }
+
+        if ($request->is_requests == 'true') {
+            $query->where(function($q) {
+                $q->where(function($q2) {
+                    $q2->where('edit_requested', true)->where('edit_approved', false);
+                })->orWhere(function($q2) {
+                    $q2->where('profile_edit_requested', true)->where('profile_edit_approved', false);
+                });
+            });
+        }
+
+        if ($request->search) {
+            $term = '%' . $request->search . '%';
+            $query->where(function($q) use ($term) {
+                $q->where('customer_name', 'like', $term)
+                  ->orWhere('customer_email', 'like', $term)
+                  ->orWhere('customer_phone', 'like', $term)
+                  ->orWhere('agent_name', 'like', $term)
+                  ->orWhere('description', 'like', $term)
+                  ->orWhere('order_id', 'like', $term)
+                  ->orWhereHas('queryType', function($q2) use ($term) { $q2->where('name', 'like', $term); })
+                  ->orWhere('type_of_query', 'like', $term)
+                  ->orWhereHas('category', function($q2) use ($term) { $q2->where('name', 'like', $term); })
+                  ->orWhereHas('subCategory', function($q2) use ($term) { $q2->where('name', 'like', $term); })
+                  ->orWhereHas('childCategory', function($q2) use ($term) { $q2->where('name', 'like', $term); });
+            });
+        }
         
         $sortOrder = $request->sort_date === 'asc' ? 'asc' : 'desc';
+        $query->orderBy('created_at', $sortOrder);
+
+        if ($request->export == 'true') {
+            return response()->json($query->get());
+        }
         
-        return response()->json($query->orderBy('received_at', $sortOrder)->get());
+        $perPage = $request->per_page ?: 10;
+        return response()->json($query->paginate($perPage));
     }
 
     public function storePublic(Request $request)
     {
         $data = $request->all();
-        unset($data['created_by'], $data['updated_by']);
         
         // If user is logged in, auto-set executive_id (Assigned To)
         $user = $request->user();
         if ($user) {
-            $data['created_by'] = $user->id;
-            $data['updated_by'] = $user->id;
             if ($user->role === 'admin') {
                 if (!empty($data['executive_id'])) {
                     $data['is_allocated'] = true;
@@ -68,7 +118,13 @@ class CustomerTicketController extends Controller
             }
         }
         
-        $this->applyTimestamps($data);
+        if (!empty($data['status_id'])) {
+            $status = QueryStatus::find($data['status_id']);
+            if ($status && in_array(strtolower($status->name), ['completed', 'closed', 'resolved'])) {
+                $data['resolved_at'] = now();
+            }
+        }
+        
         $ticket = CustomerTicket::create($data);
 
         return response()->json(['message' => 'Query submitted successfully', 'ticket' => $ticket], 201);
@@ -76,20 +132,18 @@ class CustomerTicketController extends Controller
 
     public function show(CustomerTicket $ticket)
     {
-        return response()->json($ticket->load(['category', 'subCategory', 'childCategory', 'status', 'executive', 'queryChannel', 'queryType', 'queryFilter', 'outreach', 'countryDynamic', 'replacement', 'ticketReturn', 'creator', 'updater']));
+        return response()->json($ticket->load(['category', 'subCategory', 'childCategory', 'status', 'executive', 'queryChannel', 'queryType', 'queryFilter', 'outreach', 'countryDynamic', 'replacement', 'ticketReturn', 'lastUpdater']));
     }
 
     public function update(Request $request, CustomerTicket $ticket)
     {
         $user = $request->user();
-        // ponytail: ownership no longer gates edits — admin and any CSE can edit any ticket
-        if (!in_array($user->role, ['admin', 'cse'])) {
+        if ($user->role !== 'admin' && $ticket->executive_id !== $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         // CSE updating core fields requires approval
         $data = $request->all();
-        unset($data['created_by'], $data['updated_by']);
         $coreFields = [
             'order_id', 'purchase_store', 'query_channel_id', 'query_type_id', 'query_filter_id', 'category_id', 
             'sub_category_id', 'child_category_id', 'description', 'action_taken', 
@@ -120,20 +174,16 @@ class CustomerTicketController extends Controller
             }
         }
 
-        $logisticsType = $request->input('logistics_type');
-
         if ($user->role === 'cse') {
             if ($updatingCore && $ticket->has_been_updated && !$ticket->edit_approved) {
                 return response()->json(['message' => 'Edit approval required for general fields'], 403);
             }
-            // ponytail: dispatch details travel with the customer's address — a replacement/
-            // return request may update contact fields without a separate profile approval
-            $isLogisticsRequest = in_array($logisticsType, ['replacement', 'return'], true);
-            if ($updatingProfile && !$ticket->profile_edit_approved && !$isLogisticsRequest) {
+            if ($updatingProfile && !$ticket->profile_edit_approved) {
                 return response()->json(['message' => 'Edit approval required for profile fields'], 403);
             }
         }
 
+        $logisticsType = $request->input('logistics_type');
         $replacementData = $request->input('replacement_form');
         $returnData = $request->input('return_form');
 
@@ -158,8 +208,17 @@ class CustomerTicketController extends Controller
             $data['has_been_updated'] = true;
         }
 
-        $this->applyTimestamps($data, $ticket);
-        $data['updated_by'] = $user->id;
+        if (isset($data['status_id']) && $data['status_id'] != $ticket->status_id) {
+            $status = QueryStatus::find($data['status_id']);
+            if ($status && in_array(strtolower($status->name), ['completed', 'closed', 'resolved'])) {
+                $data['resolved_at'] = now();
+            } else {
+                $data['resolved_at'] = null;
+            }
+        }
+
+        $data['last_updated_by'] = $request->user()->id;
+
         $ticket->update($data);
 
         // Reset edit approval after update if it was an approved core edit by CSE
@@ -191,30 +250,7 @@ class CustomerTicketController extends Controller
             'ip_address' => $request->ip()
         ]);
 
-        return response()->json($ticket->load(['creator', 'updater']));
-    }
-
-    // Auto-captures timestamps: received defaults to submit time, resolved is
-    // stamped when status becomes Closed/Resolved/Completed and cleared on reopen.
-    private function applyTimestamps(array &$data, ?CustomerTicket $ticket = null): void
-    {
-        if (empty($data['received_at'])) {
-            // ponytail: on update, an empty value means "leave as-is" rather than backdating
-            if ($ticket) unset($data['received_at']);
-            else $data['received_at'] = now();
-        }
-
-        $statusId = $data['status_id'] ?? $ticket?->status_id;
-        $name = $statusId ? QueryStatus::find($statusId)?->name : null;
-        $closed = $name && preg_match('/close|resolv|complete/i', $name);
-
-        if ($closed) {
-            if (!empty($data['resolved_at'])) return;            // manual value wins
-            if ($ticket && $ticket->resolved_at) { unset($data['resolved_at']); return; } // keep existing
-            $data['resolved_at'] = now();
-        } elseif (array_key_exists('status_id', $data) || array_key_exists('resolved_at', $data)) {
-            $data['resolved_at'] = null;
-        }
+        return response()->json($ticket);
     }
 
     public function destroy(Request $request, CustomerTicket $ticket)
@@ -229,11 +265,11 @@ class CustomerTicketController extends Controller
 
     public function requestEdit(Request $request, CustomerTicket $ticket)
     {
-        if (!in_array($request->user()->role, ['admin', 'cse'])) {
+        if ($ticket->executive_id !== $request->user()->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $ticket->update(['edit_requested' => true, 'updated_by' => $request->user()->id]);
+        $ticket->update(['edit_requested' => true]);
 
         UserActivity::create([
             'user_id' => $request->user()->id,
@@ -252,7 +288,6 @@ class CustomerTicketController extends Controller
         }
 
         $ticket->update([
-            'updated_by' => $request->user()->id,
             'edit_requested' => false,
             'edit_approved' => true
         ]);
@@ -269,11 +304,11 @@ class CustomerTicketController extends Controller
 
     public function requestProfileEdit(Request $request, CustomerTicket $ticket)
     {
-        if (!in_array($request->user()->role, ['admin', 'cse'])) {
+        if ($ticket->executive_id !== $request->user()->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $ticket->update(['profile_edit_requested' => true, 'updated_by' => $request->user()->id]);
+        $ticket->update(['profile_edit_requested' => true]);
 
         UserActivity::create([
             'user_id' => $request->user()->id,
@@ -292,7 +327,6 @@ class CustomerTicketController extends Controller
         }
 
         $ticket->update([
-            'updated_by' => $request->user()->id,
             'profile_edit_requested' => false,
             'profile_edit_approved' => true
         ]);
@@ -314,7 +348,6 @@ class CustomerTicketController extends Controller
         }
 
         $ticket->update([
-            'updated_by' => $request->user()->id,
             'is_logistic_approved' => true,
             'is_logistic_rejected' => false,
             'logistic_rejection_reason' => null
@@ -337,7 +370,6 @@ class CustomerTicketController extends Controller
         }
 
         $ticket->update([
-            'updated_by' => $request->user()->id,
             'is_logistic_approved' => false,
             'is_logistic_rejected' => true,
             'logistic_rejection_reason' => $request->input('reason')
@@ -360,7 +392,6 @@ class CustomerTicketController extends Controller
         }
 
         $ticket->update([
-            'updated_by' => $request->user()->id,
             'executive_id' => $request->user()->id,
             'is_allocated' => true
         ]);
@@ -384,7 +415,6 @@ class CustomerTicketController extends Controller
         $request->validate(['executive_id' => 'required|exists:users,id']);
 
         $ticket->update([
-            'updated_by' => $request->user()->id,
             'executive_id' => $request->executive_id,
             'is_allocated' => true
         ]);

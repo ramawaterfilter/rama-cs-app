@@ -10,7 +10,7 @@
   <div class="card-body toolbar">
     <div style="position: relative; display: inline-block;">
       <span style="position: absolute; top: -16px; left: 4px; font-size: 0.65rem; color: var(--text-muted); white-space: nowrap;">Search (Name, Email...)</span>
-      <input type="text" class="form-control" placeholder="🔍 Search..." title="Search Name, Email, Order ID..."
+      <input type="text" class="form-control" placeholder="Search..." title="Search Name, Email, Order ID..."
         [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()">
     </div>
 
@@ -28,9 +28,9 @@
       <input type="date" style="border:none; background:transparent; font-size:0.85rem; outline:none;" [(ngModel)]="toDate" (ngModelChange)="applyFilter()">
     </div>
 
-    <button class="btn btn-outline btn-sm" (click)="toggleSortDate()" title="Sort by Date">↕</button>
-    <button class="btn btn-outline btn-sm" (click)="loadData()" title="Reload Data">↻</button>
-    <button class="btn btn-outline btn-sm" (click)="resetFilters()" title="Reset Filters" style="color: var(--danger); border-color: var(--danger);">✕ Reset</button>
+    <button class="btn btn-outline btn-sm" (click)="toggleSortDate()" title="Sort by Date"><lucide-icon name="arrow-up-down" [size]="16" [strokeWidth]="2"></lucide-icon></button>
+    <button class="btn btn-outline btn-sm" (click)="loadData()" title="Reload Data"><lucide-icon name="refresh-cw" [size]="16" [strokeWidth]="2"></lucide-icon></button>
+    <button class="btn btn-outline btn-sm" (click)="resetFilters()" title="Reset Filters" style="color: var(--danger); border-color: var(--danger);"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon> Reset</button>
     <span class="toolbar-info">
       Showing {{ filteredTickets.length }} of {{ tickets.length }} tickets
     </span>
@@ -38,6 +38,13 @@
 </div>
 
 <div class="card" style="padding:0;">
+  <!-- Top Pagination Controls -->
+  <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-bottom: 1px solid var(--border-color);" *ngIf="totalItems > 0">
+    <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1; loadData()">Previous</button>
+    <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(totalItems / pageSize) || 1 }}</span>
+    <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= totalItems" (click)="currentPage = currentPage + 1; loadData()">Next</button>
+  </div>
+  
   <div class="table-wrapper">
     <table class="data-table">
       <thead>
@@ -59,7 +66,7 @@
         <tr *ngIf="!loading && filteredTickets.length === 0">
           <td colspan="8" class="text-center" style="padding: 2rem;">No logistics tickets found.</td>
         </tr>
-        <tr *ngFor="let t of filteredTickets | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
+        <tr *ngFor="let t of filteredTickets; let i = index">
           <td><span class="chip" style="background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-color);">{{ (currentPage - 1) * pageSize + i + 1 }}</span></td>
           <td><span class="chip" style="font-weight: 700; color: var(--primary);">PTMS{{ t.id }}</span></td>
           <td style="font-weight:500;">{{ t.order_id }}</td>
@@ -80,20 +87,20 @@
           <td>{{ t.created_at | date:'mediumDate' }}</td>
           <td class="text-right">
             <button class="btn btn-sm btn-primary" (click)="openUpdateModal(t)" *ngIf="user?.role === 'le' || (user?.role === 'admin' && (t.is_logistic_approved || t.is_logistic_rejected)) || user?.role === 'cse'">
-              {{ user?.role !== 'le' ? '👁️ View' : '✏️ Update' }}
+              <lucide-icon [name]="user?.role !== 'le' ? 'eye' : 'edit-2'" [size]='16'></lucide-icon> {{ user?.role !== 'le' ? 'View' : 'Update' }}
             </button>
             <button class="btn btn-sm btn-warning" *ngIf="user?.role === 'admin' && !t.is_logistic_approved && !t.is_logistic_rejected" (click)="openUpdateModal(t)">
-              ⏳ Approval waiting
+              <lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon> Approval waiting
             </button>
           </td>
         </tr>
       </tbody>
     </table>
     <!-- Pagination Controls -->
-    <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="filteredTickets.length > 0">
-      <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
-      <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(filteredTickets.length / pageSize) || 1 }}</span>
-      <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filteredTickets.length" (click)="currentPage = currentPage + 1">Next</button>
+    <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="totalItems > 0">
+      <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1; loadData()">Previous</button>
+      <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(totalItems / pageSize) || 1 }}</span>
+      <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= totalItems" (click)="currentPage = currentPage + 1; loadData()">Next</button>
     </div>
   </div>
 </div>
@@ -177,11 +184,6 @@
         <label class="form-label">Remarks</label>
         <textarea class="form-control" [(ngModel)]="updateForm.remarks" placeholder="Enter remarks..." [disabled]="user?.role !== 'le'"></textarea>
       </div>
-
-      <div class="form-group" *ngIf="selectedTicket?.ticket_return">
-        <label class="form-label">Tracking ID</label>
-        <input class="form-control" [(ngModel)]="updateForm.tracking_id" placeholder="Enter tracking ID..." [disabled]="user?.role !== 'le'">
-      </div>
     </div>
     <div class="modal-footer" style="flex-wrap: wrap;">
       <div style="width: 100%; margin-bottom: 1rem;" *ngIf="user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && showRejectInput">
@@ -194,8 +196,8 @@
       </div>
       
       <div style="display: flex; gap: 0.5rem; margin-left: auto;">
-        <button class="btn btn-success" *ngIf="user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && !showRejectInput" (click)="approveLogistics()">✅ Approve</button>
-        <button class="btn btn-danger" *ngIf="user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && !showRejectInput" (click)="showRejectInput = true">❌ Reject</button>
+        <button class="btn btn-success" *ngIf="user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && !showRejectInput" (click)="approveLogistics()"><lucide-icon name="check-circle" [size]="20" [strokeWidth]="2"></lucide-icon> Approve</button>
+        <button class="btn btn-danger" *ngIf="user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && !showRejectInput" (click)="showRejectInput = true"><lucide-icon name="x-circle" [size]="20" [strokeWidth]="2"></lucide-icon> Reject</button>
 
         <button class="btn btn-outline" (click)="closeModal()">{{ user?.role !== 'le' ? 'Close' : 'Cancel' }}</button>
         <button class="btn btn-primary" (click)="saveUpdate()" [disabled]="saving" *ngIf="user?.role === 'le'">
