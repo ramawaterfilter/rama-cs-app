@@ -174,7 +174,7 @@
             <div class="form-grid-modal">
               <div class="detail-row"><div class="detail-label">Agent Info</div><div>{{ selectedTicket?.agent_name }} ({{ selectedTicket?.agent_email }})</div></div>
               <div class="detail-row"><div class="detail-label">Last Updated</div><div>
-                {{ selectedTicket?.updated_at | date:'d MMM y, h:mm a' || '—' }}
+                {{ (selectedTicket?.updated_at | date:'d MMM y, h:mm a') || '—' }}
                 <span *ngIf="selectedTicket?.last_updater" style="color:var(--text-muted); font-size: 0.85rem;">(by {{ selectedTicket.last_updater.name }})</span>
               </div></div>
               <div class="detail-row"><div class="detail-label">Customer Name</div><div>{{ selectedTicket?.customer_name }}</div></div>
@@ -543,10 +543,10 @@
                 </span>
               </div>
             </div>
-            <div class="detail-row"><div class="detail-label">Received</div><div>{{ viewedTicket?.received_at | date:'d MMM y, h:mm a' || '—' }}</div></div>
-            <div class="detail-row"><div class="detail-label">Resolved</div><div>{{ viewedTicket?.resolved_at | date:'d MMM y, h:mm a' || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Received</div><div>{{ (viewedTicket?.received_at | date:'d MMM y, h:mm a') || '—' }}</div></div>
+            <div class="detail-row"><div class="detail-label">Resolved</div><div>{{ (viewedTicket?.resolved_at | date:'d MMM y, h:mm a') || '—' }}</div></div>
           <div class="detail-row"><div class="detail-label">Last Updated</div><div>
-            {{ viewedTicket?.updated_at | date:'d MMM y, h:mm a' || '—' }}
+            {{ (viewedTicket?.updated_at | date:'d MMM y, h:mm a') || '—' }}
             <span *ngIf="viewedTicket?.last_updater" style="color:var(--text-muted); font-size: 0.85rem;"><br>(by {{ viewedTicket.last_updater.name }})</span>
           </div></div>
           </div>
