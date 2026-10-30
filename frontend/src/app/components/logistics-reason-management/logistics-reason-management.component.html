@@ -15,11 +15,13 @@
         <button class="btn btn-sm" [ngClass]="typeFilter === 'return' ? 'btn-primary' : 'btn-outline'" (click)="setFilter('return')">Return</button>
         <button class="btn btn-sm" [ngClass]="typeFilter === 'replacement' ? 'btn-primary' : 'btn-outline'" (click)="setFilter('replacement')">Replacement</button>
       </div>
-      <div style="display:flex; align-items:center; gap:1rem;" *ngIf="filtered.length > 0">
-        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
-        <span style="font-size:0.85rem; font-weight:600;">Page {{ currentPage }} of {{ Math.ceil(filtered.length / pageSize) || 1 }}</span>
-        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filtered.length" (click)="currentPage = currentPage + 1">Next</button>
-      </div>
+      @if (filtered.length > 0) {
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+          <span style="font-size:0.85rem; font-weight:600;">Page {{ currentPage }} of {{ Math.ceil(filtered.length / pageSize) || 1 }}</span>
+          <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filtered.length" (click)="currentPage = currentPage + 1">Next</button>
+        </div>
+      }
     </div>
     <div class="table-wrapper">
       <table class="data-table">
@@ -33,63 +35,79 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let r of filtered | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
-            <td><span class="chip">{{ (currentPage - 1) * pageSize + i + 1 }}</span></td>
-            <td style="font-weight:600;">{{ r.reason }}</td>
-            <td><span class="badge" [ngClass]="r.type === 'return' ? 'badge-info' : 'badge-primary'">{{ r.type === 'return' ? 'Return' : 'Replacement' }}</span></td>
-            <td>
-              <span class="badge badge-success" *ngIf="r.is_active">Active</span>
-              <span class="badge badge-danger" *ngIf="!r.is_active">Inactive</span>
-            </td>
-            <td>
-              <div style="display:flex; gap:0.4rem;">
-                <button class="btn btn-sm btn-outline" (click)="openEdit(r)"><lucide-icon name="edit-2" [size]="16" [strokeWidth]="2"></lucide-icon> Edit</button>
-                <button class="btn btn-sm btn-danger" (click)="delete(r.id)"><lucide-icon name="trash" [size]="16" [strokeWidth]="2"></lucide-icon></button>
-              </div>
-            </td>
-          </tr>
-          <tr *ngIf="filtered.length === 0">
-            <td colspan="5"><div class="empty-state"><p>No reasons found. Click "Add Reason" to get started.</p></div></td>
-          </tr>
+          @for (r of filtered | slice: (currentPage - 1) * pageSize : currentPage * pageSize; track r; let i = $index) {
+            <tr>
+              <td><span class="chip">{{ (currentPage - 1) * pageSize + i + 1 }}</span></td>
+              <td style="font-weight:600;">{{ r.reason }}</td>
+              <td><span class="badge" [ngClass]="r.type === 'return' ? 'badge-info' : 'badge-primary'">{{ r.type === 'return' ? 'Return' : 'Replacement' }}</span></td>
+              <td>
+                @if (r.is_active) {
+                  <span class="badge badge-success">Active</span>
+                }
+                @if (!r.is_active) {
+                  <span class="badge badge-danger">Inactive</span>
+                }
+              </td>
+              <td>
+                <div style="display:flex; gap:0.4rem;">
+                  <button class="btn btn-sm btn-outline" (click)="openEdit(r)"><lucide-icon name="edit-2" [size]="16" [strokeWidth]="2"></lucide-icon> Edit</button>
+                  <button class="btn btn-sm btn-danger" (click)="delete(r.id)"><lucide-icon name="trash" [size]="16" [strokeWidth]="2"></lucide-icon></button>
+                </div>
+              </td>
+            </tr>
+          }
+          @if (filtered.length === 0) {
+            <tr>
+              <td colspan="5"><div class="empty-state"><p>No reasons found. Click "Add Reason" to get started.</p></div></td>
+            </tr>
+          }
         </tbody>
       </table>
-      <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding:1rem; border-top:1px solid var(--border-color);" *ngIf="filtered.length > 0">
-        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
-        <span style="font-size:0.85rem; font-weight:600;">Page {{ currentPage }} of {{ Math.ceil(filtered.length / pageSize) || 1 }}</span>
-        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filtered.length" (click)="currentPage = currentPage + 1">Next</button>
-      </div>
+      @if (filtered.length > 0) {
+        <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding:1rem; border-top:1px solid var(--border-color);">
+          <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+          <span style="font-size:0.85rem; font-weight:600;">Page {{ currentPage }} of {{ Math.ceil(filtered.length / pageSize) || 1 }}</span>
+          <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filtered.length" (click)="currentPage = currentPage + 1">Next</button>
+        </div>
+      }
     </div>
   </div>
 
-  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-    <div class="modal-box" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3>{{ editMode ? 'Edit Reason' : '+ New Reason' }}</h3>
-        <button class="modal-close" (click)="closeModal()"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon></button>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-success" *ngIf="saveMsg && !saveMsg.includes('Error')">{{ saveMsg }}</div>
-        <div class="alert alert-danger" *ngIf="saveMsg && saveMsg.includes('Error')">{{ saveMsg }}</div>
-        <div class="form-group">
-          <label class="form-label">Reason Type *</label>
-          <select class="form-control" [(ngModel)]="form.type">
-            <option value="return">Return Reason</option>
-            <option value="replacement">Replacement Reason</option>
-          </select>
+  @if (showModal) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>{{ editMode ? 'Edit Reason' : '+ New Reason' }}</h3>
+          <button class="modal-close" (click)="closeModal()"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon></button>
         </div>
-        <div class="form-group">
-          <label class="form-label">Reason *</label>
-          <input type="text" class="form-control" [(ngModel)]="form.reason" placeholder="e.g. Damaged in transit">
+        <div class="modal-body">
+          @if (saveMsg && !saveMsg.includes('Error')) {
+            <div class="alert alert-success">{{ saveMsg }}</div>
+          }
+          @if (saveMsg && saveMsg.includes('Error')) {
+            <div class="alert alert-danger">{{ saveMsg }}</div>
+          }
+          <div class="form-group">
+            <label class="form-label">Reason Type *</label>
+            <select class="form-control" [(ngModel)]="form.type">
+              <option value="return">Return Reason</option>
+              <option value="replacement">Replacement Reason</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reason *</label>
+            <input type="text" class="form-control" [(ngModel)]="form.reason" placeholder="e.g. Damaged in transit">
+          </div>
+          <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+            <input type="checkbox" [(ngModel)]="form.is_active" id="reasonActive">
+            <label for="reasonActive" class="form-label" style="margin:0; cursor:pointer;">Active (visible in dropdowns)</label>
+          </div>
         </div>
-        <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
-          <input type="checkbox" [(ngModel)]="form.is_active" id="reasonActive">
-          <label for="reasonActive" class="form-label" style="margin:0; cursor:pointer;">Active (visible in dropdowns)</label>
+        <div class="modal-footer">
+          <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
+          <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.reason">{{ saving ? 'Saving...' : 'Save Reason' }}</button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
-        <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.reason">{{ saving ? 'Saving...' : 'Save Reason' }}</button>
       </div>
     </div>
-  </div>
+  }
 </div>

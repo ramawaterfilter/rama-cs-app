@@ -9,13 +9,15 @@
   </div>
 
   <div class="card">
-    
+
     <!-- Top Pagination Controls -->
-    <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-bottom: 1px solid var(--border-color);" *ngIf="filters.length > 0">
-      <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
-      <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(filters.length / pageSize) || 1 }}</span>
-      <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filters.length" (click)="currentPage = currentPage + 1">Next</button>
-    </div>
+    @if (filters.length > 0) {
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-bottom: 1px solid var(--border-color);">
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+        <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(filters.length / pageSize) || 1 }}</span>
+        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filters.length" (click)="currentPage = currentPage + 1">Next</button>
+      </div>
+    }
     <div class="table-wrapper">
       <table class="data-table">
         <thead>
@@ -27,66 +29,85 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let f of filters | slice: (currentPage - 1) * pageSize : currentPage * pageSize; let i = index">
-            <td><span class="chip">{{ (currentPage - 1) * pageSize + i + 1 }}</span></td>
-            <td><strong>{{ f.name }}</strong></td>
-            <td>
-              <span class="badge badge-success" *ngIf="f.is_active">Active</span>
-              <span class="badge badge-secondary" *ngIf="!f.is_active">Inactive</span>
-            </td>
-            <td>
-              <div style="display:flex; gap:0.5rem;">
-                <button class="btn btn-sm btn-outline" (click)="openEdit(f)"><lucide-icon name="edit-2" [size]="16" [strokeWidth]="2"></lucide-icon> Edit</button>
-                <button class="btn btn-sm btn-danger" (click)="delete(f.id)"><lucide-icon name="trash" [size]="16" [strokeWidth]="2"></lucide-icon></button>
-              </div>
-            </td>
-          </tr>
-          <tr *ngIf="filters.length === 0">
-            <td colspan="4">
-              <div class="empty-state">
-                <div class="empty-icon"><lucide-icon name="ruler" [size]="20" [strokeWidth]="2"></lucide-icon></div>
-                <p>No filters yet.</p>
-              </div>
-            </td>
-          </tr>
+          @for (f of filters | slice: (currentPage - 1) * pageSize : currentPage * pageSize; track f; let i = $index) {
+            <tr>
+              <td><span class="chip">{{ (currentPage - 1) * pageSize + i + 1 }}</span></td>
+              <td><strong>{{ f.name }}</strong></td>
+              <td>
+                @if (f.is_active) {
+                  <span class="badge badge-success">Active</span>
+                }
+                @if (!f.is_active) {
+                  <span class="badge badge-secondary">Inactive</span>
+                }
+              </td>
+              <td>
+                <div style="display:flex; gap:0.5rem;">
+                  <button class="btn btn-sm btn-outline" (click)="openEdit(f)"><lucide-icon name="edit-2" [size]="16" [strokeWidth]="2"></lucide-icon> Edit</button>
+                  <button class="btn btn-sm btn-danger" (click)="delete(f.id)"><lucide-icon name="trash" [size]="16" [strokeWidth]="2"></lucide-icon></button>
+                </div>
+              </td>
+            </tr>
+          }
+          @if (filters.length === 0) {
+            <tr>
+              <td colspan="4">
+                <div class="empty-state">
+                  <div class="empty-icon"><lucide-icon name="ruler" [size]="20" [strokeWidth]="2"></lucide-icon></div>
+                  <p>No filters yet.</p>
+                </div>
+              </td>
+            </tr>
+          }
         </tbody>
       </table>
 
       <!-- Pagination Controls -->
-      <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="filters.length > 0">
-        <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
-        <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(filters.length / pageSize) || 1 }}</span>
-        <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filters.length" (click)="currentPage = currentPage + 1">Next</button>
-      </div>
+      @if (filters.length > 0) {
+        <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);">
+          <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Previous</button>
+          <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(filters.length / pageSize) || 1 }}</span>
+          <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= filters.length" (click)="currentPage = currentPage + 1">Next</button>
+        </div>
+      }
     </div>
   </div>
 
   <!-- Modal -->
-  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-    <div class="modal-box" style="max-width:440px;" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3><lucide-icon name='edit-2' [size]='20' *ngIf='editMode'></lucide-icon> {{ editMode ? 'Edit Filter' : '+ New Filter' }}</h3>
-        <button class="modal-close" (click)="closeModal()"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon></button>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-success" *ngIf="saveMsg && !saveMsg.includes('Error')">{{ saveMsg }}</div>
-        <div class="alert alert-danger" *ngIf="saveMsg && saveMsg.includes('Error')">{{ saveMsg }}</div>
-
-        <div class="form-group">
-          <label class="form-label">Filter Name</label>
-          <input type="text" class="form-control" [(ngModel)]="form.name" placeholder="e.g. 6 Liters">
+  @if (showModal) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-box" style="max-width:440px;" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>@if (editMode) {
+            <lucide-icon name='edit-2' [size]='20'></lucide-icon>
+          } {{ editMode ? 'Edit Filter' : '+ New Filter' }}</h3>
+          <button class="modal-close" (click)="closeModal()"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon></button>
         </div>
-        <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
-          <input type="checkbox" [(ngModel)]="form.is_active" id="isActive">
-          <label for="isActive" class="form-label" style="margin:0; cursor:pointer;">Active</label>
+        <div class="modal-body">
+          @if (saveMsg && !saveMsg.includes('Error')) {
+            <div class="alert alert-success">{{ saveMsg }}</div>
+          }
+          @if (saveMsg && saveMsg.includes('Error')) {
+            <div class="alert alert-danger">{{ saveMsg }}</div>
+          }
+          <div class="form-group">
+            <label class="form-label">Filter Name</label>
+            <input type="text" class="form-control" [(ngModel)]="form.name" placeholder="e.g. 6 Liters">
+          </div>
+          <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+            <input type="checkbox" [(ngModel)]="form.is_active" id="isActive">
+            <label for="isActive" class="form-label" style="margin:0; cursor:pointer;">Active</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
+          <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name">
+            @if (!saving) {
+              <lucide-icon name='save' [size]='16'></lucide-icon>
+              } {{ saving ? 'Saving...' : 'Save' }}
+            </button>
+          </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" (click)="closeModal()">Cancel</button>
-        <button class="btn btn-primary" (click)="save()" [disabled]="saving || !form.name">
-          <lucide-icon name='save' [size]='16' *ngIf='!saving'></lucide-icon> {{ saving ? 'Saving...' : 'Save' }}
-        </button>
-      </div>
-    </div>
+    }
   </div>
-</div>

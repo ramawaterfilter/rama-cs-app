@@ -70,60 +70,70 @@
       <h3 style="margin: 0; font-size: 1.1rem; color: #333;">Recent Tickets</h3>
       <a class="btn btn-outline btn-sm" [routerLink]="['/dashboard/tickets']" style="text-decoration: none; font-size: 0.85rem;">View All <lucide-icon name="arrow-right" [size]="16" [strokeWidth]="2"></lucide-icon></a>
     </div>
-    
-    <div class="table-wrapper" style="border-top: 1px solid var(--border-color);">
-      <div class="empty-state" *ngIf="loading">
-        <div class="empty-icon"><lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon></div><p>Loading tickets...</p>
-      </div>
 
-      <table class="data-table" *ngIf="!loading">
-        <thead>
-          <tr>
-            <th style="padding-left: 1.5rem; width: 80px;">(No)</th>
-            <th>Ticket #</th>
-            <th>CUSTOMER</th>
-            <th>QUERY TYPE</th>
-            <th>STATUS</th>
-            <th>RECEIVED</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let ticket of filteredTickets; let i = index">
-            <td style="padding-left: 1.5rem;">
-              <span class="chip" style="background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-color);">{{ i + 1 }}</span>
-            </td>
-            <td>
-              <span class="chip" style="font-weight: 700; color: var(--primary);">PTMS{{ ticket.id }}</span>
-            </td>
-            <td>
-              <div style="font-weight: 600; color: #333;">{{ ticket.customer_name }}</div>
-              <div style="font-size: 0.8rem; color: var(--text-muted);" *ngIf="ticket.customer_phone">{{ ticket.customer_phone }}</div>
-            </td>
-            <td>
-              <span style="background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">
-                {{ ticket.query_type?.name || ticket.type_of_query || 'N/A' }}
-              </span>
-            </td>
-            <td>
-              <span [ngStyle]="getStatusStyle(ticket)">
-                <span class="color-dot" [style.background]="ticket.status?.color || '#adb5bd'"></span>
-                {{ ticket.status?.name || 'PENDING REVIEW' | uppercase }}
-              </span>
-            </td>
-            <td style="color: var(--text-muted); font-size: 0.85rem;">
-              {{ ticket.received_at | date:'d MMM yyyy' }}
-            </td>
-          </tr>
-          <tr *ngIf="filteredTickets.length === 0 && !loading">
-            <td colspan="5">
-              <div class="empty-state" style="padding: 3rem 0;">
-                <div class="empty-icon"><lucide-icon name="inbox" [size]="48" [strokeWidth]="1.5"></lucide-icon></div>
-                <p>No recent tickets found.</p>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="table-wrapper" style="border-top: 1px solid var(--border-color);">
+      @if (loading) {
+        <div class="empty-state">
+          <div class="empty-icon"><lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon></div><p>Loading tickets...</p>
+        </div>
+      }
+
+      @if (!loading) {
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="padding-left: 1.5rem; width: 80px;">(No)</th>
+              <th>Ticket #</th>
+              <th>CUSTOMER</th>
+              <th>QUERY TYPE</th>
+              <th>STATUS</th>
+              <th>RECEIVED</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ticket of filteredTickets; track ticket; let i = $index) {
+              <tr>
+                <td style="padding-left: 1.5rem;">
+                  <span class="chip" style="background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-color);">{{ i + 1 }}</span>
+                </td>
+                <td>
+                  <span class="chip" style="font-weight: 700; color: var(--primary);">PTMS{{ ticket.id }}</span>
+                </td>
+                <td>
+                  <div style="font-weight: 600; color: #333;">{{ ticket.customer_name }}</div>
+                  @if (ticket.customer_phone) {
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">{{ ticket.customer_phone }}</div>
+                  }
+                </td>
+                <td>
+                  <span style="background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">
+                    {{ ticket.query_type?.name || ticket.type_of_query || 'N/A' }}
+                  </span>
+                </td>
+                <td>
+                  <span [ngStyle]="getStatusStyle(ticket)">
+                    <span class="color-dot" [style.background]="ticket.status?.color || '#adb5bd'"></span>
+                    {{ ticket.status?.name || 'PENDING REVIEW' | uppercase }}
+                  </span>
+                </td>
+                <td style="color: var(--text-muted); font-size: 0.85rem;">
+                  {{ ticket.received_at | date:'d MMM yyyy' }}
+                </td>
+              </tr>
+            }
+            @if (filteredTickets.length === 0 && !loading) {
+              <tr>
+                <td colspan="5">
+                  <div class="empty-state" style="padding: 3rem 0;">
+                    <div class="empty-icon"><lucide-icon name="inbox" [size]="48" [strokeWidth]="1.5"></lucide-icon></div>
+                    <p>No recent tickets found.</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
     </div>
   </div>
 </div>

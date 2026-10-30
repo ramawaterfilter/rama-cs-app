@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
@@ -10,7 +10,7 @@ import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
     selector: 'app-public-form',
-    imports: [CommonModule, FormsModule, LucideAngularModule],
+    imports: [FormsModule, LucideAngularModule],
     templateUrl: './public-form.component.html'
 })
 export class PublicFormComponent implements OnInit {

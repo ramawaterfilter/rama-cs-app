@@ -12,216 +12,242 @@
       <span style="position: absolute; top: -16px; left: 4px; font-size: 0.65rem; color: var(--text-muted); white-space: nowrap;">Search (Name, Email...)</span>
       <input type="text" class="form-control" placeholder="Search..." title="Search Name, Email, Order ID..."
         [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()">
-    </div>
-
-    <input type="text" class="form-control" style="max-width:140px;" placeholder="Order ID..."
-      [(ngModel)]="filterOrderId" (ngModelChange)="applyFilter()">
-
-    <select class="form-control" [(ngModel)]="filterLogisticsStatus" (ngModelChange)="applyFilter()">
-      <option value="">All Statuses</option>
-      <option *ngFor="let s of statuses" [value]="s.name">{{ s.name }}</option>
-    </select>
-
-    <div style="display:flex; align-items:center; gap:0.4rem; background:var(--bg-body); padding:0.2rem 0.5rem; border-radius:var(--radius-sm); border:1px solid var(--border-color); flex-shrink: 0;">
-      <input type="date" style="border:none; background:transparent; font-size:0.85rem; outline:none;" [(ngModel)]="fromDate" (ngModelChange)="applyFilter()">
-      <span style="font-size:0.75rem; color:var(--text-muted);">to</span>
-      <input type="date" style="border:none; background:transparent; font-size:0.85rem; outline:none;" [(ngModel)]="toDate" (ngModelChange)="applyFilter()">
-    </div>
-
-    <button class="btn btn-outline btn-sm" (click)="toggleSortDate()" title="Sort by Date"><lucide-icon name="arrow-up-down" [size]="16" [strokeWidth]="2"></lucide-icon></button>
-    <button class="btn btn-outline btn-sm" (click)="loadData()" title="Reload Data"><lucide-icon name="refresh-cw" [size]="16" [strokeWidth]="2"></lucide-icon></button>
-    <button class="btn btn-outline btn-sm" (click)="resetFilters()" title="Reset Filters" style="color: var(--danger); border-color: var(--danger);"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon> Reset</button>
-    <span class="toolbar-info">
-      Showing {{ filteredTickets.length }} of {{ tickets.length }} tickets
-    </span>
-  </div>
-</div>
-
-<div class="card" style="padding:0;">
-  <!-- Top Pagination Controls -->
-  <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-bottom: 1px solid var(--border-color);" *ngIf="totalItems > 0">
-    <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1; loadData()">Previous</button>
-    <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(totalItems / pageSize) || 1 }}</span>
-    <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= totalItems" (click)="currentPage = currentPage + 1; loadData()">Next</button>
-  </div>
-  
-  <div class="table-wrapper">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>Ticket #</th>
-          <th>Order ID</th>
-          <th>Customer Name</th>
-          <th>Type</th>
-          <th>Logistics Status</th>
-          <th>Created Date</th>
-          <th class="text-right">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="loading">
-          <td colspan="8" class="text-center" style="padding: 2rem;">Loading tickets...</td>
-        </tr>
-        <tr *ngIf="!loading && filteredTickets.length === 0">
-          <td colspan="8" class="text-center" style="padding: 2rem;">No logistics tickets found.</td>
-        </tr>
-        <tr *ngFor="let t of filteredTickets; let i = index">
-          <td><span class="chip" style="background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-color);">{{ (currentPage - 1) * pageSize + i + 1 }}</span></td>
-          <td><span class="chip" style="font-weight: 700; color: var(--primary);">PTMS{{ t.id }}</span></td>
-          <td style="font-weight:500;">{{ t.order_id }}</td>
-          <td>
-            <div style="font-weight:500">{{ t.customer_name }}</div>
-            <small style="color:var(--text-secondary)">{{ t.customer_email }}</small>
-          </td>
-          <td>
-            <span class="badge" [ngClass]="t.replacement ? 'badge-primary' : 'badge-warning'">
-              {{ t.replacement ? 'Replacement' : 'Return' }}
-            </span>
-          </td>
-          <td>
-            <span class="badge" [ngStyle]="getLogisticsStatusStyle((t.replacement ? t.replacement.status : (t.ticket_return ? t.ticket_return.status : '')) || 'Pending')">
-              {{ (t.replacement ? t.replacement.status : (t.ticket_return ? t.ticket_return.status : '')) || 'Pending' }}
-            </span>
-          </td>
-          <td>{{ t.created_at | date:'mediumDate' }}</td>
-          <td class="text-right">
-            <button class="btn btn-sm btn-primary" (click)="openUpdateModal(t)" *ngIf="user?.role === 'le' || (user?.role === 'admin' && (t.is_logistic_approved || t.is_logistic_rejected)) || user?.role === 'cse'">
-              <lucide-icon [name]="user?.role !== 'le' ? 'eye' : 'edit-2'" [size]='16'></lucide-icon> {{ user?.role !== 'le' ? 'View' : 'Update' }}
-            </button>
-            <button class="btn btn-sm btn-warning" *ngIf="user?.role === 'admin' && !t.is_logistic_approved && !t.is_logistic_rejected" (click)="openUpdateModal(t)">
-              <lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon> Approval waiting
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- Pagination Controls -->
-    <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);" *ngIf="totalItems > 0">
-      <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1; loadData()">Previous</button>
-      <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(totalItems / pageSize) || 1 }}</span>
-      <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= totalItems" (click)="currentPage = currentPage + 1; loadData()">Next</button>
-    </div>
-  </div>
-</div>
-
-<!-- Update Modal -->
-<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-  <div class="modal-box" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3>{{ user?.role !== 'le' ? 'View Logistics Request' : 'Update Logistics Request' }}</h3>
-      <button class="btn btn-sm btn-outline" (click)="closeModal()">×</button>
-    </div>
-    <div class="modal-body">
-      <!-- Read-only Details -->
-      <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;">
-        <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Customer Details</h4>
-        <div class="form-grid-modal">
-          <div class="detail-row"><div class="detail-label">Agent Name</div><div>{{ selectedTicket?.agent_name || '—' }}</div></div>
-          <div class="detail-row"><div class="detail-label">Agent Email</div><div>{{ selectedTicket?.agent_email || '—' }}</div></div>
-          <div class="detail-row"><div class="detail-label">Customer Name</div><div>{{ selectedTicket?.customer_name }}</div></div>
-          <div class="detail-row"><div class="detail-label">Customer Email</div><div>{{ selectedTicket?.customer_email }}</div></div>
-          <div class="detail-row"><div class="detail-label">Customer Phone</div><div>{{ selectedTicket?.customer_phone }}</div></div>
-          <div class="detail-row"><div class="detail-label">Country</div><div>{{ selectedTicket?.country_dynamic?.name || '—' }}</div></div>
-          <div class="detail-row" style="grid-column: span 2;"><div class="detail-label">Address</div><div>{{ selectedTicket?.address || '—' }}</div></div>
-        </div>
       </div>
 
-      <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;">
-        <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Query Details</h4>
-        <div class="form-grid-modal">
-          <div class="detail-row"><div class="detail-label">Order ID</div><div>{{ selectedTicket?.order_id || '—' }}</div></div>
-          <div class="detail-row"><div class="detail-label">Purchase Store</div><div>{{ selectedTicket?.purchase_store || '—' }}</div></div>
-          <div class="detail-row"><div class="detail-label">Outreach</div><div>{{ selectedTicket?.customer_outreach?.name || '—' }}</div></div>
-          <div class="detail-row"><div class="detail-label">Query Channel</div><div>{{ selectedTicket?.query_channel?.name || '—' }}</div></div>
-          <div class="detail-row"><div class="detail-label">Query Type</div><div>{{ selectedTicket?.query_type?.name || '—' }}</div></div>
-          <div class="detail-row"><div class="detail-label">Category</div><div>{{ selectedTicket?.category?.name || '—' }}</div></div>
-          <div class="detail-row"><div class="detail-label">Sub Category</div><div>{{ selectedTicket?.sub_category?.name || '—' }}</div></div>
-          <div class="detail-row"><div class="detail-label">Child Category</div><div>{{ selectedTicket?.child_category?.name || '—' }}</div></div>
-          <div class="detail-row"><div class="detail-label">Filter</div><div>{{ selectedTicket?.query_filter?.name || '—' }}</div></div>
-        </div>
-        <div style="margin-top:0.75rem;">
-          <div class="detail-label">Detailed Description</div>
-          <div style="background:#fff; border:1px solid var(--border-color); border-radius:4px; padding:0.5rem; margin-top:0.25rem; font-size:0.85rem; white-space:pre-wrap;">{{ selectedTicket?.description || '—' }}</div>
-        </div>
-      </div>
+      <input type="text" class="form-control" style="max-width:140px;" placeholder="Order ID..."
+        [(ngModel)]="filterOrderId" (ngModelChange)="applyFilter()">
 
-      <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;" *ngIf="selectedTicket?.replacement">
-        <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Replacement Details</h4>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.85rem;">
-          <div style="display:flex; justify-content:space-between;"><strong>Ordered Product:</strong> <span>{{ selectedTicket.replacement.ordered_product_name }}</span></div>
-          <div style="display:flex; justify-content:space-between;"><strong>Ordered SKU:</strong> <span>{{ selectedTicket.replacement.ordered_product_sku }}</span></div>
-          <div style="display:flex; justify-content:space-between;"><strong>Replacement Product:</strong> <span>{{ selectedTicket.replacement.replacement_product_name }}</span></div>
-          <div style="display:flex; justify-content:space-between;"><strong>Replacement SKU:</strong> <span>{{ selectedTicket.replacement.replacement_product_sku }}</span></div>
-          <div style="display:flex; justify-content:space-between;"><strong>Quantity:</strong> <span>{{ selectedTicket.replacement.replacement_qty }}</span></div>
-          <div style="display:flex; justify-content:space-between; grid-column:span 2;"><strong>Reason:</strong> <span>{{ selectedTicket.replacement.replacement_reason }}</span></div>
-          <div style="display:flex; justify-content:space-between; grid-column:span 2;"><strong>Others:</strong> <span>{{ selectedTicket.replacement.others || '—' }}</span></div>
-        </div>
-      </div>
-
-      <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;" *ngIf="selectedTicket?.ticket_return">
-        <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Return Details</h4>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.85rem;">
-          <div style="display:flex; justify-content:space-between;"><strong>Ordered Product:</strong> <span>{{ selectedTicket.ticket_return.ordered_product_name }}</span></div>
-          <div style="display:flex; justify-content:space-between;"><strong>Ordered SKU:</strong> <span>{{ selectedTicket.ticket_return.ordered_product_sku }}</span></div>
-          <div style="display:flex; justify-content:space-between;"><strong>Marketplace:</strong> <span>{{ selectedTicket.ticket_return.marketplace_channel }}</span></div>
-          <div style="display:flex; justify-content:space-between;"><strong>Courier:</strong> <span>{{ selectedTicket.ticket_return.courier_name }}</span></div>
-          <div style="display:flex; justify-content:space-between;"><strong>Tracking ID:</strong> <span>{{ selectedTicket.ticket_return.tracking_id }}</span></div>
-          <div style="display:flex; justify-content:space-between;"><strong>No. of Boxes:</strong> <span>{{ selectedTicket.ticket_return.no_of_boxes }}</span></div>
-          <div style="display:flex; justify-content:space-between;"><strong>Return Date:</strong> <span>{{ selectedTicket.ticket_return.return_date | date:'mediumDate' }}</span></div>
-          <div style="display:flex; justify-content:space-between; grid-column:span 2;"><strong>Reasons:</strong> <span>{{ selectedTicket.ticket_return.return_reasons }}</span></div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Update Status</label>
-        <select class="form-control" [(ngModel)]="updateForm.status_id" [disabled]="user?.role !== 'le'">
-          <option value="">— Select Status —</option>
-          <option *ngFor="let s of statuses" [value]="s.name">{{ s.name }}</option>
+        <select class="form-control" [(ngModel)]="filterLogisticsStatus" (ngModelChange)="applyFilter()">
+          <option value="">All Statuses</option>
+          @for (s of statuses; track s) {
+            <option [value]="s.name">{{ s.name }}</option>
+          }
         </select>
-      </div>
 
-      <div class="form-group">
-        <label class="form-label">Remarks</label>
-        <textarea class="form-control" [(ngModel)]="updateForm.remarks" placeholder="Enter remarks..." [disabled]="user?.role !== 'le'"></textarea>
+        <div style="display:flex; align-items:center; gap:0.4rem; background:var(--bg-body); padding:0.2rem 0.5rem; border-radius:var(--radius-sm); border:1px solid var(--border-color); flex-shrink: 0;">
+          <input type="date" style="border:none; background:transparent; font-size:0.85rem; outline:none;" [(ngModel)]="fromDate" (ngModelChange)="applyFilter()">
+          <span style="font-size:0.75rem; color:var(--text-muted);">to</span>
+          <input type="date" style="border:none; background:transparent; font-size:0.85rem; outline:none;" [(ngModel)]="toDate" (ngModelChange)="applyFilter()">
+        </div>
+
+        <button class="btn btn-outline btn-sm" (click)="toggleSortDate()" title="Sort by Date"><lucide-icon name="arrow-up-down" [size]="16" [strokeWidth]="2"></lucide-icon></button>
+        <button class="btn btn-outline btn-sm" (click)="loadData()" title="Reload Data"><lucide-icon name="refresh-cw" [size]="16" [strokeWidth]="2"></lucide-icon></button>
+        <button class="btn btn-outline btn-sm" (click)="resetFilters()" title="Reset Filters" style="color: var(--danger); border-color: var(--danger);"><lucide-icon name="x" [size]="16" [strokeWidth]="2"></lucide-icon> Reset</button>
+        <span class="toolbar-info">
+          Showing {{ filteredTickets.length }} of {{ tickets.length }} tickets
+        </span>
       </div>
     </div>
-    <div class="modal-footer" style="flex-wrap: wrap;">
-      <div style="width: 100%; margin-bottom: 1rem;" *ngIf="user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && showRejectInput">
-        <label class="form-label text-danger">Rejection Reason</label>
-        <textarea class="form-control" [(ngModel)]="rejectionReason" placeholder="Enter reason for rejection..."></textarea>
-        <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
-          <button class="btn btn-sm btn-danger" (click)="confirmReject()">Confirm Reject</button>
-          <button class="btn btn-sm btn-outline" (click)="showRejectInput = false">Cancel</button>
+
+    <div class="card" style="padding:0;">
+      <!-- Top Pagination Controls -->
+      @if (totalItems > 0) {
+        <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-bottom: 1px solid var(--border-color);">
+          <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1; loadData()">Previous</button>
+          <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(totalItems / pageSize) || 1 }}</span>
+          <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= totalItems" (click)="currentPage = currentPage + 1; loadData()">Next</button>
+        </div>
+      }
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Ticket #</th>
+              <th>Order ID</th>
+              <th>Customer Name</th>
+              <th>Type</th>
+              <th>Logistics Status</th>
+              <th>Created Date</th>
+              <th class="text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (loading) {
+              <tr>
+                <td colspan="8" class="text-center" style="padding: 2rem;">Loading tickets...</td>
+              </tr>
+            }
+            @if (!loading && filteredTickets.length === 0) {
+              <tr>
+                <td colspan="8" class="text-center" style="padding: 2rem;">No logistics tickets found.</td>
+              </tr>
+            }
+            @for (t of filteredTickets; track t; let i = $index) {
+              <tr>
+                <td><span class="chip" style="background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-color);">{{ (currentPage - 1) * pageSize + i + 1 }}</span></td>
+                <td><span class="chip" style="font-weight: 700; color: var(--primary);">PTMS{{ t.id }}</span></td>
+                <td style="font-weight:500;">{{ t.order_id }}</td>
+                <td>
+                  <div style="font-weight:500">{{ t.customer_name }}</div>
+                  <small style="color:var(--text-secondary)">{{ t.customer_email }}</small>
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="t.replacement ? 'badge-primary' : 'badge-warning'">
+                    {{ t.replacement ? 'Replacement' : 'Return' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [ngStyle]="getLogisticsStatusStyle((t.replacement ? t.replacement.status : (t.ticket_return ? t.ticket_return.status : '')) || 'Pending')">
+                    {{ (t.replacement ? t.replacement.status : (t.ticket_return ? t.ticket_return.status : '')) || 'Pending' }}
+                  </span>
+                </td>
+                <td>{{ t.created_at | date:'mediumDate' }}</td>
+                <td class="text-right">
+                  @if (user?.role === 'le' || (user?.role === 'admin' && (t.is_logistic_approved || t.is_logistic_rejected)) || user?.role === 'cse') {
+                    <button class="btn btn-sm btn-primary" (click)="openUpdateModal(t)">
+                      <lucide-icon [name]="user?.role !== 'le' ? 'eye' : 'edit-2'" [size]='16'></lucide-icon> {{ user?.role !== 'le' ? 'View' : 'Update' }}
+                    </button>
+                  }
+                  @if (user?.role === 'admin' && !t.is_logistic_approved && !t.is_logistic_rejected) {
+                    <button class="btn btn-sm btn-warning" (click)="openUpdateModal(t)">
+                      <lucide-icon name="hourglass" [size]="20" [strokeWidth]="2"></lucide-icon> Approval waiting
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <!-- Pagination Controls -->
+        @if (totalItems > 0) {
+          <div style="display:flex; justify-content:flex-end; align-items:center; gap:1rem; padding: 1rem; border-top: 1px solid var(--border-color);">
+            <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1; loadData()">Previous</button>
+            <span style="font-size: 0.85rem; font-weight: 600;">Page {{ currentPage }} of {{ Math.ceil(totalItems / pageSize) || 1 }}</span>
+            <button class="btn btn-sm btn-outline" [disabled]="currentPage * pageSize >= totalItems" (click)="currentPage = currentPage + 1; loadData()">Next</button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Update Modal -->
+    @if (showModal) {
+      <div class="modal-overlay" (click)="closeModal()">
+        <div class="modal-box" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3>{{ user?.role !== 'le' ? 'View Logistics Request' : 'Update Logistics Request' }}</h3>
+            <button class="btn btn-sm btn-outline" (click)="closeModal()">×</button>
+          </div>
+          <div class="modal-body">
+            <!-- Read-only Details -->
+            <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;">
+              <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Customer Details</h4>
+              <div class="form-grid-modal">
+                <div class="detail-row"><div class="detail-label">Agent Name</div><div>{{ selectedTicket?.agent_name || '—' }}</div></div>
+                <div class="detail-row"><div class="detail-label">Agent Email</div><div>{{ selectedTicket?.agent_email || '—' }}</div></div>
+                <div class="detail-row"><div class="detail-label">Customer Name</div><div>{{ selectedTicket?.customer_name }}</div></div>
+                <div class="detail-row"><div class="detail-label">Customer Email</div><div>{{ selectedTicket?.customer_email }}</div></div>
+                <div class="detail-row"><div class="detail-label">Customer Phone</div><div>{{ selectedTicket?.customer_phone }}</div></div>
+                <div class="detail-row"><div class="detail-label">Country</div><div>{{ selectedTicket?.country_dynamic?.name || '—' }}</div></div>
+                <div class="detail-row" style="grid-column: span 2;"><div class="detail-label">Address</div><div>{{ selectedTicket?.address || '—' }}</div></div>
+              </div>
+            </div>
+            <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;">
+              <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Query Details</h4>
+              <div class="form-grid-modal">
+                <div class="detail-row"><div class="detail-label">Order ID</div><div>{{ selectedTicket?.order_id || '—' }}</div></div>
+                <div class="detail-row"><div class="detail-label">Purchase Store</div><div>{{ selectedTicket?.purchase_store || '—' }}</div></div>
+                <div class="detail-row"><div class="detail-label">Outreach</div><div>{{ selectedTicket?.customer_outreach?.name || '—' }}</div></div>
+                <div class="detail-row"><div class="detail-label">Query Channel</div><div>{{ selectedTicket?.query_channel?.name || '—' }}</div></div>
+                <div class="detail-row"><div class="detail-label">Query Type</div><div>{{ selectedTicket?.query_type?.name || '—' }}</div></div>
+                <div class="detail-row"><div class="detail-label">Category</div><div>{{ selectedTicket?.category?.name || '—' }}</div></div>
+                <div class="detail-row"><div class="detail-label">Sub Category</div><div>{{ selectedTicket?.sub_category?.name || '—' }}</div></div>
+                <div class="detail-row"><div class="detail-label">Child Category</div><div>{{ selectedTicket?.child_category?.name || '—' }}</div></div>
+                <div class="detail-row"><div class="detail-label">Filter</div><div>{{ selectedTicket?.query_filter?.name || '—' }}</div></div>
+              </div>
+              <div style="margin-top:0.75rem;">
+                <div class="detail-label">Detailed Description</div>
+                <div style="background:#fff; border:1px solid var(--border-color); border-radius:4px; padding:0.5rem; margin-top:0.25rem; font-size:0.85rem; white-space:pre-wrap;">{{ selectedTicket?.description || '—' }}</div>
+              </div>
+            </div>
+            @if (selectedTicket?.replacement) {
+              <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;">
+                <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Replacement Details</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.85rem;">
+                  <div style="display:flex; justify-content:space-between;"><strong>Ordered Product:</strong> <span>{{ selectedTicket.replacement.ordered_product_name }}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><strong>Ordered SKU:</strong> <span>{{ selectedTicket.replacement.ordered_product_sku }}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><strong>Replacement Product:</strong> <span>{{ selectedTicket.replacement.replacement_product_name }}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><strong>Replacement SKU:</strong> <span>{{ selectedTicket.replacement.replacement_product_sku }}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><strong>Quantity:</strong> <span>{{ selectedTicket.replacement.replacement_qty }}</span></div>
+                  <div style="display:flex; justify-content:space-between; grid-column:span 2;"><strong>Reason:</strong> <span>{{ selectedTicket.replacement.replacement_reason }}</span></div>
+                  <div style="display:flex; justify-content:space-between; grid-column:span 2;"><strong>Others:</strong> <span>{{ selectedTicket.replacement.others || '—' }}</span></div>
+                </div>
+              </div>
+            }
+            @if (selectedTicket?.ticket_return) {
+              <div style="background:var(--bg-body); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem;">
+                <h4 style="margin-top:0; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">Return Details</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.85rem;">
+                  <div style="display:flex; justify-content:space-between;"><strong>Ordered Product:</strong> <span>{{ selectedTicket.ticket_return.ordered_product_name }}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><strong>Ordered SKU:</strong> <span>{{ selectedTicket.ticket_return.ordered_product_sku }}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><strong>Marketplace:</strong> <span>{{ selectedTicket.ticket_return.marketplace_channel }}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><strong>Courier:</strong> <span>{{ selectedTicket.ticket_return.courier_name }}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><strong>Tracking ID:</strong> <span>{{ selectedTicket.ticket_return.tracking_id }}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><strong>No. of Boxes:</strong> <span>{{ selectedTicket.ticket_return.no_of_boxes }}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><strong>Return Date:</strong> <span>{{ selectedTicket.ticket_return.return_date | date:'mediumDate' }}</span></div>
+                  <div style="display:flex; justify-content:space-between; grid-column:span 2;"><strong>Reasons:</strong> <span>{{ selectedTicket.ticket_return.return_reasons }}</span></div>
+                </div>
+              </div>
+            }
+            <div class="form-group">
+              <label class="form-label">Update Status</label>
+              <select class="form-control" [(ngModel)]="updateForm.status_id" [disabled]="user?.role !== 'le'">
+                <option value="">— Select Status —</option>
+                @for (s of statuses; track s) {
+                  <option [value]="s.name">{{ s.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Remarks</label>
+              <textarea class="form-control" [(ngModel)]="updateForm.remarks" placeholder="Enter remarks..." [disabled]="user?.role !== 'le'"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer" style="flex-wrap: wrap;">
+            @if (user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && showRejectInput) {
+              <div style="width: 100%; margin-bottom: 1rem;">
+                <label class="form-label text-danger">Rejection Reason</label>
+                <textarea class="form-control" [(ngModel)]="rejectionReason" placeholder="Enter reason for rejection..."></textarea>
+                <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
+                  <button class="btn btn-sm btn-danger" (click)="confirmReject()">Confirm Reject</button>
+                  <button class="btn btn-sm btn-outline" (click)="showRejectInput = false">Cancel</button>
+                </div>
+              </div>
+            }
+            <div style="display: flex; gap: 0.5rem; margin-left: auto;">
+              @if (user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && !showRejectInput) {
+                <button class="btn btn-success" (click)="approveLogistics()"><lucide-icon name="check-circle" [size]="20" [strokeWidth]="2"></lucide-icon> Approve</button>
+              }
+              @if (user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && !showRejectInput) {
+                <button class="btn btn-danger" (click)="showRejectInput = true"><lucide-icon name="x-circle" [size]="20" [strokeWidth]="2"></lucide-icon> Reject</button>
+              }
+              <button class="btn btn-outline" (click)="closeModal()">{{ user?.role !== 'le' ? 'Close' : 'Cancel' }}</button>
+              @if (user?.role === 'le') {
+                <button class="btn btn-primary" (click)="saveUpdate()" [disabled]="saving">
+                  {{ saving ? 'Saving...' : 'Save Update' }}
+                </button>
+              }
+            </div>
+          </div>
         </div>
       </div>
-      
-      <div style="display: flex; gap: 0.5rem; margin-left: auto;">
-        <button class="btn btn-success" *ngIf="user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && !showRejectInput" (click)="approveLogistics()"><lucide-icon name="check-circle" [size]="20" [strokeWidth]="2"></lucide-icon> Approve</button>
-        <button class="btn btn-danger" *ngIf="user?.role === 'admin' && !selectedTicket?.is_logistic_approved && !selectedTicket?.is_logistic_rejected && !showRejectInput" (click)="showRejectInput = true"><lucide-icon name="x-circle" [size]="20" [strokeWidth]="2"></lucide-icon> Reject</button>
+    }
 
-        <button class="btn btn-outline" (click)="closeModal()">{{ user?.role !== 'le' ? 'Close' : 'Cancel' }}</button>
-        <button class="btn btn-primary" (click)="saveUpdate()" [disabled]="saving" *ngIf="user?.role === 'le'">
-          {{ saving ? 'Saving...' : 'Save Update' }}
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<style>
-  .form-grid-modal {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-  }
-  .detail-row {
+    <style>
+      .form-grid-modal {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .detail-row {
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
     padding: 0.2rem 0;
   }
   .detail-label {
-    font-weight: 600;
-    color: var(--text-muted);
-  }
+  font-weight: 600;
+  color: var(--text-muted);
+}
 </style>

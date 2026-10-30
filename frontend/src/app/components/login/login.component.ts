@@ -1,6 +1,6 @@
 import { LucideAngularModule, Sun, Moon, Eye, EyeOff, Lock } from 'lucide-angular';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { ThemeService } from '../../services/theme.service';
 
 @Component({
     selector: 'app-login',
-    imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
+    imports: [FormsModule, RouterLink, LucideAngularModule],
     templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit, OnDestroy {
