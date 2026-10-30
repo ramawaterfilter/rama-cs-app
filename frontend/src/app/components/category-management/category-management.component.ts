@@ -5,10 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-category-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './category-management.component.html',
+    selector: 'app-category-management',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './category-management.component.html'
 })
 export class CategoryManagementComponent implements OnInit {
   totalItems = 0;

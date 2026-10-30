@@ -6,10 +6,9 @@ import { AuthService } from '../../services/auth.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-admin-dashboard',
-  standalone: true,
-  imports: [CommonModule, RouterLink, LucideAngularModule],
-  templateUrl: './admin-dashboard.component.html',
+    selector: 'app-admin-dashboard',
+    imports: [CommonModule, RouterLink, LucideAngularModule],
+    templateUrl: './admin-dashboard.component.html'
 })
 export class AdminDashboardComponent implements OnInit {
   currentPage = 1;

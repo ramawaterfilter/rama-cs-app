@@ -7,10 +7,9 @@ import { AuthService } from '../../services/auth.service';
 import { RouterLink, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-le-dashboard',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
-  templateUrl: './le-dashboard.component.html',
+    selector: 'app-le-dashboard',
+    imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
+    templateUrl: './le-dashboard.component.html'
 })
 export class LeDashboardComponent implements OnInit {
   tickets: any[] = [];

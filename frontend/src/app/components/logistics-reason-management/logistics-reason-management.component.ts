@@ -5,10 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-logistics-reason-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './logistics-reason-management.component.html',
+    selector: 'app-logistics-reason-management',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './logistics-reason-management.component.html'
 })
 export class LogisticsReasonManagementComponent implements OnInit {
   currentPage = 1;

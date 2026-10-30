@@ -7,10 +7,9 @@ import { AuthService } from '../../services/auth.service';
 import { RouterLink, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-cse-dashboard',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
-  templateUrl: './cse-dashboard.component.html',
+    selector: 'app-cse-dashboard',
+    imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
+    templateUrl: './cse-dashboard.component.html'
 })
 export class CseDashboardComponent implements OnInit {
   tickets: any[] = [];

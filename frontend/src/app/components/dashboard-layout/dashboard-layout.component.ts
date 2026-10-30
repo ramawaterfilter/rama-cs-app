@@ -8,11 +8,10 @@ import { NotificationService } from '../../services/notification.service';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
-  selector: 'app-dashboard-layout',
-  standalone: true,
-  imports: [CommonModule, RouterModule, RouterLink, RouterLinkActive, LucideAngularModule],
-  templateUrl: './dashboard-layout.component.html',
-  styleUrls: ['./dashboard-layout.component.scss']
+    selector: 'app-dashboard-layout',
+    imports: [CommonModule, RouterModule, RouterLink, RouterLinkActive, LucideAngularModule],
+    templateUrl: './dashboard-layout.component.html',
+    styleUrls: ['./dashboard-layout.component.scss']
 })
 export class DashboardLayoutComponent implements OnInit, OnDestroy {
   public authService = inject(AuthService);

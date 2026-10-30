@@ -5,10 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-product-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './product-management.component.html',
+    selector: 'app-product-management',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './product-management.component.html'
 })
 export class ProductManagementComponent implements OnInit {
   totalItems = 0;

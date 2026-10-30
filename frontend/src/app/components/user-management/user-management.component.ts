@@ -5,10 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-user-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './user-management.component.html',
+    selector: 'app-user-management',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './user-management.component.html'
 })
 export class UserManagementComponent implements OnInit {
   users: any[] = [];

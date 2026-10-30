@@ -5,10 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-filter-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './filter-management.component.html',
+    selector: 'app-filter-management',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './filter-management.component.html'
 })
 export class FilterManagementComponent implements OnInit {
   currentPage = 1;

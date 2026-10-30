@@ -12,10 +12,9 @@ import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 
 @Component({
-  selector: 'app-ticket-grid',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './ticket-grid.component.html',
+    selector: 'app-ticket-grid',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './ticket-grid.component.html'
 })
 export class TicketGridComponent implements OnInit {
   tickets: any[] = [];

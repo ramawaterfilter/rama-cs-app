@@ -5,10 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-status-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './status-management.component.html',
+    selector: 'app-status-management',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './status-management.component.html'
 })
 export class StatusManagementComponent implements OnInit {
   statuses: any[] = [];

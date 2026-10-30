@@ -7,11 +7,10 @@ import { NotificationService } from '../../services/notification.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-rejected-approvals',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './rejected-approvals.component.html',
-  styleUrls: ['./rejected-approvals.component.scss']
+    selector: 'app-rejected-approvals',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './rejected-approvals.component.html',
+    styleUrls: ['./rejected-approvals.component.scss']
 })
 export class RejectedApprovalsComponent implements OnInit {
   tickets: any[] = [];

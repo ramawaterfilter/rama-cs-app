@@ -5,10 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
  
 @Component({
-  selector: 'app-country-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './country-management.component.html',
+    selector: 'app-country-management',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './country-management.component.html'
 })
 export class CountryManagementComponent implements OnInit {
   currentPage = 1;

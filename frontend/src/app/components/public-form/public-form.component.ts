@@ -9,10 +9,9 @@ import { NotificationService } from '../../services/notification.service';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
-  selector: 'app-public-form',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './public-form.component.html',
+    selector: 'app-public-form',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './public-form.component.html'
 })
 export class PublicFormComponent implements OnInit {
   formData: any = {

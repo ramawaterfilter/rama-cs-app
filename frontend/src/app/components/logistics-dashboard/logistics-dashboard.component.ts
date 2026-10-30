@@ -7,11 +7,10 @@ import { NotificationService } from '../../services/notification.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-logistics-dashboard',
-  standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './logistics-dashboard.component.html',
-  styleUrls: ['./logistics-dashboard.component.scss']
+    selector: 'app-logistics-dashboard',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './logistics-dashboard.component.html',
+    styleUrls: ['./logistics-dashboard.component.scss']
 })
 export class LogisticsDashboardComponent implements OnInit {
   currentPage = 1;

@@ -9,10 +9,9 @@ import { RouterLink } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
-  templateUrl: './login.component.html',
+    selector: 'app-login',
+    imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
+    templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit, OnDestroy {
   credentials = { email: '', password: '' };
