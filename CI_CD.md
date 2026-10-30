@@ -25,9 +25,10 @@ working database and production `.env` have not been prepared. Its last inspecte
 GitHub's `production` environment and its `main`-only deployment rule are now
 verified. The user reports the five environment secrets, two environment variables,
 and repository deployment flag were saved as instructed; their values remain
-unverified with the available read-only account. The publication target is review
-branch `replace-application-code`, including the approved application updates and
-CI/CD. Its pull request must pass GitHub CI before the SQLite-preserving cutover. No live
+unverified with the available read-only account. The approved application updates
+and CI/CD were published on review branch `replace-application-code` at
+`baeac0613198e950eab251c5ab4f9d530c563273`; `main` was not changed. Open its pull
+request and require passing GitHub CI before the SQLite-preserving cutover. No live
 configuration was changed by this pipeline update.
 
 The approved follow-up updated test setup, the frontend icon registry, and
@@ -607,6 +608,13 @@ changes were made by this work.
   main or Hostinger switch**. Open a pull request into `main` to trigger CI before
   any deployment preparation proceeds. No live database changes were performed
   during migration review, dependency updates, or local verification.
+- Published application/CI/CD commit
+  `baeac0613198e950eab251c5ab4f9d530c563273` to `origin/replace-application-code`.
+  The existing `main` commit remains unchanged. A pull request and the first
+  observed GitHub CI run are still pending. Create the review pull request at
+  <https://github.com/ramawaterfilter/rama-cs-app/pull/new/replace-application-code>.
+  Deployment remains gated; this branch publication did not alter the live site
+  or database. Local helper/reference files remain untracked and were not pushed.
 
 ## References
 
