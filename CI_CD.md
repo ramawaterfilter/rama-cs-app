@@ -623,3 +623,11 @@ changes were made by this work.
 - [GitHub secure use of Actions](https://docs.github.com/en/actions/reference/security/secure-use)
 - [PHP SQLite3 backup API](https://www.php.net/manual/en/sqlite3.backup.php)
 - [SQLite snapshot/backup behavior](https://www.sqlite.org/backup.html)
+
+## Frontend security update — 2026-10-31
+- Upgraded Angular from 18 through 19 and 20 to 21.
+- Updated vulnerable dependencies, including SheetJS from its official distribution.
+- Fixed date fallback expressions and loaded Excel export dynamically.
+- Validation: production build passed; 34 tests passed; production npm audit reported 0 vulnerabilities.
+- User confirmed Excel and PDF exports work.
+- Remaining warning: unused RouterLink in LoginComponent.

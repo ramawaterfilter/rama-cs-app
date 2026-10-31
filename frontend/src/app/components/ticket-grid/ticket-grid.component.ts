@@ -9,12 +9,12 @@ import { filter } from 'rxjs/operators';
 import { NotificationService } from '../../services/notification.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import * as XLSX from 'xlsx';
+
 
 @Component({
-    selector: 'app-ticket-grid',
-    imports: [CommonModule, FormsModule, LucideAngularModule],
-    templateUrl: './ticket-grid.component.html'
+  selector: 'app-ticket-grid',
+  imports: [CommonModule, FormsModule, LucideAngularModule],
+  templateUrl: './ticket-grid.component.html'
 })
 export class TicketGridComponent implements OnInit {
   tickets: any[] = [];
@@ -75,9 +75,9 @@ export class TicketGridComponent implements OnInit {
   saving = false;
   saveMsg = '';
   errorMsg = '';
-  updateForm: any = { 
-    executive_id: '', 
-    status_id: '', 
+  updateForm: any = {
+    executive_id: '',
+    status_id: '',
     remarks: '',
     agent_name: '',
     agent_email: '',
@@ -168,7 +168,7 @@ export class TicketGridComponent implements OnInit {
 
   loadTickets() {
     this.loading = true;
-    
+
     let params: any = {
       page: this.currentPage,
       per_page: this.pageSize,
@@ -194,8 +194,8 @@ export class TicketGridComponent implements OnInit {
         // We will need the total count to show pagination. But the template might be expecting `filteredTickets.length` to paginate locally.
         // Wait, the template has `<div *ngFor="let t of paginatedTickets">` probably? Or does it use `filteredTickets | slice`?
         // I need to check how the template does pagination before I can complete this logic, but for now I'll attach a total property.
-        this.totalItems = res.total; 
-        
+        this.totalItems = res.total;
+
         this.loading = false;
 
         if (this.requestedTicketIdToOpen && !this.showModal) {
@@ -316,7 +316,17 @@ export class TicketGridComponent implements OnInit {
     return le ? le.name : String(id);
   }
 
-  exportXLSX() {
+
+
+  async exportXLSX() {
+    const XLSX = await import('xlsx').catch(err => {
+      console.error('Failed to load Excel export library', err);
+      alert('Excel export could not load. Please try again.');
+      return null;
+    });
+
+    if (!XLSX) return;
+
     let params: any = {
       sort_date: this.sortDate,
       is_requests: this.isRequestsView ? 'true' : 'false',
@@ -379,8 +389,9 @@ export class TicketGridComponent implements OnInit {
           };
         });
 
-        const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-        const wb: XLSX.WorkBook = XLSX.utils.book_new();
+
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Tickets');
         XLSX.writeFile(wb, 'Service_Tickets_Report.xlsx');
       },
@@ -461,7 +472,7 @@ export class TicketGridComponent implements OnInit {
       status_id: this.updateForm.status_id,
       remarks: this.updateForm.remarks
     };
-    
+
     // Add profile fields if Admin or if CSE has profile edit approval
     if (this.isAdmin || this.selectedTicket.profile_edit_approved) {
       payload.customer_name = this.updateForm.customer_name;
@@ -470,10 +481,10 @@ export class TicketGridComponent implements OnInit {
       payload.country_id = this.updateForm.country_id;
       payload.address = this.updateForm.address;
     }
-    
+
     // Add general fields if Admin or if CSE has general edit approval or if it's the first update
     const canUpdateGeneral = this.isAdmin || this.selectedTicket.edit_approved || !this.selectedTicket.has_been_updated;
-    
+
     if (canUpdateGeneral) {
       if (this.updateForm.logistics_type === 'replacement' && !this.updateForm.replacement_form.le_id) {
         this.errorMsg = 'Please assign a Logistics Executive for Replacement request.';
@@ -498,7 +509,7 @@ export class TicketGridComponent implements OnInit {
       payload.purchase_store = this.updateForm.purchase_store;
       payload.customer_outreach_id = this.updateForm.customer_outreach_id;
       payload.received_at = this.updateForm.received_at;
-      
+
       payload.logistics_type = this.updateForm.logistics_type;
       payload.replacement_form = this.updateForm.replacement_form;
       payload.return_form = this.updateForm.return_form;
@@ -545,7 +556,7 @@ export class TicketGridComponent implements OnInit {
     if (!status) return { background: '#f0f1f3', color: '#495057', borderColor: '#dee2e6' };
     let color = '#6c757d'; // Default gray
     const lower = status.toLowerCase();
-    
+
     if (lower.includes('progress') || lower.includes('process')) {
       color = '#f59f00'; // Warning orange
     } else if (lower.includes('pending') || lower.includes('review')) {
@@ -557,7 +568,7 @@ export class TicketGridComponent implements OnInit {
     } else {
       color = '#1c7ed6'; // Primary blue
     }
-    
+
     return {
       background: color + '22',
       color: color,
@@ -573,7 +584,7 @@ export class TicketGridComponent implements OnInit {
 
   deleteTicket(id: number) {
     if (!confirm('Are you sure you want to delete this ticket? This action cannot be undone.')) return;
-    
+
     this.http.delete(`${this.apiUrl}/tickets/${id}`).subscribe({
       next: () => {
         this.notifService.refresh();
