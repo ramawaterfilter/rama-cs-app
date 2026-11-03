@@ -1,3 +1,8 @@
+import { LucideAngularModule } from 'lucide-angular';
+import { appIcons } from '../../app.icons';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StatusManagementComponent } from './status-management.component';
@@ -8,7 +13,8 @@ describe('StatusManagementComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StatusManagementComponent]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      imports: [LucideAngularModule.pick(appIcons), StatusManagementComponent]
     })
     .compileComponents();
 

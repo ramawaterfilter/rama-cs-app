@@ -8,9 +8,25 @@ use Illuminate\Http\Request;
 
 class QueryCategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(QueryCategory::with('children', 'parents')->get());
+        $query = QueryCategory::with('parents')->orderBy('id', 'desc');
+
+        if ($request->filled('query_type_id')) {
+            $query->where('query_type_id', $request->query_type_id);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        if ($request->has('page')) {
+            $perPage = $request->input('per_page', 10);
+            return response()->json($query->paginate($perPage));
+        }
+
+        return response()->json($query->get());
     }
 
     public function indexPublic()

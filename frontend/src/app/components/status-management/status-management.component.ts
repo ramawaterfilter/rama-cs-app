@@ -1,13 +1,13 @@
+import { LucideAngularModule } from 'lucide-angular';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-status-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './status-management.component.html',
+    selector: 'app-status-management',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './status-management.component.html'
 })
 export class StatusManagementComponent implements OnInit {
   statuses: any[] = [];

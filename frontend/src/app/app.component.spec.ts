@@ -1,9 +1,13 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
       imports: [AppComponent],
     }).compileComponents();
   });
@@ -20,10 +24,10 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('frontend');
   });
 
-  it('should render title', () => {
+  it('should render the router outlet', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, frontend');
+    expect(compiled.querySelector('router-outlet')).not.toBeNull();
   });
 });

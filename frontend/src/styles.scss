@@ -213,6 +213,27 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  transition: var(--transition);
+}
+
+.main-wrapper-expanded {
+  margin-left: 80px;
+}
+
+.sidebar.sidebar-mini {
+  width: 80px;
+}
+
+.sidebar-mini .nav-link {
+  justify-content: center;
+  padding: 0.7rem 0;
+}
+.sidebar-mini .nav-icon {
+  font-size: 1.25rem;
+}
+.sidebar-mini .sidebar-section-title {
+  text-align: center;
+  padding: 1rem 0 0.4rem;
 }
 
 /* ===================== TOPBAR ===================== */
@@ -230,6 +251,11 @@ button { font-family: inherit; cursor: pointer; }
   z-index: 50;
 }
 
+.topbar-left {
+  display: flex;
+  align-items: center;
+}
+
 .topbar-left h4 {
   font-size: 1rem;
   font-weight: 600;
@@ -240,6 +266,28 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 0.72rem;
   color: var(--text-muted);
   margin: 0;
+}
+
+.sidebar-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-right: 1rem;
+}
+
+.sidebar-toggle .toggle-bar {
+  width: 24px;
+  height: 2px;
+  background-color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.sidebar-toggle:hover .toggle-bar {
+  background-color: var(--primary);
 }
 
 .topbar-right {
@@ -749,16 +797,27 @@ textarea.form-control { min-height: 90px; resize: vertical; }
   .topbar { padding: 0 1rem; }
   .topbar-title-group h4 { font-size: 0.9rem; }
   
-  .page-content { padding: 1rem; }
+  .page-content { padding: 1rem; overflow-x: hidden; }
   
   .card-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
   
+  .card { overflow: visible; } /* Allow table-wrapper to scroll without being clipped by border-radius */
+  
   /* Horizontal scroll for tables on mobile */
   .table-wrapper {
-    margin: 0 -1rem;
-    padding: 0 1rem;
-    width: calc(100% + 2rem);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
+  
+  .form-grid-modal { grid-template-columns: 1fr !important; }
+  .detail-row { flex-direction: column; gap: 0.25rem; }
+  
+  .toolbar { gap: 0.5rem; flex-direction: column; align-items: stretch; }
+  .toolbar > * { max-width: 100% !important; width: 100%; flex: none; justify-content: space-between; }
+  .toolbar-info { text-align: center; margin-top: 0.5rem; }
 }
 
 /* Mobile Sidebar Backdrop */

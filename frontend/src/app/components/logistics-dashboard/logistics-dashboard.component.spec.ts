@@ -1,3 +1,8 @@
+import { LucideAngularModule } from 'lucide-angular';
+import { appIcons } from '../../app.icons';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LogisticsDashboardComponent } from './logistics-dashboard.component';
@@ -8,7 +13,8 @@ describe('LogisticsDashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LogisticsDashboardComponent]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      imports: [LucideAngularModule.pick(appIcons), LogisticsDashboardComponent]
     })
     .compileComponents();
 

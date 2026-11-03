@@ -1,3 +1,4 @@
+import { LucideAngularModule, Ticket, Hourglass, CheckCircle, AlertTriangle, Package, ArrowRight, Eye } from 'lucide-angular';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -5,10 +6,9 @@ import { AuthService } from '../../services/auth.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-admin-dashboard',
-  standalone: true,
-  imports: [CommonModule, RouterLink],
-  templateUrl: './admin-dashboard.component.html',
+    selector: 'app-admin-dashboard',
+    imports: [CommonModule, RouterLink, LucideAngularModule],
+    templateUrl: './admin-dashboard.component.html'
 })
 export class AdminDashboardComponent implements OnInit {
   currentPage = 1;
@@ -45,7 +45,7 @@ export class AdminDashboardComponent implements OnInit {
   loadData() {
     this.loading = true;
 
-    this.http.get<any[]>(`${this.apiUrl}/tickets`).subscribe({
+    this.http.get<any[]>(`${this.apiUrl}/tickets?export=true`).subscribe({
       next: (data) => {
         this.tickets = data;
         this.loading = false;

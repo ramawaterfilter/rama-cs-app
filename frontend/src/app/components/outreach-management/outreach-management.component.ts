@@ -1,13 +1,13 @@
+import { LucideAngularModule } from 'lucide-angular';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
  
 @Component({
-  selector: 'app-outreach-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './outreach-management.component.html',
+    selector: 'app-outreach-management',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './outreach-management.component.html'
 })
 export class OutreachManagementComponent implements OnInit {
   currentPage = 1;

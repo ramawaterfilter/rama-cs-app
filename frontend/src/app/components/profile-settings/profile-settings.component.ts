@@ -1,3 +1,4 @@
+import { LucideAngularModule } from 'lucide-angular';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -5,10 +6,9 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-profile-settings',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './profile-settings.component.html',
+    selector: 'app-profile-settings',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './profile-settings.component.html'
 })
 export class ProfileSettingsComponent implements OnInit {
   user: any = {};

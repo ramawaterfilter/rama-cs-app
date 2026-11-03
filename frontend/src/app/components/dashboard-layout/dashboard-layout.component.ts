@@ -1,3 +1,4 @@
+import { LucideAngularModule, Home, FileText, Ticket, Globe, Bell, Truck, Folder, Package, Signal, ClipboardList, Ruler, Handshake, Store, Bookmark, Users, Key, Settings, XCircle } from 'lucide-angular';
 import { Component, inject, OnInit, OnDestroy, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterLink, RouterLinkActive, Router } from '@angular/router';
@@ -7,11 +8,10 @@ import { NotificationService } from '../../services/notification.service';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
-  selector: 'app-dashboard-layout',
-  standalone: true,
-  imports: [CommonModule, RouterModule, RouterLink, RouterLinkActive],
-  templateUrl: './dashboard-layout.component.html',
-  styleUrls: ['./dashboard-layout.component.scss']
+    selector: 'app-dashboard-layout',
+    imports: [CommonModule, RouterModule, RouterLink, RouterLinkActive, LucideAngularModule],
+    templateUrl: './dashboard-layout.component.html',
+    styleUrls: ['./dashboard-layout.component.scss']
 })
 export class DashboardLayoutComponent implements OnInit, OnDestroy {
   public authService = inject(AuthService);
@@ -50,33 +50,35 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
     if (this.isAdmin) {
       this.navItems = [
         { section: 'OVERVIEW' },
-        { label: 'Dashboard', icon: '🏠', route: '/dashboard/overview' },
+        { label: 'Dashboard', icon: 'home', route: '/dashboard/overview' },
         { section: 'TICKET MANAGEMENT' },
-        { label: 'New Query', icon: '📝', route: '/dashboard/new-query' },
-        { label: 'All Tickets', icon: '🎫', route: '/dashboard/tickets' },
-        { label: 'Ticket Requests', icon: '🔔', route: '/dashboard/ticket-requests' },
-        { label: 'Logistics Dashboard', icon: '🚚', route: '/dashboard/logistics' },
+        { label: 'New Query', icon: 'file-text', route: '/dashboard/new-query' },
+        { label: 'All Tickets', icon: 'ticket', route: '/dashboard/tickets' },
+        { label: 'Ticket Requests', icon: 'bell', route: '/dashboard/ticket-requests' },
+        { label: 'Logistics Dashboard', icon: 'truck', route: '/dashboard/logistics' },
         { section: 'MASTER DATA' },
-        { label: 'Categories', icon: '🗂️', route: '/dashboard/categories' },
-        { label: 'Products', icon: '📦', route: '/dashboard/products' },
-        { label: 'Query Channels', icon: '📶', route: '/dashboard/channels' },
-        { label: 'Query Types', icon: '📋', route: '/dashboard/types' },
-        { label: 'Query Filters', icon: '📏', route: '/dashboard/filters' },
-        { label: 'Customer Outreach', icon: '🤝', route: '/dashboard/outreach' },
-        { label: 'Purchase Stores', icon: '🏪', route: '/dashboard/purchase-stores' },
-        { label: 'Countries', icon: '🌍', route: '/dashboard/countries' },
-        { label: 'Query Statuses', icon: '🔖', route: '/dashboard/statuses' },
+        { label: 'Categories', icon: 'folder', route: '/dashboard/categories' },
+        { label: 'Products', icon: 'package', route: '/dashboard/products' },
+        { label: 'Query Channels', icon: 'signal', route: '/dashboard/channels' },
+        { label: 'Query Types', icon: 'clipboard-list', route: '/dashboard/types' },
+        { label: 'Query Filters', icon: 'ruler', route: '/dashboard/filters' },
+        { label: 'Customer Outreach', icon: 'handshake', route: '/dashboard/outreach' },
+        { label: 'Purchase Stores', icon: 'store', route: '/dashboard/purchase-stores' },
+        { label: 'Countries', icon: 'globe', route: '/dashboard/countries' },
+        { label: 'Query Statuses', icon: 'bookmark', route: '/dashboard/statuses' },
+        { label: 'Logistics Reasons', icon: 'corner-down-left', route: '/dashboard/logistics-reasons' },
         { section: 'ADMINISTRATION' },
-        { label: 'User Management', icon: '👥', route: '/dashboard/users' },
-        { label: 'User Profile Requests', icon: '🔑', route: '/dashboard/user-requests' },
-        { label: 'Profile & Security', icon: '⚙️', route: '/dashboard/profile' },
+        { label: 'User Management', icon: 'users', route: '/dashboard/users' },
+        { label: 'User Profile Requests', icon: 'key', route: '/dashboard/user-requests' },
+        { label: 'Profile & Security', icon: 'settings', route: '/dashboard/profile' },
       ];
     } else if (this.user?.role === 'le') {
       this.navItems = [
         { section: 'LOGISTICS TEAM' },
-        { label: 'Logistics Dashboard', icon: '🚚', route: '/dashboard/logistics' },
+        { label: 'Logistics Dashboard', icon: 'home', route: '/dashboard/logistics' },
+        { label: 'All Tickets', icon: 'truck', route: '/dashboard/logistics-tickets' },
         { section: 'ACCOUNT' },
-        { label: 'Profile & Security', icon: '⚙️', route: '/dashboard/profile' },
+        { label: 'Profile & Security', icon: 'settings', route: '/dashboard/profile' },
       ];
       const currentPath = this.router.url;
       if (currentPath === '/dashboard' || currentPath === '/dashboard/overview' || currentPath === '/dashboard/') {
@@ -85,13 +87,14 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
     } else {
       this.navItems = [
         { section: 'MY WORKSPACE' },
-        { label: 'My Dashboard', icon: '🏠', route: '/dashboard/cse' },
-        { label: 'New Query', icon: '📝', route: '/dashboard/new-query' },
-        { label: 'All Tickets', icon: '🎫', route: '/dashboard/tickets' },
-        { label: 'Logistics', icon: '🚚', route: '/dashboard/logistics' },
-        { label: 'Rejected Approvals', icon: '❌', route: '/dashboard/rejected-approvals' },
+        { label: 'My Dashboard', icon: 'home', route: '/dashboard/cse' },
+        { label: 'New Query', icon: 'file-text', route: '/dashboard/new-query' },
+        { label: 'My Tickets', icon: 'ticket', route: '/dashboard/tickets' },
+        { label: 'All Tickets View', icon: 'clipboard-list', route: '/dashboard/all-tickets-view' },
+        { label: 'Logistics', icon: 'truck', route: '/dashboard/logistics' },
+        { label: 'Rejected Approvals', icon: 'x-circle', route: '/dashboard/rejected-approvals' },
         { section: 'ACCOUNT' },
-        { label: 'Profile & Security', icon: '⚙️', route: '/dashboard/profile' },
+        { label: 'Profile & Security', icon: 'settings', route: '/dashboard/profile' },
       ];
       // Redirect CSE users away from admin-only overview
       const currentPath = this.router.url;

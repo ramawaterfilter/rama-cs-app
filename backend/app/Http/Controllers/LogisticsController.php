@@ -18,7 +18,7 @@ class LogisticsController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        // Fetch tickets that have a replacement or return (LEs only see their own)
+        // Fetch tickets that have a replacement or return assigned to this LE, or created by this CSE
         $query = CustomerTicket::with(['category', 'status', 'executive', 'replacement', 'ticketReturn'])
             ->where(function($q) use ($user) {
                 $q->whereHas('replacement', function ($sub) use ($user) {
@@ -29,23 +29,60 @@ class LogisticsController extends Controller
                 });
             });
 
+        if ($user->role === 'cse') {
+            $query->where('executive_id', $user->id);
+        }
+
         if ($user->role === 'le') {
             $query->where('is_logistic_approved', true);
         }
 
-        $query->orderBy('created_at', 'desc');
+        if ($request->order_id) {
+            $query->where('order_id', 'like', '%' . $request->order_id . '%');
+        }
 
-        return response()->json($query->get());
+        if ($request->logistics_status) {
+            $status = $request->logistics_status;
+            $query->where(function($q) use ($status) {
+                $q->whereHas('replacement', function($sub) use ($status) {
+                    $sub->where('status', $status);
+                })->orWhereHas('ticketReturn', function($sub) use ($status) {
+                    $sub->where('status', $status);
+                });
+            });
+        }
+
+        if ($request->from_date) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+        if ($request->to_date) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        if ($request->search) {
+            $term = '%' . $request->search . '%';
+            $query->where(function($q) use ($term) {
+                $q->where('customer_name', 'like', $term)
+                  ->orWhere('customer_email', 'like', $term)
+                  ->orWhere('order_id', 'like', $term);
+            });
+        }
+
+        $sortOrder = $request->sort_date === 'asc' ? 'asc' : 'desc';
+        $query->orderBy('created_at', $sortOrder);
+
+        if ($request->export == 'true') {
+            return response()->json($query->get());
+        }
+
+        $perPage = $request->per_page ?: 10;
+        return response()->json($query->paginate($perPage));
     }
 
     public function updateReplacement(Request $request, $id)
     {
         $replacement = TicketReplacement::findOrFail($id);
-
-        if (!$this->canEdit($request->user(), $replacement->le_id)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
+        
         $oldStatus = $replacement->status;
         $replacement->status = $request->status ?? $replacement->status;
         $replacement->remarks = $request->remarks ?? $replacement->remarks;
@@ -80,17 +117,10 @@ class LogisticsController extends Controller
     public function updateReturn(Request $request, $id)
     {
         $ticketReturn = TicketReturn::findOrFail($id);
-
-        if (!$this->canEdit($request->user(), $ticketReturn->le_id)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
+        
         $oldStatus = $ticketReturn->status;
         $ticketReturn->status = $request->status ?? $ticketReturn->status;
         $ticketReturn->remarks = $request->remarks ?? $ticketReturn->remarks;
-        if ($request->has('tracking_id')) {
-            $ticketReturn->tracking_id = $request->tracking_id;
-        }
         $ticketReturn->save();
 
         if ($oldStatus !== $ticketReturn->status) {
@@ -117,12 +147,5 @@ class LogisticsController extends Controller
         }
 
         return response()->json(['message' => 'Return updated successfully']);
-    }
-
-    // ponytail: admins can edit any record, LEs only their own — no policy class needed
-    private function canEdit($user, $leId): bool
-    {
-        if ($user->role === 'admin') return true;
-        return $user->role === 'le' && $leId !== null && (int) $leId === (int) $user->id;
     }
 }

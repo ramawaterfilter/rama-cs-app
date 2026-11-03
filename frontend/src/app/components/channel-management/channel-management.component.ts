@@ -1,13 +1,13 @@
+import { LucideAngularModule } from 'lucide-angular';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-channel-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './channel-management.component.html',
+    selector: 'app-channel-management',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './channel-management.component.html'
 })
 export class ChannelManagementComponent implements OnInit {
   currentPage = 1;

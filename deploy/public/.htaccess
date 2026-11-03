@@ -1,0 +1,27 @@
+Options -Indexes -MultiViews
+DirectoryIndex index.html
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    <FilesMatch "^(index\.html|index\.php|release\.json)$">
+        Header always set Cache-Control "no-store"
+    </FilesMatch>
+</IfModule>
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+RewriteEngine On
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteCond %{HTTP:x-xsrf-token} .
+RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+# Laravel handles API and health requests; Angular handles application routes.
+RewriteRule ^(?:api(?:/.*)?|up|sanctum(?:/.*)?)$ index.php [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]

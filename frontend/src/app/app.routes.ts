@@ -16,6 +16,7 @@ import { FilterManagementComponent } from './components/filter-management/filter
 import { OutreachManagementComponent } from './components/outreach-management/outreach-management.component';
 import { PurchaseStoreManagementComponent } from './components/purchase-store-management/purchase-store-management.component';
 import { CountryManagementComponent } from './components/country-management/country-management.component';
+import { LogisticsReasonManagementComponent } from './components/logistics-reason-management/logistics-reason-management.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -32,6 +33,7 @@ export const routes: Routes = [
       { path: 'new-query', component: PublicFormComponent },
       { path: 'cse', component: CseDashboardComponent },
       { path: 'tickets', component: TicketGridComponent },
+      { path: 'all-tickets-view', component: TicketGridComponent },
       { path: 'ticket-requests', component: TicketGridComponent },
       { path: 'categories', component: CategoryManagementComponent },
       { path: 'statuses', component: StatusManagementComponent },
@@ -42,10 +44,12 @@ export const routes: Routes = [
       { path: 'outreach', component: OutreachManagementComponent },
       { path: 'purchase-stores', component: PurchaseStoreManagementComponent },
       { path: 'countries', component: CountryManagementComponent },
+      { path: 'logistics-reasons', component: LogisticsReasonManagementComponent },
       { path: 'users', component: UserManagementComponent },
       { path: 'user-requests', loadComponent: () => import('./components/user-profile-requests/user-profile-requests.component').then(m => m.UserProfileRequestsComponent) },
       { path: 'profile', component: ProfileSettingsComponent },
-      { path: 'logistics', loadComponent: () => import('./components/logistics-dashboard/logistics-dashboard.component').then(m => m.LogisticsDashboardComponent) },
+      { path: 'logistics', loadComponent: () => import('./components/le-dashboard/le-dashboard.component').then(m => m.LeDashboardComponent) },
+      { path: 'logistics-tickets', loadComponent: () => import('./components/logistics-dashboard/logistics-dashboard.component').then(m => m.LogisticsDashboardComponent) },
       { path: 'rejected-approvals', loadComponent: () => import('./components/rejected-approvals/rejected-approvals.component').then(m => m.RejectedApprovalsComponent) },
       { path: '', redirectTo: 'overview', pathMatch: 'full' }
     ]

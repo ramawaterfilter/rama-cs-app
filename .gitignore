@@ -6,3 +6,15 @@
 /backend/storage/*.php
 /backend/database/*.sqlite
 .DS_Store
+*.sql
+
+# Local deployment archives, exports, and database backups
+/.tmp/
+/hostinger-update/
+/*.zip
+/*.sqlite
+/*.sqlite-*
+/.deploy/
+**/.env.*
+!**/.env.example
+!**/.env.production.example

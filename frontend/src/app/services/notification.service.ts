@@ -30,9 +30,6 @@ export class NotificationService {
   private toasterSubject = new Subject<ToastMessage>();
   toaster$ = this.toasterSubject.asObservable();
 
-  private allTicketsSubject = new BehaviorSubject<any[] | null>(null);
-  allTickets$ = this.allTicketsSubject.asObservable();
-
   private refreshSubject = new Subject<void>();
   private seenRequestIds = new Set<string>();
   private seenStorageKey = 'phoenix_seen_notifs';
@@ -53,39 +50,26 @@ export class NotificationService {
       startWith(null),
       switchMap(() => interval(10000).pipe(startWith(0))),
       switchMap(() => {
-        const user = this.authService.getUserData();
-        const endpoint = user?.role === 'le' ? '/logistics' : '/tickets';
-        return this.http.get<any[]>(`${this.apiUrl}${endpoint}?t=${new Date().getTime()}`).pipe(
+        return this.http.get<any>(`${this.apiUrl}/notifications/summary?t=${new Date().getTime()}`).pipe(
           catchError(err => {
             console.error('Error fetching data for notification service:', err);
-            return of([]);
+            return of({ recent_tickets: [], requests: [], logistics: [] });
           })
         );
       })
     ).subscribe(data => {
-      this.allTicketsSubject.next(data);
       const user = this.authService.getUserData();
       const isAdmin = user?.role === 'admin';
       const isCse = user?.role === 'cse';
 
-      // General notifications (latest 5)
-      const sorted = [...data].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
-      this.notificationsSubject.next(sorted.slice(0, 5));
-
-      // Edit requests notifications
-      let requests: any[] = [];
-      if (isAdmin) {
-        requests = data.filter(t => (t.edit_requested && !t.edit_approved) || (t.profile_edit_requested && !t.profile_edit_approved));
-      } else if (isCse) {
-        requests = data.filter(t => t.edit_approved || t.profile_edit_approved);
-      }
+      this.notificationsSubject.next(data.recent_tickets || []);
       
-      const sortedRequests = requests.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
-      this.requestsSubject.next(sortedRequests);
+      const requests = data.requests || [];
+      this.requestsSubject.next(requests);
 
       // Check for new requests to trigger toaster
       let needsSave = false;
-      requests.forEach(req => {
+      requests.forEach((req: any) => {
         const reqId = `${req.id}-${req.profile_edit_requested ? 'profile' : 'general'}-${isAdmin ? 'req' : 'app'}`;
         if (!this.seenRequestIds.has(reqId)) {
           this.seenRequestIds.add(reqId);
@@ -108,8 +92,8 @@ export class NotificationService {
 
       // LE toaster for new assignments
       if (user?.role === 'le') {
-        const sortedLogistics = [...data].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
-        sortedLogistics.forEach(log => {
+        const logistics = data.logistics || [];
+        logistics.forEach((log: any) => {
           const logId = `logistics-${log.id}`;
           if (!this.seenRequestIds.has(logId)) {
             // Only toast if we've already loaded once (don't spam on startup)

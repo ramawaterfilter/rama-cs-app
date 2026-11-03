@@ -1,16 +1,17 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
 
+import { LucideAngularModule } from 'lucide-angular';
+
 @Component({
-  selector: 'app-public-form',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './public-form.component.html',
+    selector: 'app-public-form',
+    imports: [FormsModule, LucideAngularModule],
+    templateUrl: './public-form.component.html'
 })
 export class PublicFormComponent implements OnInit {
   formData: any = {
@@ -69,7 +70,6 @@ export class PublicFormComponent implements OnInit {
   private apiUrl = '/api';
 
   ngOnInit() {
-    this.formData.received_at = this.nowLocal();
     this.http.get<any[]>(`${this.apiUrl}/categories/public`).subscribe(d => this.categories = d);
     this.http.get<any[]>(`${this.apiUrl}/query-channels/public`).subscribe(d => this.channels = d);
     this.http.get<any[]>(`${this.apiUrl}/query-types/public`).subscribe(d => this.queryTypes = d);
@@ -169,12 +169,6 @@ export class PublicFormComponent implements OnInit {
     }, 200);
   }
 
-  private nowLocal() {
-    const d = new Date();
-    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-    return d.toISOString().slice(0, 16);
-  }
-
   onSubmit(form: any) {
     if (form.invalid) {
       this.errorMsg = 'Please fill all required fields correctly.';
@@ -198,7 +192,6 @@ export class PublicFormComponent implements OnInit {
         this.successMsg = 'Your query has been submitted successfully.';
         this.notifService.refresh(); // Update the notification bell immediately
         this.formData = {
-          received_at: this.nowLocal(),
           query_channel_id: '',
           query_type_id: '',
           query_filter_id: '',

@@ -41,7 +41,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "650kB",
+                  "maximumWarning": "1000kB",
                   "maximumError": "1MB"
                 },
                 {
@@ -104,5 +104,31 @@
   },
   "cli": {
     "analytics": "2807ce63-f08c-4f1f-8cc9-7a3d1b9f37fd"
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
+    }
   }
 }

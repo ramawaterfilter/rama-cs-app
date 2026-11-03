@@ -1,3 +1,4 @@
+import { LucideAngularModule } from 'lucide-angular';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -5,11 +6,10 @@ import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
-  selector: 'app-user-profile-requests',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './user-profile-requests.component.html',
-  styleUrls: ['./user-profile-requests.component.scss']
+    selector: 'app-user-profile-requests',
+    imports: [CommonModule, FormsModule, LucideAngularModule],
+    templateUrl: './user-profile-requests.component.html',
+    styleUrls: ['./user-profile-requests.component.scss']
 })
 export class UserProfileRequestsComponent implements OnInit {
   currentPage = 1;
