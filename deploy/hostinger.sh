@@ -39,9 +39,12 @@ printf '%s  %s\n' "$checksum" "$archive" | sha256sum --check --status || fail 'a
 mkdir "$release"
 tar -xzf "$archive" -C "$release" --no-same-owner
 [[ -f "$release/artisan" && -f "$release/public/index.html" && -f "$release/vendor/autoload.php" && -f "$release/deploy/sqlite.php" ]] || fail 'incomplete release'
-[[ ! -e "$release/.env" && ! -e "$release/storage" ]] || fail 'archive contains runtime state'
+[[ ! -e "$release/.env" && ! -e "$release/storage" && ! -e "$release/public/storage" ]] || fail 'archive contains runtime state'
 ln -s "$root/shared/.env" "$release/.env"
 ln -s "$root/shared/storage" "$release/storage"
+# A fresh release has no public/storage link, so uploads would 404 after activation.
+mkdir -p "$release/storage/app/public"
+ln -s "$root/shared/storage/app/public" "$release/public/storage"
 mkdir -p "$release/bootstrap/cache"
 chmod 600 "$root/shared/.env"
 cd "$release"

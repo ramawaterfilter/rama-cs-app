@@ -72,6 +72,8 @@ bash "$script" "$root" "$release_id" https://example.test "$checksum"
 [[ "$(readlink -f "$root/current")" == "$root/releases/$release_id" ]]
 [[ "$(readlink -f "$root/previous")" == "$root/releases/old" ]]
 [[ "$(readlink -f "$root/releases/$release_id/storage")" == "$root/shared/storage" ]]
+[[ "$(readlink -f "$root/releases/$release_id/public/storage")" == "$root/shared/storage/app/public" ]]
+[[ -d "$root/shared/storage/app/public" ]]
 [[ ! -e "$root/shared/storage/framework/down" ]]
 [[ "$(cat "$MOCK_LOG")" == $'backup\nmigrate' ]]
 cmp "$root/shared/database/database.sqlite" "$root/shared/backups/$release_id.sqlite"

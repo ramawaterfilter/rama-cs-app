@@ -631,3 +631,105 @@ changes were made by this work.
 - Validation: production build passed; 34 tests passed; production npm audit reported 0 vulnerabilities.
 - User confirmed Excel and PDF exports work.
 - Remaining warning: unused RouterLink in LoginComponent.
+
+## Preparation for 2026-10-31, 18:00 IST cutover
+
+- User requested preparation ahead of a live update around 18:00 IST. This is a
+  target maintenance window, not an automatic deployment schedule.
+- User reported PR CI passing after the Angular/security fixes and confirmed
+  Excel/PDF exports. Production activation has not run.
+- Created a new online SQLite backup using the existing private helper:
+  `/home/u891711850/apps/rama-cs/shared/backups/preparation-20261031T081318Z.sqlite`.
+  Downloaded an off-host copy to the original workspace's ignored
+  `.tmp/hostinger-deployment-backups/preparation-20261031T081318Z.sqlite`.
+  Size: 413696 bytes; SHA-256:
+  `3345c0af032134f5da3ef2b7c846ddd42d0d7a91f61ade9daf6cf37dbf582cf3`.
+  Remote and local checksums match; local SQLite quick_check passed and Laravel
+  migration metadata is present. This is a preparation snapshot, not the final
+  cutover database; subsequent production writes are not included.
+- Prepared private `shared/.env` from the current live environment, mode 600.
+  Verified its APP_KEY matches the running application's key without displaying
+  it. Set production environment, debug false, HTTPS application URL, exact shared
+  SQLite path, empty DB_URL, secure/HTTP-only session cookies, lax SameSite, and
+  synchronous queues until a worker is configured. Other settings were retained.
+  The existing live environment and database were not edited. New-release boot
+  and configuration validation remain pending; the shared working DB is absent.
+- Live application files total approximately 76 MB. rsync is available and
+  `public/storage` is a symlink. Its target and any additional public upload paths
+  still need checking and preservation in the new release layout.
+- Before the window: keep automatic deployment disabled, preserve website files
+  and uploads with off-host copies, prepare storage and public upload links,
+  verify symlink serving, inspect scheduled/background writers, and record exact
+  first-deployment recovery steps. No public_html replacement has occurred.
+- At cutover: pause writes and background writers, allow in-flight work to finish,
+  take and download a fresh verified SQLite backup, populate the shared working DB
+  from current production state, finalize storage, and perform the attended first
+  activation. Verify existing sign-in, tickets, uploads, and exports before
+  considering the cutover complete. Retain the original application for recovery.
+- Do not restore the preparation snapshot merely to revert code: a DB restore
+  would discard newer writes. First activation has no previous pipeline release;
+  recovery requires the preserved original application with reconciled DB state.
+
+### Website files and initial shared storage preparation
+
+- Confirmed the active public/storage link resolves to the active Laravel
+  storage/app/public directory. No additional top-level public directories or
+  internal storage symlinks were found by this inventory.
+- Created a private website-files archive:
+  `/home/u891711850/apps/rama-cs/shared/backups/website-preparation-20261031T094554Z.tar.gz`.
+  Downloaded it to the original workspace's Git-ignored
+  `.tmp/hostinger-deployment-backups/website-preparation-20261031T094554Z.tar.gz`.
+  Size: 5791731 bytes; matching SHA-256:
+  `944a1038b94f2d7303ba7dd52aa996ab24d87c7796e028d34f98198dd0d0955d`.
+  The archive is readable and includes the expected original application entry
+  files. It includes private configuration: never commit or publish this archive.
+  SQLite files are excluded and backed up separately; runtime logs and framework
+  caches, sessions, and compiled views are excluded from this files archive.
+- Copied current live storage contents into private shared/storage, excluding the
+  maintenance flag. Applied 750 directory and 640 file permissions to that private
+  copy and confirmed required runtime directories exist. Original live files and
+  permissions were not modified. Final synchronization is still required after
+  writes are paused; this is not a complete cutover snapshot or a restore rehearsal.
+- Identified a deployment gap: new releases need their own public/storage link
+  to shared/storage/app/public. Resolved on 2026-11-02: `deploy/hostinger.sh`
+  now creates `$release/public/storage` right after the release storage link, and
+  `deploy/test-hostinger.sh` asserts the link resolves to the shared target and
+  that the shared `app/public` directory exists.
+
+## 2026-11-02 deployment request and refreshed preparation backup
+
+- User requested publishing the application while protecting the database.
+  Rechecked the server: the original live directory is still active, private
+  shared/.env exists, and no shared working database or current release link was
+  detected. No maintenance or activation was performed during these checks.
+- Storage-link script/test edits are still absent. The reviewed local copy also
+  contains three uncommitted Rama branding edits and an untracked backend npm
+  lockfile. Asked for approval before changing code, consistent with the user's
+  instruction. The backend npm lockfile is not a required deployment input.
+- Created a refreshed online SQLite snapshot and downloaded a verified copy:
+  `/home/u891711850/apps/rama-cs/shared/backups/preparation-20261102T105851Z.sqlite`;
+  original workspace local path:
+  `.tmp/hostinger-deployment-backups/preparation-20261102T105851Z.sqlite`.
+  Size: 475136 bytes; matching SHA-256:
+  `f2183ba89b6ab4c7c0f5d7c858af9226b4cec8cdcf87bebfb29d6e5a031712e7`.
+  Downloaded snapshot quick_check and Laravel migration metadata checks passed.
+  This is an online preparation snapshot, not a final cutover snapshot. Take a
+  new snapshot after pausing writes and before applying production migrations.
+- The October 31 18:00 IST window was not executed by this session. Current
+  deployment must use current production data and freshly verified readiness;
+  historical backups and historical CI results alone do not establish readiness.
+
+## 2026-11-02 — release `public/storage` link added to the deploy script
+
+- `deploy/hostinger.sh` now creates `$release/public/storage` pointing at
+  `shared/storage/app/public` (creating that directory if missing), and refuses
+  an archive that already ships `public/storage`. Without it, every new release
+  lost its uploads URL after activation.
+- `deploy/test-hostinger.sh` asserts the link and its shared target.
+- Verified locally: `bash -n` on both scripts, `bash deploy/test-hostinger.sh`
+  (all lifecycle cases), and `php deploy/test-sqlite.php` — **all pass, exit 0**.
+- Nothing has been committed, pushed, merged, or deployed by this change; the
+  live site, its database, and GitHub settings were untouched.
+- Still open, in order: commit and push to `replace-application-code`, green CI
+  on PR #1, merge to `main`, the one-time cutover runbook, then setting
+  `HOSTINGER_DEPLOY_ENABLED=true`.
