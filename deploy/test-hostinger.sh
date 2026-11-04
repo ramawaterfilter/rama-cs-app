@@ -63,6 +63,10 @@ MOCK
 chmod +x "$fixture/bin/"*
 export PATH="$fixture/bin:$PATH"
 export MOCK_LOG="$fixture/actions.log"
+# Normalized so the extracted-mode assertions below test hostinger.sh's umask,
+# not whatever umask the runner happened to have.
+chmod 755 "$fixture/payload/public"
+chmod 644 "$fixture/payload/public/index.html"
 package() {
     tar -czf "$root/incoming/$release_id.tar.gz" -C "$fixture/payload" .
     checksum=$(sha256sum "$root/incoming/$release_id.tar.gz" | cut -d ' ' -f 1)
@@ -74,6 +78,9 @@ bash "$script" "$root" "$release_id" https://example.test "$checksum"
 [[ "$(readlink -f "$root/releases/$release_id/storage")" == "$root/shared/storage" ]]
 [[ "$(readlink -f "$root/releases/$release_id/public/storage")" == "$root/shared/storage/app/public" ]]
 [[ -d "$root/shared/storage/app/public" ]]
+[[ "$(stat -c %a "$root/releases/$release_id/public")" == 755 ]]
+[[ "$(stat -c %a "$root/releases/$release_id/public/index.html")" == 644 ]]
+[[ "$(stat -c %a "$root/shared/.env")" == 644 ]]
 [[ ! -e "$root/shared/storage/framework/down" ]]
 [[ "$(cat "$MOCK_LOG")" == $'backup\nmigrate' ]]
 cmp "$root/shared/database/database.sqlite" "$root/shared/backups/$release_id.sqlite"
