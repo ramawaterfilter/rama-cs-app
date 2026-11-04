@@ -733,3 +733,54 @@ changes were made by this work.
 - Still open, in order: commit and push to `replace-application-code`, green CI
   on PR #1, merge to `main`, the one-time cutover runbook, then setting
   `HOSTINGER_DEPLOY_ENABLED=true`.
+
+## 2026-11-04 — First production deployment live; database preserved
+
+- Cutover executed as planned: symlink document root rehearsed (200), writes
+  frozen with `artisan down`, verified snapshot created at
+  `shared/database/database.sqlite` (552,960 bytes, `quick_check` ok, mode 600),
+  off-host copy taken, storage synchronized, then `public_html` repointed at
+  `current/public`.
+- The first deployment reached activation, took its pre-migration snapshot, and
+  applied both migrations (`create_logistics_reasons_table`,
+  `add_last_updated_by_to_customer_tickets_table`), then failed its final health
+  check with 404 and auto-removed `current`. Code recovery only; the database was
+  never rolled back or replaced.
+- **Root cause:** the web process runs as a different OS user — group `apache`
+  (member `nobody`), as shown by `getent group apache` and the home directory's
+  `drwx--x--- … apache`. Release files were mode `640/750` in group
+  `o1009874354`, and `apps/` was mode `700`, so the web process could neither
+  traverse into the app nor read any release file. The account is not a member
+  of `apache` (`chgrp apache` returns *Operation not permitted*) and `setfacl`
+  is not installed, so POSIX ACLs were unavailable.
+- Granted `others` access only where the web process needs it: release code
+  read-only, `shared/.env` read, `shared/storage` read/write, and
+  `shared/database` read/write (SQLite creates its journal beside the database).
+  `shared/backups` stays owner-only. Because home remains `drwx--x---`, only the
+  owner and group `apache` can reach those paths at all — a world-readable
+  `.env` is not reachable by other users of this shared server.
+- `SESSION_DRIVER=database` and `CACHE_STORE=database`, so at runtime PHP only
+  reads code and views and appends to `storage/logs`; no other writable storage
+  is required.
+- **`deploy/hostinger.sh`:** `umask 027` → `umask 022`, and `chmod 600` on
+  `shared/.env` → `chmod 644`. Without both, every future deploy would have
+  recreated `640` files and a `600` `.env`, breaking the site again. Backups are
+  unaffected: `deploy/sqlite.php` applies its own `umask(0077)` and `chmod 0600`,
+  which `deploy/test-sqlite.php` still asserts.
+- **`deploy/test-hostinger.sh`:** pins payload modes, then asserts the extracted
+  `public` directory is `755`, `public/index.html` is `644`, and `shared/.env`
+  is `644`. A negative check that reverts both script settings confirms these
+  assertions fail, so they are not vacuous.
+- Added `frontend/public/robots.txt` (`User-agent: *` / `Disallow:`), which the
+  live site served but the packaged build omitted. It takes effect on the next
+  deployment.
+- Post-deploy verification: `/release.json` returns
+  `e785a8155cb04ccb197765002390e5cb0c2b41f2`, and `/`, `/up`, `/login` and
+  `/api/categories/public` all return 200 with existing category records. The
+  failed run's archive was removed from `incoming/`. `shared/storage/app/public`
+  contained no uploaded files, matching the original site, so no upload URL
+  changed.
+- `public_html.original-20261102` is preserved outside the web root for
+  recovery. **`HOSTINGER_DEPLOY_ENABLED` must be returned to `false` before the
+  next push to `main`** until this umask/mode fix is merged, because the deploy
+  job pipes `deploy/hostinger.sh` from the repository at deploy time.

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Run over SSH: bash hostinger.sh ROOT RELEASE_ID HTTPS_URL ARCHIVE_SHA256
 set -euo pipefail
-umask 027
+# The web process runs as a different OS user with no shared group and no ACLs on
+# this host, so runtime files must be world-readable; HOME's mode gates everyone else.
+umask 022
 
 fail() { printf 'Deployment refused: %s\n' "$*" >&2; exit 1; }
 [[ $# == 4 ]] || fail 'expected root, release ID, HTTPS URL, and SHA-256'
@@ -46,7 +48,8 @@ ln -s "$root/shared/storage" "$release/storage"
 mkdir -p "$release/storage/app/public"
 ln -s "$root/shared/storage/app/public" "$release/public/storage"
 mkdir -p "$release/bootstrap/cache"
-chmod 600 "$root/shared/.env"
+# Same constraint: the web process must read .env, and only it can traverse HOME.
+chmod 644 "$root/shared/.env"
 cd "$release"
 php deploy/sqlite.php validate "$root"
 php artisan config:cache
